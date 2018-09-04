@@ -1,9 +1,14 @@
-const DB = require('./db');
+const { ObjectId } = require('mongodb');
+const DB = require('../services/db');
+const config = require('../config/index')
 
-const collection = 'todos'
+const collection = config.DBCollections.todos
+const collectionLists = config.DBCollections.lists
 
 module.exports = {
   list: async (ctx) => {
+    let { id } = ctx.params
+    id = id.toLowerCase()
     const { user } = ctx.state
     const list = ctx.params.id
     if (user === 'null') {
@@ -11,8 +16,14 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
+      const checkList = await DB.get(`${collectionLists}/${user}`, { _id: ObjectId(id) })
       const todoData = await DB.get(`${collection}/${user}/${list}`, {})
-      ctx.body = todoData
+      const listTitleAndData = {
+        todoData,
+        listInfo: checkList[0],
+        ownAcc: true,
+      }
+      ctx.body = JSON.stringify(listTitleAndData)
     }
   },
 
@@ -63,16 +74,24 @@ module.exports = {
 
   checkUserTodo: async (ctx) => {
     let { id, listId } = ctx.params
-    console.log(ctx.params)
     id = id.toLowerCase()
     listId = listId.toLowerCase()
+    const checkList = await DB.get(`${collectionLists}/${id}`, { _id: ObjectId(listId) })
+    console.log(checkList)
     if (ctx.state.user === null) {
       ctx.body = JSON.stringify({ commit: 'Please login to see todolists' })
-    } else if (ctx.state.user !== id) {
-      ctx.body = JSON.stringify({ commit: `You have no rights to acess ${id} todolist` })
+    } else if (checkList[0] === undefined) {
+      ctx.body = JSON.stringify({ commit: `User ${id} haven't ${listId} list` })
+    } else if ((ctx.state.user !== id) && !checkList[0].visibility) {
+      ctx.body = JSON.stringify({ commit: `You have no rights to acess ${listId} list` })
     } else {
       const todoData = await DB.get(`${collection}/${id}/${listId}`, {})
-      ctx.body = JSON.stringify(todoData)
+      const listTitleAndData = {
+        todoData,
+        listInfo: checkList[0],
+        ownAcc: ctx.state.user === id,
+      }
+      ctx.body = JSON.stringify(listTitleAndData)
     }
   },
 }

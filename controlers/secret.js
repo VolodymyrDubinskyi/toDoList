@@ -1,7 +1,9 @@
 const jwt = require('jwt-simple');
-const DB = require('./db');
+const DB = require('../services/db');
+const config = require('../config/index')
 
-const secret = 'toDoSecretKey'
+const userCollection = config.DBCollections.users
+const secret = config.secret.key
 
 module.exports = {
   getSecret: () => secret,
@@ -10,7 +12,7 @@ module.exports = {
     decoded = jwt.decode(token, secret);
 
     decoded.login = decoded.login.toLowerCase()
-    const getUser = await DB.get('user', { user: decoded.login })
+    const getUser = await DB.get(userCollection, { user: decoded.login })
 
     if (getUser[0]) {
       return getUser[0].user

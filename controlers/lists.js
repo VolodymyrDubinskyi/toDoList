@@ -1,7 +1,9 @@
 const { ObjectId } = require('mongodb');
-const DB = require('./db');
+const DB = require('../services/db');
+const config = require('../config/index')
 
-const collection = 'lists'
+const collection = config.DBCollections.lists
+const userCollection = config.DBCollections.users
 
 module.exports = {
   list: async (ctx) => {
@@ -11,8 +13,14 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
+      const userData = await DB.get(userCollection, { user })
       const todoData = await DB.get(`${collection}/${user}`, {})
-      ctx.body = todoData
+      const listTitleAndData = {
+        todoData,
+        userData: userData[0],
+        ownAcc: true,
+      }
+      ctx.body = JSON.stringify(listTitleAndData)
     }
   },
 
@@ -23,8 +31,8 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const { id, value } = ctx.request.body
-      const updated = await DB.update(ObjectId(id), { title: value }, `${collection}/${user}`)
+      const { id, changes } = ctx.request.body
+      const updated = await DB.update(ObjectId(id), changes, `${collection}/${user}`)
       ctx.body = JSON.stringify(updated)
     }
   },
@@ -49,7 +57,6 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id } = ctx.request.body
-      console.log(id)
       const deleted = await DB.remove(ObjectId(id), `${collection}/${user}`)
       ctx.body = deleted;
     }
@@ -58,13 +65,19 @@ module.exports = {
   getUserList: async (ctx) => {
     let { id } = ctx.params
     id = id.toLowerCase()
+    const userData = await DB.get(userCollection, { user: id })
     if (ctx.state.user === null) {
       ctx.body = JSON.stringify({ commit: 'Please login to see todolists' })
-    } else if (ctx.state.user !== id) {
+    } else if ((ctx.state.user !== id) && !userData[0].visibility) {
       ctx.body = JSON.stringify({ commit: `You have no rights to acess ${id} todolist` })
     } else {
       const todoData = await DB.get(`${collection}/${id}`, {})
-      ctx.body = JSON.stringify(todoData)
+      const listTitleAndData = {
+        todoData,
+        userData: userData[0],
+        ownAcc: ctx.state.user === id,
+      }
+      ctx.body = JSON.stringify(listTitleAndData)
     }
   },
 

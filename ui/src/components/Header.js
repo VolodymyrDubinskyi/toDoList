@@ -1,3 +1,5 @@
+import { webServer } from '../../../config/index'
+
 export default class Header {
   constructor(parent) {
     this.parent = parent
@@ -36,10 +38,11 @@ export default class Header {
     this.goBackBtn.style.display = 'none'
     this.goBackBtn.innerText = 'Back'
     this.goBackBtn.addEventListener('click', () => {
+      window.history.pushState(null, null, `http://localhost:${webServer.port}/${this.user}`)
       this.listTitle.remove()
-      this.edit.remove()
       this.goBackBtn.style.display = 'none'
       if (this.titleEditing) this.titleEditing.remove()
+      if (this.edit) this.edit.remove()
     })
 
     this.elem.appendChild(this.button)
@@ -58,6 +61,7 @@ export default class Header {
     document.getElementsByClassName('authorizationHolder')[0].style.display = 'block'
     this.button.innerText = 'Registration'
     this.stage = 'authorization'
+    window.history.pushState(null, null, `http://localhost:${webServer.port}`)
   }
 
   registration = () => {
@@ -82,7 +86,8 @@ export default class Header {
     document.getElementsByClassName('main')[0].style.display = 'block'
     this.button.innerText = 'Log out'
     this.stage = 'todo'
-    this.location.innerText = localStorage.getItem('user') + '/'
+    this.location.innerText = `${localStorage.getItem('user')}/`
+    // window.history.replaceState('', '', localStorage.getItem('user'));
   }
 
   changeName = () => {
@@ -91,7 +96,7 @@ export default class Header {
     this.titleEditing = document.createElement('input')
     this.titleEditing.addEventListener('keypress', (e) => {
       if (e.keyCode === 13) {
-        this.changeNameConfirm(this.listID, this.titleEditing.value)
+        this.changeConfirm(this.listID, { title: this.titleEditing.value })
         this.titleEditing.remove()
         this.listTitle.innerText = this.titleEditing.value
         this.listTitle.style.display = '';
@@ -102,13 +107,13 @@ export default class Header {
     this.location.appendChild(this.titleEditing)
   }
 
-  changeNameConfirm = (id, value) => {
+  changeConfirm = (id, changes) => {
     const sendData = {
       id,
-      value,
+      changes,
     }
 
-    fetch('http://127.0.0.1:3000/lists', {
+    fetch(`http://${webServer.host}:${webServer.port}/lists`, {
       method: 'PATCH',
       body: JSON.stringify(sendData),
       headers: {
@@ -120,5 +125,21 @@ export default class Header {
       },
     })
       .then(this.getAllLists)
+  }
+
+  createHeaderTitle = (id, title) => {
+    this.listID = id
+    if (this.listTitle) this.listTitle.remove()
+    if (this.edit) this.edit.remove()
+    this.listTitle = document.createElement('span')
+    this.edit = document.createElement('span')
+    this.listTitle.innerText = title
+    this.edit.innerText = 'edit'
+    this.edit.classList.add('editListName')
+    this.edit.addEventListener('click', this.changeName)
+    this.edit.classList.add('onlyOwnPropretty')
+
+    this.location.appendChild(this.listTitle)
+    this.location.appendChild(this.edit)
   }
 }

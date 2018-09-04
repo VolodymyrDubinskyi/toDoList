@@ -1,3 +1,5 @@
+import { webServer } from '../../../config/index'
+
 export default class RegistrationContainer {
   constructor(parent, header) {
     this.parent = parent
@@ -128,7 +130,7 @@ export default class RegistrationContainer {
 
 
   checkLoginIsNotCreated = id => new Promise((resolve) => {
-    fetch(`http://127.0.0.1:3000/users/${id}`, {
+    fetch(`http://${webServer.host}:${webServer.port}/users/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +150,7 @@ export default class RegistrationContainer {
       password: this.inputPassword.value,
     }
 
-    fetch('http://127.0.0.1:3000/users/', {
+    fetch(`http://${webServer.host}:${webServer.port}/users/`, {
       method: 'POST',
       body: JSON.stringify(sendData),
       headers: {

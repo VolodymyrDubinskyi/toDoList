@@ -1,8 +1,9 @@
 const jwt = require('jwt-simple');
-const DB = require('./db');
+const DB = require('../services/db');
 const secret = require('./secret')
+const config = require('../config/index')
 
-const collection = 'user'
+const collection = config.DBCollections.users
 
 module.exports = {
   checkUser: async (ctx) => {
@@ -21,6 +22,18 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       ctx.body = { ok: true, user: ctx.state.user }
+    }
+  },
+
+  update: async (ctx) => {
+    if (ctx.state.user === null) {
+      ctx.body = JSON.stringify({})
+      ctx.status = 401;
+      ctx.throw(401, 'Unauthorized');
+    } else {
+      const { user, changes } = ctx.request.body
+      const updated = await DB.update(user, changes, collection)
+      ctx.body = JSON.stringify(updated)
     }
   },
 

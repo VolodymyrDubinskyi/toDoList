@@ -1,0 +1,21 @@
+{
+    "db": {
+        "host": "127.0.0.1",
+        "port": "33017",
+        "dbName": "test",
+        "dbUser": "root",
+        "dbPass": ""
+    },
+    "webServer": {
+        "host": "127.0.0.1",
+        "port": "3000"
+    },
+    "secret": {
+        "key": "toDoSecretKey"
+    },
+    "DBCollections": {
+        "lists": "lists",
+        "todos": "todos",
+        "users": "user"
+    }
+}

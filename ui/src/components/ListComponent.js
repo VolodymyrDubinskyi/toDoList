@@ -32,6 +32,7 @@ export default class ListComponent {
     this.toggle = document.createElement('input')
     this.toggle.type = 'checkbox'
     this.toggle.classList.add('listEventToggle')
+    this.toggle.classList.add('onlyOwnPropretty')
     this.toggle.classList.add('usual')
     this.toggle.addEventListener('click', (e) => {
       this.changeStageToDoWithToggle(e, this.id)
@@ -54,11 +55,13 @@ export default class ListComponent {
     icoTrash.addEventListener('click', () => {
       this.removeTodo(this.id)
     })
+    icoTrash.classList.add('onlyOwnPropretty')
 
     const icoPencil = document.createElement('span')
     icoPencil.classList.add('fa')
     icoPencil.classList.add('fa-pencil')
     icoPencil.classList.add('icoMargin')
+    icoPencil.classList.add('onlyOwnPropretty')
 
     const icoHolder = document.createElement('div')
     icoHolder.classList.add('icoHolder')

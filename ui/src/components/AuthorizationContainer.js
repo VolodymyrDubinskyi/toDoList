@@ -1,4 +1,4 @@
-import ListComponent from './ListComponent'
+import { webServer } from '../../../config/index'
 
 export default class AuthorizationContainer {
   constructor(parent, listContainer, header) {
@@ -9,9 +9,10 @@ export default class AuthorizationContainer {
     parent.appendChild(this.render())
     this.location = window.location.pathname;
     this.location = this.location.split('/')[this.location.split('/').length - 1]
+    this.pathname = window.location.pathname;
     this.autoLogin();
     this.checkAnotherList();
-    // console.log(this.location)
+    this.header.checkAnotherList = this.checkAnotherList
   }
 
   render = () => {
@@ -81,6 +82,7 @@ export default class AuthorizationContainer {
       localStorage.setItem('token', result.token)
       localStorage.setItem('user', this.inputLogin.value)
       this.goToTodo()
+      window.history.replaceState('', '', this.header.user);
     });
   }
 
@@ -95,7 +97,7 @@ export default class AuthorizationContainer {
       password: this.inputPassword.value,
       login: this.inputLogin.value,
     }
-    fetch(`http://127.0.0.1:3000/users/${id}/login`, {
+    fetch(`http://${webServer.host}:${webServer.port}/users/${id}/login`, {
       method: 'POST',
       body: JSON.stringify(sendData),
       headers: {
@@ -111,6 +113,7 @@ export default class AuthorizationContainer {
         errorMessagePassword.innerText = 'Login or password incorrect.'
         errorMessagePassword.classList.add('errorMessage')
         this.loginTitle.appendChild(errorMessagePassword)
+        // window.history.pushState(window.stateObj, '', `${this.header.user}`);
       })
   })
 
@@ -121,7 +124,6 @@ export default class AuthorizationContainer {
   goToTodo = () => {
     this.header.login();
     this.listContainer.getAllLists();
-    // this.listContainer.getAllToDos();
   }
 
   autoLogin = () => {
@@ -129,36 +131,75 @@ export default class AuthorizationContainer {
       this.header.login()
       if (this.location === '') {
         this.listContainer.getAllLists();
-        // this.listContainer.getAllToDos();
       }
     }
   }
 
-
   checkAnotherList = () => {
-    if (this.location !== '') {
-      this.header.login();
-      const sendData = {
-        user: this.location,
+    let location = window.location.pathname;
+    location = this.location.split('/')[this.location.split('/').length - 1]
+    let { pathname } = window.location;
+    if (location !== '') {
+      // this.header.location.innerText = `${location}\`
+      pathname = pathname.split('/')
+      pathname.splice(0, 1)
+      if (pathname.length === 1) {
+        this.header.login();
+        const sendData = {
+          user: this.location,
+        }
+        fetch(`http://${webServer.host}:${webServer.port}/lists/${location}`, {
+          method: 'post',
+          body: JSON.stringify(sendData),
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': '*',
+            'X-Access-Token': localStorage.getItem('token'),
+          },
+        }).then(response => response.json())
+          .then((resp) => {
+            if (resp.commit !== undefined) {
+              this.listContainer.addError(resp.commit)
+            } else {
+              this.header.userData = resp.userData
+              this.header.user = resp.userData.user
+              this.listContainer.addToDolistsList(resp.todoData)
+              if (resp.ownAcc) {
+                this.parent.classList.remove('notOwnAccount')
+              } else {
+                this.parent.classList.add('notOwnAccount')
+              }
+            }
+          })
+      } else if ((pathname.length === 3) && (pathname[1].toLowerCase() === 'todos')) {
+        fetch(`http://${webServer.host}:${webServer.port}/lists/${pathname[0]}/todos/${pathname[2]}`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': '*',
+            'X-Access-Token': localStorage.getItem('token'),
+          },
+        }).then(response => response.json())
+          .then((resp) => {
+            if (resp.commit !== undefined) {
+              this.listContainer.addError(resp.commit)
+            } else {
+              this.header.createHeaderTitle(pathname[2], resp.listInfo.title)
+              this.listContainer.listInfo = resp.listInfo
+              this.listContainer.addToDoElems(resp.todoData)
+              this.header.goBackBtn.style.display = 'block'
+              if (resp.ownAcc) {
+                this.parent.classList.remove('notOwnAccount')
+              } else {
+                this.parent.classList.add('notOwnAccount')
+              }
+            }
+          })
       }
-      fetch(`http://127.0.0.1:3000/lists/${this.location}`, {
-        method: 'post',
-        body: JSON.stringify(sendData),
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': '*',
-          'X-Access-Token': localStorage.getItem('token'),
-        },
-      }).then(response => response.json())
-        .then((resp) => {
-          if (resp.commit !== undefined) {
-            this.listContainer.addError(resp.commit)
-          } else {
-            this.listContainer.addToDolistsList(resp)
-          }
-        })
     }
   }
 }

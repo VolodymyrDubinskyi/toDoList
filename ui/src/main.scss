@@ -10,6 +10,7 @@ $radius: 3px;
 }
 
 .list {
+    position: relative;
     margin: 20px 0;
     padding: 10px;
     width: 500px;
@@ -263,4 +264,31 @@ $radius: 3px;
 
 .deleteList:hover {
     text-shadow: 0 0 1px black;
+}
+
+.toggleListHolder {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items:center
+}
+
+.toggleUserHolder {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items:center
+}
+
+.visibilityToggle {
+    width: 15px;
+    height: 15px;
+    margin: 8px;
+}
+
+.notOwnAccount {
+    .onlyOwnPropretty {
+        display: none !important
+    }
+    .todoTextHolder {
+        margin: 0 auto;
+    }
 }

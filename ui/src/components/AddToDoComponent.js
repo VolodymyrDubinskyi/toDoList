@@ -7,6 +7,7 @@ export default class AddToDoComponent {
   render = () => {
     this.elem = document.createElement('div')
     this.elem.classList.add('clearfix')
+    this.elem.classList.add('onlyOwnPropretty')
     this.holder = document.createElement('div')
     this.holder.classList.add('addToDoHolder')
 

@@ -3,12 +3,14 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const Router = require('koa-router');
 const send = require('koa-send');
-const serve = require('koa-static');
+const koaStatic = require('koa-static');
 const todos = require('./controlers/todos');
 const users = require('./controlers/users');
 const lists = require('./controlers/lists');
 const secret = require('./controlers/secret')
+const config = require('./config/index')
 
+const { port } = config.webServer
 const router = new Router();
 const app = new Koa();
 app.use(bodyParser());
@@ -27,13 +29,9 @@ app.use(async (ctx, next) => {
   await next();
 })
 
-app.use(serve(`${__dirname}/ui/dist`));
-
+app.use(koaStatic(`${__dirname}/ui/dist`));
 
 router
-  .get('/', async (ctx) => {
-    await send(ctx, ctx.path, { root: `${__dirname}/ui`, index: 'index.html' });
-  })
   .get('/todos/:id', todos.list)
   .post('/todos/', todos.create)
   .patch('/todos/:id/:list', todos.update)
@@ -47,17 +45,14 @@ router
   .get('/users/login', users.tokenLogin)
   .get('/users/:id', users.checkUser)
   .post('/users/:id/login', users.login)
+  .patch('/users/:id', users.update)
   .post('/users/', users.create)
-  .post('/:id', todos.checkUserTodo)
-  .get('/:id', async (ctx) => {
-    await send(ctx, 'index.html', { root: `${__dirname}/ui/` });
-  })
-  .get('*', (ctx) => {
-    ctx.body = '<h1>Page not exist</h1>'
+  .get('*', async (ctx) => {
+    await send(ctx, 'index.html', { root: `${__dirname}/ui/src/public` });
   })
 
 app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(3000, () => console.log('listen on port 3000'))
+app.listen(port, () => console.log(`listen on port ${port}`))
