@@ -5,7 +5,7 @@ import {
   FormControl, FormHelperText,
 } from '@material-ui/core'
 
-export default class ReactToDoList extends React.Component {
+export default class Registration extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,7 +80,7 @@ export default class ReactToDoList extends React.Component {
               margin="normal"
             />
             <FormHelperText style={{ color: 'red' }}>{this.state.errorLogin}</FormHelperText>
-          </FormControl><br/>
+          </FormControl><br />
           <FormControl>
             <TextField
               style={{ margin: 0 }}
@@ -90,7 +90,7 @@ export default class ReactToDoList extends React.Component {
               margin="normal"
             />
             <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
-          </FormControl><br/>
+          </FormControl><br />
           <TextField
             style={{ margin: 0 }}
             label="Confirm password:"
@@ -104,14 +104,14 @@ export default class ReactToDoList extends React.Component {
               variant="contained" color="primary"
               onClick={this.registerUser}>
               Registration
-          </Button>
+            </Button>
           </div>
         </div>
       </div>)
   }
 }
 
-ReactToDoList.propTypes = {
+Registration.propTypes = {
   createNewUser: PropTypes.func.isRequired,
   checkLoginExisting: PropTypes.func.isRequired,
 }

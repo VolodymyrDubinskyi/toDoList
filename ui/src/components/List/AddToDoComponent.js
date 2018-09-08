@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Button, TextField } from '@material-ui/core'
 
-export default class ReactAddToDoComponent extends React.Component {
+export default class AddToDoComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,6 +56,6 @@ export default class ReactAddToDoComponent extends React.Component {
   }
 }
 
-ReactAddToDoComponent.propTypes = {
+AddToDoComponent.propTypes = {
   createTodo: PropTypes.func.isRequired,
 }

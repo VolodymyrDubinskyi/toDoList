@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import {
-  ListItem, ListItemText,
-} from '@material-ui/core'
-import ReactListItemUsual from './ReactListItemUsual'
-import ReactListItemEdit from './ReactListItemEdit'
+import TodoItemUsual from './TodoItemUsual'
+import TodoItemEdit from './TodoItemEdit'
 
-export default class ReactListItem extends React.Component {
+export default class TodoItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       todoNowEditting: false,
-    };
-    this.state = {
       editValue: props.todo.title,
     };
   }
@@ -45,40 +40,27 @@ export default class ReactListItem extends React.Component {
   }
 
   render() {
-    const usual = (<ReactListItemUsual
+    const usual = (<TodoItemUsual
       todo={this.props.todo}
       toggleChose={this.toggleChose}
       goToEdit={this.goToEdit}
       deleteTodo={this.deleteTodo} />)
 
-    const edit = (<ReactListItemEdit
+    const edit = (<TodoItemEdit
       saveAndStopEdditingUsingEnter={this.saveAndStopEdditingUsingEnter}
       saveAndStopEditing={this.saveAndStopEditing}
       updateEditValue={this.updateEditValue}
       stopEditing={this.stopEditing}
+      todo={this.props.todo}
       editValue={this.state.editValue} />)
 
     const todo = (this.state.todoNowEditting) ? edit : usual
 
-    return (
-      <ListItem key={this.props.todo.title}
-        style={{
-          padding: 0,
-          margin: 0,
-        }}
-        role={undefined}
-        dense
-        button>
-        <ListItemText style={{
-          fontSize: '1em',
-        }}>
-          {todo}
-        </ListItemText>
-      </ListItem>)
+    return todo
   }
 }
 
-ReactListItem.propTypes = {
+TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
   deleteTodo: PropTypes.func.isRequired,
   toggleChose: PropTypes.func.isRequired,

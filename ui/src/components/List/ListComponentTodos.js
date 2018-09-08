@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { List } from '@material-ui/core'
-import ReactListItem from './ReactListItem'
+import TodoItem from './TodoItem'
 
-const ReactListComponentTodos = props => (<List>
+const ListComponentTodos = props => (<List>
   {props.listItems.map(todo => (
-    <ReactListItem
+    <TodoItem
       todo={todo}
       key={`${todo.id}`}
       deleteTodo={props.deleteTodo}
@@ -15,17 +15,15 @@ const ReactListComponentTodos = props => (<List>
   ))}
 </List>)
 
-
-ReactListComponentTodos.defaultProps = {
+ListComponentTodos.defaultProps = {
   listItems: [],
 }
 
-ReactListComponentTodos.propTypes = {
-  listType: PropTypes.string.isRequired,
+ListComponentTodos.propTypes = {
   listItems: PropTypes.array.isRequired,
   deleteTodo: PropTypes.func.isRequired,
   toggleChose: PropTypes.func.isRequired,
   editTodoListValue: PropTypes.func.isRequired,
 }
 
-export default ReactListComponentTodos
+export default ListComponentTodos

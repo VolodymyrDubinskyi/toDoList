@@ -1,26 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import {
-  IconButton, Tooltip, TextField,
+  IconButton, Tooltip, TextField, ListItem, ListItemSecondaryAction,
 } from '@material-ui/core'
 import SaveIcon from '@material-ui/icons/Save';
 import ClearIcon from '@material-ui/icons/Clear';
 
 
-const ReactListItemEdit = (props) => {
+const ListItemEdit = (props) => {
   const iconStyle = { width: 17, height: 17, margin: 3 }
-  return <div className={'listEvent'}>
+  return <ListItem key={props.todo.title}
+    style={{
+      padding: 0,
+      margin: 0,
+      fontSize: '1em',
+    }}
+    role={undefined}
+    dense
+    button>
     <TextField
       type='Editting'
-      style={{ margin: 0 }}
-      fullWidth={true}
+      fullWidth
       label="Editting:"
       value={props.editValue}
       onChange={e => props.updateEditValue(e)}
       onKeyDown={e => props.saveAndStopEdditingUsingEnter(e)}
       margin="normal"
     />
-    <div className='icoHolder' style={{ display: 'inline-block', width: 70 }}>
+    <ListItemSecondaryAction className='icoHolder' style={{ display: 'inline-block', width: 70 }}>
       <IconButton
         onClick={props.saveAndStopEditing}
         style={iconStyle}
@@ -39,11 +46,12 @@ const ReactListItemEdit = (props) => {
             style={iconStyle} />
         </Tooltip>
       </IconButton>
-    </div>
-  </div>
+    </ListItemSecondaryAction>
+  </ListItem>
 }
 
-ReactListItemEdit.propTypes = {
+ListItemEdit.propTypes = {
+  todo: PropTypes.object.isRequired,
   editValue: PropTypes.string.isRequired,
   updateEditValue: PropTypes.func.isRequired,
   saveAndStopEdditingUsingEnter: PropTypes.func.isRequired,
@@ -51,4 +59,4 @@ ReactListItemEdit.propTypes = {
   stopEditing: PropTypes.func.isRequired,
 }
 
-export default ReactListItemEdit
+export default ListItemEdit

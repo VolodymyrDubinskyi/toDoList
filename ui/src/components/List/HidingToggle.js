@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Checkbox } from '@material-ui/core'
 
-export default class ReactHidingToggle extends React.Component {
+export default class HidingToggle extends React.Component {
   render() {
     return (
       <div className={'toggleListHolder onlyOwnPropretty'} >
         <Checkbox
-          onChange={this.props.changeUserVisibility}
-          checked={this.props.user.visibility} 
+          onChange={this.props.changeVisibility}
+          checked={this.props.elem.visibility}
           color={'primary'}
           style={{
             maxWidth: 12,
@@ -17,16 +17,12 @@ export default class ReactHidingToggle extends React.Component {
           }}
           disableRipple
         />
-        {/* <input type={'checkbox'}
-          className={'visibilityToggle'}
-          onChange={this.props.changeUserVisibility}
-          checked={this.props.user.visibility} /> */}
         <span className={'toggleHolderTitle'}>Visible to other users:</span>
       </div>)
   }
 }
 
-ReactHidingToggle.propTypes = {
-  changeUserVisibility: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+HidingToggle.propTypes = {
+  changeVisibility: PropTypes.func.isRequired,
+  elem: PropTypes.object.isRequired,
 }

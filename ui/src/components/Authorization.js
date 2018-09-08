@@ -4,7 +4,7 @@ import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
 
-export default class ReactToDoList extends React.Component {
+export default class Authorization extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,8 +21,37 @@ export default class ReactToDoList extends React.Component {
     this.setState(newValue);
   }
 
+  checkLogin = () => {
+    if (!this.state.loginValue) {
+      this.setState({ errorLogin: 'Login must be filled out.' })
+    } else if (this.state.loginValue.length < 6 || this.state.loginValue.length > 15) {
+      this.setState({ errorLogin: 'Login must have more then 5 characters and not more then 14.' })
+    } else {
+      this.setState({ errorLogin: '' })
+      return true
+    }
+    return false
+  }
+
+  checkPasswords = () => {
+    if (!this.state.passwordValue) {
+      this.setState({ errorPassword: 'Password must be filled out.' })
+    } else if (this.state.passwordValue.length < 6 || this.state.passwordValue.length > 15) {
+      this.setState({ errorPassword: 'Password must have more then 5 characters and not more then 14.' })
+    } else {
+      this.setState({ errorPassword: '' })
+      return true
+    }
+    return false
+  }
+
   tryAuthorize = () => {
-    this.props.tryAuthorize(this.state.loginValue, this.state.passwordValue)
+    const goodLogin = this.checkLogin()
+    const goodPassword = this.checkPasswords()
+
+    if (goodLogin && goodPassword) {
+      this.props.tryAuthorize(this.state.loginValue, this.state.passwordValue)
+    }
   }
 
   render() {
@@ -39,8 +68,8 @@ export default class ReactToDoList extends React.Component {
               onChange={e => this.updateValue(e, 'loginValue')}
               margin="normal"
             />
-            <FormHelperText style={{ color: 'red' }}>{}</FormHelperText>
-          </FormControl><br/>
+            <FormHelperText style={{ color: 'red' }}>{this.state.errorLogin}</FormHelperText>
+          </FormControl><br />
           <FormControl>
             <TextField
               fullWidth={true}
@@ -51,7 +80,7 @@ export default class ReactToDoList extends React.Component {
               onChange={e => this.updateValue(e, 'passwordValue')}
               margin="normal"
             />
-            <FormHelperText style={{ color: 'red' }}>{}</FormHelperText>
+            <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
           </FormControl>
           <div className={'authorizationSubmitBtnHolder clearfix'}>
             <Button
@@ -67,6 +96,6 @@ export default class ReactToDoList extends React.Component {
   }
 }
 
-ReactToDoList.propTypes = {
+Authorization.propTypes = {
   tryAuthorize: PropTypes.func.isRequired,
 }
