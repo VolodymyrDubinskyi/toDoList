@@ -4,12 +4,13 @@ import { List } from '@material-ui/core'
 import ListItem from './ListItem'
 
 const ListComponentLists = props => <List>
-  {props.listItems.map(list => (
+  {props.lists.map(list => (
     <ListItem
+    user = {props.user}
       list={list}
       key={`${list.id}`}
       deleteList={props.deleteList}
-      goToTodolist={props.goToTodolist}
+      addCurrentList={props.addCurrentList}
     />
   ))}
 </List>
@@ -20,9 +21,10 @@ ListComponentLists.defaultProps = {
 }
 
 ListComponentLists.propTypes = {
-  listItems: PropTypes.array.isRequired,
+  addCurrentList: PropTypes.func.isRequired,
+  lists: PropTypes.array.isRequired,
   deleteList: PropTypes.func.isRequired,
-  goToTodolist: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
 export default ListComponentLists

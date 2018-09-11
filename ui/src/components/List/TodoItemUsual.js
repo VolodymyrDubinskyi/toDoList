@@ -8,19 +8,7 @@ import CreateIcon from '@material-ui/icons/Create';
 
 
 export default class ListItemUsual extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      chosen: props.todo.chosen || false,
-    };
-  }
-
   iconStyle = { width: 17, height: 17, margin: 3 }
-
-  toggleChose = () => {
-    this.setState({ chosen: !this.state.chosen })
-    this.props.toggleChose()
-  }
 
   render() {
     return <ListItem key={this.props.todo.title}
@@ -31,8 +19,8 @@ export default class ListItemUsual extends React.Component {
       dense
       button>
       <Checkbox
-        checked={this.state.chosen}
-        onClick={this.toggleChose}
+        checked={this.props.todo.chosen}
+        onClick={this.props.toggleChose}
         color={'primary'}
         style={{
           maxWidth: 30,
@@ -40,9 +28,10 @@ export default class ListItemUsual extends React.Component {
         }}
         disableRipple
       />
-      <div className='todoTextHolder' style={{ display: 'inline-block' }} onClick={this.toggleChose}>
+      <div className='todoTextHolder' style={{ display: 'inline-block' }} onClick={this.props.toggleChose}>
         <ListItemText
-          style={(this.state.chosen ? { textDecoration: 'line-through', cursor: 'pointer' } : { cursor: 'pointer' })}
+          style={(this.props.todo.chosen ? { textDecoration: 'line-through', cursor: 'pointer' }
+            : { cursor: 'pointer' })}
           primary=
           {this.props.todo.title}
         />

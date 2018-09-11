@@ -1,8 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Button, TextField } from '@material-ui/core'
+import {
+  addToDo,
+} from '../../actions/actions'
 
-export default class AddToDoComponent extends React.Component {
+class AddToDoComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,14 +22,7 @@ export default class AddToDoComponent extends React.Component {
 
   addTodo = () => {
     if (this.state.inputValue === '') return
-    this.props.createTodo({
-      title: this.state.inputValue,
-      id: Math.ceil(Math.random() * 9999999999),
-      chosen: false,
-    })
-    this.setState({
-      inputValue: '',
-    })
+    this.props.addToDo(this.props.user.currentList, this.state.inputValue)
   }
 
   addToDoUsingEnter = (e) => {
@@ -44,12 +41,14 @@ export default class AddToDoComponent extends React.Component {
           onChange={e => this.updateInputValue(e)}
           onKeyDown={e => this.addToDoUsingEnter(e)}
           margin="normal"
+          autoFocus={true}
         />
         <Button
           style={{ fontSize: '12px' }}
           variant="contained" color="primary"
           className={'addNewElemBtn'}
-          onClick={this.addTodo}>
+          onClick={this.addTodo}
+        >
           {'Add Todo'}
         </Button>
       </div>)
@@ -57,5 +56,16 @@ export default class AddToDoComponent extends React.Component {
 }
 
 AddToDoComponent.propTypes = {
-  createTodo: PropTypes.func.isRequired,
+  addToDo: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
 }
+
+const mapStateToProps = state => ({
+  user: state.user,
+})
+
+const mapDispatchToProps = dispatch => ({
+  addToDo: (id, todoTitle) => dispatch(addToDo(id, todoTitle)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddToDoComponent)

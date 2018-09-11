@@ -3,8 +3,12 @@ import PropTypes from 'prop-types'
 import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { logIn } from '../actions/actions'
 
-export default class Authorization extends React.Component {
+
+class Authorization extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,12 +49,15 @@ export default class Authorization extends React.Component {
     return false
   }
 
-  tryAuthorize = () => {
+  tryAuthorize = (e) => {
     const goodLogin = this.checkLogin()
     const goodPassword = this.checkPasswords()
 
     if (goodLogin && goodPassword) {
+      this.props.logIn(this.state.loginValue)
       this.props.tryAuthorize(this.state.loginValue, this.state.passwordValue)
+    } else {
+      e.preventDefault()
     }
   }
 
@@ -83,13 +90,15 @@ export default class Authorization extends React.Component {
             <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
           </FormControl>
           <div className={'authorizationSubmitBtnHolder clearfix'}>
-            <Button
-              style={{ fontSize: '12px' }}
-              variant="contained" color="primary"
-              onClick={this.tryAuthorize}
-              className='authorizationFormSubmitBtn'>
-              Go in
-            </Button>
+            <Link to={`/user/${this.state.loginValue}`}>
+              <Button
+                style={{ fontSize: '12px' }}
+                variant="contained" color="primary"
+                onClick={this.tryAuthorize}
+                className='authorizationFormSubmitBtn'>
+                Go in
+              </Button>
+            </Link>
           </div>
         </div>
       </div>)
@@ -97,5 +106,15 @@ export default class Authorization extends React.Component {
 }
 
 Authorization.propTypes = {
+  logIn: PropTypes.func.isRequired,
   tryAuthorize: PropTypes.func.isRequired,
 }
+
+const mapDispatchToProps = dispatch => ({
+  logIn: name => dispatch(logIn(name)),
+})
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Authorization)

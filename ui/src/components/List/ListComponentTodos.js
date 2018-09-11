@@ -8,9 +8,6 @@ const ListComponentTodos = props => (<List>
     <TodoItem
       todo={todo}
       key={`${todo.id}`}
-      deleteTodo={props.deleteTodo}
-      toggleChose={props.toggleChose}
-      editTodoListValue={props.editTodoListValue}
     />
   ))}
 </List>)
@@ -21,9 +18,6 @@ ListComponentTodos.defaultProps = {
 
 ListComponentTodos.propTypes = {
   listItems: PropTypes.array.isRequired,
-  deleteTodo: PropTypes.func.isRequired,
-  toggleChose: PropTypes.func.isRequired,
-  editTodoListValue: PropTypes.func.isRequired,
 }
 
 export default ListComponentTodos

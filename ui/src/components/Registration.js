@@ -4,6 +4,7 @@ import {
   Button, TextField,
   FormControl, FormHelperText,
 } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 export default class Registration extends React.Component {
   constructor(props) {
@@ -57,12 +58,14 @@ export default class Registration extends React.Component {
     return false
   }
 
-  registerUser = () => {
+  registerUser = (e) => {
     const goodLogin = this.checkLogin()
     const goodPassword = this.checkPasswords()
 
     if (goodLogin && goodPassword) {
       this.props.createNewUser(this.state.loginValue, this.state.passwordValue)
+    } else {
+      e.preventDefault()
     }
   }
 
@@ -99,12 +102,14 @@ export default class Registration extends React.Component {
             margin="normal"
           />
           <div className={'authorizationSubmitBtnHolder clearfix'}>
-            <Button className='authorizationFormSubmitBtn'
-              style={{ fontSize: '12px' }}
-              variant="contained" color="primary"
-              onClick={this.registerUser}>
-              Registration
-            </Button>
+            <Link to='/authorization'>
+              <Button className='authorizationFormSubmitBtn'
+                style={{ fontSize: '12px' }}
+                variant="contained" color="primary"
+                onClick={this.registerUser}>
+                Registration
+              </Button>
+            </Link>
           </div>
         </div>
       </div>)
