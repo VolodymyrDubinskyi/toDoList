@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Button, TextField } from '@material-ui/core'
+import { connect } from '../../../react-myRedux'
 import {
   addToDo,
 } from '../../actions/actions'
@@ -68,4 +68,4 @@ const mapDispatchToProps = dispatch => ({
   addToDo: (id, todoTitle) => dispatch(addToDo(id, todoTitle)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddToDoComponent)
+export default connect(mapStateToProps, mapDispatchToProps, AddToDoComponent)

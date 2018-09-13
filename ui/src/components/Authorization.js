@@ -4,7 +4,7 @@ import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect } from '../../react-myRedux'
 import { logIn } from '../actions/actions'
 
 
@@ -55,7 +55,7 @@ class Authorization extends React.Component {
 
     if (goodLogin && goodPassword) {
       this.props.logIn(this.state.loginValue)
-      this.props.tryAuthorize(this.state.loginValue, this.state.passwordValue)
+      localStorage.setItem('token', Math.ceil(Math.random() * 9999999))
     } else {
       e.preventDefault()
     }
@@ -107,7 +107,6 @@ class Authorization extends React.Component {
 
 Authorization.propTypes = {
   logIn: PropTypes.func.isRequired,
-  tryAuthorize: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -115,6 +114,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(
-  null,
+  () => { },
   mapDispatchToProps,
-)(Authorization)
+  Authorization,
+)

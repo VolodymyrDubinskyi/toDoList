@@ -5,7 +5,7 @@ import { TextField } from '@material-ui/core';
 import {
   withRouter, Link, Route, Switch,
 } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect } from '../../react-myRedux'
 import { logOut, editList } from '../actions/actions'
 
 
@@ -102,7 +102,10 @@ class Header extends React.Component {
             <Route component={() => (<><Link to={'/authorization'}>
               <Button variant="contained" color="primary"
                 style={{ float: 'right', fontSize: '15px' }}
-                onClick={this.props.logOut}
+                onClick={() => {
+                  this.props.logOut()
+                  localStorage.removeItem('token')
+                }}
                 className='headerButton'>
                 Log Out
                 </Button>
@@ -154,4 +157,4 @@ const mapDispatchToProps = dispatch => ({
   editList: (id, changes) => dispatch(editList(id, changes)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps, Header))

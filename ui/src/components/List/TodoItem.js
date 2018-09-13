@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { connect } from '../../../react-myRedux'
 import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
 import {
@@ -82,4 +82,4 @@ const mapDispatchToProps = dispatch => ({
   editToDo: (listId, todoId, changes) => dispatch(editToDo(listId, todoId, changes)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)
+export default connect(mapStateToProps, mapDispatchToProps, TodoItem)

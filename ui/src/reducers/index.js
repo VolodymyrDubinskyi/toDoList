@@ -1,9 +1,16 @@
-import { combineReducers } from 'redux'
+import combineReducers from '../../react-myRedux/combineReducers'
 
 import user from './user'
 import lists from './lists'
 
-export default combineReducers({
+const combine = combineReducers({
   user,
   lists,
 })
+
+const reducers = {
+  user,
+  lists,
+}
+
+export { combine, reducers }

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types'
 import {
   Button, TextField,
   FormControl, FormHelperText,
@@ -25,9 +24,7 @@ export default class Registration extends React.Component {
     this.setState(newValue);
   }
 
-  checkLoginExisting() {
-    return this.props.checkLoginExisting(this.state.loginValue)
-  }
+  checkLoginExisting = () => false
 
   checkLogin = () => {
     const loginExist = this.checkLoginExisting()
@@ -62,9 +59,7 @@ export default class Registration extends React.Component {
     const goodLogin = this.checkLogin()
     const goodPassword = this.checkPasswords()
 
-    if (goodLogin && goodPassword) {
-      this.props.createNewUser(this.state.loginValue, this.state.passwordValue)
-    } else {
+    if (!goodLogin || !goodPassword) {
       e.preventDefault()
     }
   }
@@ -114,9 +109,4 @@ export default class Registration extends React.Component {
         </div>
       </div>)
   }
-}
-
-Registration.propTypes = {
-  createNewUser: PropTypes.func.isRequired,
-  checkLoginExisting: PropTypes.func.isRequired,
 }

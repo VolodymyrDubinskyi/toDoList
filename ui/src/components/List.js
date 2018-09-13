@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button } from '@material-ui/core'
+import { connect } from '../../react-myRedux'
 import AddToDoComponent from './List/AddToDoComponent';
 import HidingToggle from './List/HidingToggle';
 import ListComponentTodos from './List/ListComponentTodos'
@@ -88,4 +88,4 @@ const mapDispatchToProps = dispatch => ({
   editList: (id, changes) => dispatch(editList(id, changes)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(List))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps, List))

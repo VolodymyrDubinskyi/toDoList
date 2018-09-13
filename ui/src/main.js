@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import rootReducer from './reducers'
+import { createStore, Provider } from '../react-myRedux'
+import { combine } from './reducers'
 import ToDo from './components/ToDo'
 import './main.scss'
 
-const store = createStore(rootReducer);
+const newStore = createStore(combine);
+
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={newStore}>
     <ToDo />
   </Provider>,
   document.getElementById('root'),
