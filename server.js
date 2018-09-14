@@ -48,7 +48,7 @@ router
   .patch('/users/:id', users.update)
   .post('/users/', users.create)
   .get('*', async (ctx) => {
-    await send(ctx, 'index.html', { root: `${__dirname}/ui/src/public` });
+    await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
   })
 
 app

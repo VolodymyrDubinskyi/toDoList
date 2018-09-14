@@ -7,6 +7,7 @@ const createStore = (reducer) => {
       subscribers.forEach(handler => handler());
     },
     getState: () => state,
+    getSubscribers: () => subscribers,
     subscribe: (handler) => {
       subscribers.push(handler);
       return () => {

@@ -1,0 +1,18 @@
+{
+  "env": {
+    "test": {
+      "presets": [
+        "@babel/env",
+        "@babel/preset-react",
+        // "stage-2"
+      ],
+      "plugins": [
+        "transform-export-extensions"
+      ],
+      "only": [
+        "./**/*.js",
+        "node_modules/jest-runtime"
+      ]
+    }
+  }
+}
