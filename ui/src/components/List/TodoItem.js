@@ -7,7 +7,7 @@ import {
   removeToDo, editToDo,
 } from '../../actions/actions'
 
-class TodoItem extends React.Component {
+export class TodoItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,4 +82,4 @@ const mapDispatchToProps = dispatch => ({
   editToDo: (listId, todoId, changes) => dispatch(editToDo(listId, todoId, changes)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps, TodoItem)
+export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)

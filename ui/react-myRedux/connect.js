@@ -4,8 +4,7 @@ import PropTypes from 'prop-types'
 const connect = (
   mapStateToProps = () => ({}),
   mapDispatchToProps = () => ({}),
-  Component,
-) => {
+) => (Component) => {
   class Connected extends React.Component {
     update = (props) => {
       const { store } = this.context;
@@ -18,13 +17,13 @@ const connect = (
       });
     }
 
-    componentWillMount = () => {
+    componentWillMount() {
       const { store } = this.context;
       this.update(this.props);
       this.unsubscribe = store.subscribe(() => this.update(this.props));
     }
 
-    componentWillReceiveProps = (nextProps) => {
+    componentWillReceiveProps(nextProps) {
       this.update(nextProps);
     }
 

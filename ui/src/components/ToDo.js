@@ -4,8 +4,8 @@ import {
 } from 'react-router-dom'
 import List from './List'
 import Registration from './Registration'
-import Authorization from './Authorization'
-import Header from './Header'
+import AuthorizationWithConnect from './Authorization'
+import HeaderWithConnect from './Header'
 
 
 const ToDo = () => <Router>
@@ -19,12 +19,12 @@ const ToDo = () => <Router>
   }}>
     <Switch>
       <Route exact path="/registration" component={() => <Registration />} />
-      <Route exact path="/authorization" component={() => <Authorization />} />
-      <Route exact path="/" component={() => <Authorization />} />
+      <Route exact path="/authorization" component={() => <AuthorizationWithConnect />} />
+      <Route exact path="/" component={() => <AuthorizationWithConnect />} />
       <Route exact path="*" component={() => <List />
       } />
     </Switch>
-    <Header />
+    <HeaderWithConnect />
   </div>
 </Router>
 

@@ -42,12 +42,12 @@ export default class Registration extends React.Component {
   }
 
   checkPasswords = () => {
-    if (this.state.passwordValue !== this.state.confirmPasswordValue) {
-      this.setState({ errorPassword: 'Your password and confirmation password do not match.' })
-    } else if (!this.state.passwordValue) {
+    if (!this.state.passwordValue) {
       this.setState({ errorPassword: 'Password must be filled out.' })
     } else if (this.state.passwordValue.length < 6 || this.state.passwordValue.length > 15) {
       this.setState({ errorPassword: 'Password must have more then 5 characters and not more then 14.' })
+    } else if (this.state.passwordValue !== this.state.confirmPasswordValue) {
+      this.setState({ errorPassword: 'Your password and confirmation password do not match.' })
     } else {
       this.setState({ errorPassword: '' })
       return true
@@ -83,6 +83,7 @@ export default class Registration extends React.Component {
             <TextField
               style={{ margin: 0 }}
               label="Password:"
+              type='password'
               value={this.state.passwordValue}
               onChange={e => this.updateValue(e, 'passwordValue')}
               margin="normal"
@@ -91,6 +92,7 @@ export default class Registration extends React.Component {
           </FormControl><br />
           <TextField
             style={{ margin: 0 }}
+            type='password'
             label="Confirm password:"
             value={this.state.confirmPasswordValue}
             onChange={e => this.updateValue(e, 'confirmPasswordValue')}

@@ -1,4 +1,4 @@
-import createStore from './createStore'
+import createStore from '../createStore'
 
 it('created', () => {
   const store = createStore(() => 'all ok')

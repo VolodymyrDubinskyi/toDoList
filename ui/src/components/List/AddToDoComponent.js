@@ -6,7 +6,7 @@ import {
   addToDo,
 } from '../../actions/actions'
 
-class AddToDoComponent extends React.Component {
+export class AddToDoComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,4 +68,4 @@ const mapDispatchToProps = dispatch => ({
   addToDo: (id, todoTitle) => dispatch(addToDo(id, todoTitle)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps, AddToDoComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(AddToDoComponent)

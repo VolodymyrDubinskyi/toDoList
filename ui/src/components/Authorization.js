@@ -8,7 +8,7 @@ import { connect } from '../../react-myRedux'
 import { logIn } from '../actions/actions'
 
 
-class Authorization extends React.Component {
+export class Authorization extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,8 +113,4 @@ const mapDispatchToProps = dispatch => ({
   logIn: name => dispatch(logIn(name)),
 })
 
-export default connect(
-  () => { },
-  mapDispatchToProps,
-  Authorization,
-)
+export default connect(() => { }, mapDispatchToProps)(Authorization)

@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Provider from './provider'
-import { connect, createStore } from './index';
+import Provider from '../provider'
+import { connect, createStore } from '..';
 
 it('check render', () => {
   const component = renderer.create(
@@ -33,7 +33,7 @@ it('check func getting by connect', () => {
     }
   }
 
-  const Connect = connect(() => { }, mapDispatchToProps, Child)
+  const Connect = connect(() => { }, mapDispatchToProps)(Child)
 
   renderer.create(<Provider store={store}>
     <Connect />
@@ -78,7 +78,7 @@ it('change state with connect', () => {
     }
   }
 
-  const Connect = connect(mapStateToProps, mapDispatchToProps, Child)
+  const Connect = connect(mapStateToProps, mapDispatchToProps)(Child)
 
   renderer.create(<Provider store={store}>
     <Connect />
@@ -135,8 +135,8 @@ it('Init 2 components, change state from first component by action in second', (
     }
   }
 
-  const Connect1 = connect(mapStateToProps, () => { }, Child1)
-  const Connect2 = connect(mapStateToProps, mapDispatchToProps, Child2)
+  const Connect1 = connect(mapStateToProps, () => { })(Child1)
+  const Connect2 = connect(mapStateToProps, mapDispatchToProps)(Child2)
 
   renderer.create(<Provider store={store}>
     <><Connect1 /><Connect2 /></>

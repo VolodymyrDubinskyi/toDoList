@@ -88,4 +88,4 @@ const mapDispatchToProps = dispatch => ({
   editList: (id, changes) => dispatch(editList(id, changes)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps, List))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(List))

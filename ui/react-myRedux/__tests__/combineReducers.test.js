@@ -1,4 +1,4 @@
-import combineReducers from './combineReducers'
+import combineReducers from '../combineReducers'
 
 it('created', () => {
   const reducer = () => { }

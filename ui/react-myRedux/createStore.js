@@ -1,6 +1,6 @@
 const createStore = (reducer) => {
   let state = reducer({}, {});
-  const subscribers = [];
+  let subscribers = [];
   const store = {
     dispatch: (action) => {
       state = reducer(state, action);
@@ -11,9 +11,12 @@ const createStore = (reducer) => {
     subscribe: (handler) => {
       subscribers.push(handler);
       return () => {
-        const index = subscribers.indexOf(handler);
-        subscribers.splice(index, 1);
-      };
+        const index = subscribers.indexOf(handler)
+        subscribers = [
+          ...subscribers.slice(0, index),
+          ...subscribers.slice(index + 1),
+        ]
+      }
     },
   };
   return store;

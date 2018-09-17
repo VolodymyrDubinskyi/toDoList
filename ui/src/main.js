@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import renderer from 'react-test-renderer';
-import { createStore, Provider, connect } from '../react-myRedux'
+import { createStore, Provider } from '../react-myRedux'
 import { combine } from './reducers'
 import ToDo from './components/ToDo'
 import './main.scss'
@@ -15,4 +14,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root'),
 );
-

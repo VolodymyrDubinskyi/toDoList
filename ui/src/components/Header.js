@@ -9,7 +9,7 @@ import { connect } from '../../react-myRedux'
 import { logOut, editList } from '../actions/actions'
 
 
-class Header extends React.Component {
+export class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,9 +42,8 @@ class Header extends React.Component {
         title: this.state.editValue,
       }
 
-      this.props.editList(this.props.user.currentList, changes)
-
       this.props.history.push(`${this.state.editValue}`)
+      this.props.editList(this.props.user.currentList, changes)
     }
   }
 
@@ -157,4 +156,4 @@ const mapDispatchToProps = dispatch => ({
   editList: (id, changes) => dispatch(editList(id, changes)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps, Header))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))
