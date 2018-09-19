@@ -6,6 +6,7 @@ import ListItem from './ListItem'
 const ListComponentLists = props => <List>
   {props.lists.map(list => (
     <ListItem
+    getAllToDos = {props.getAllToDos}
     user = {props.user}
       list={list}
       key={`${list.id}`}
@@ -25,6 +26,7 @@ ListComponentLists.propTypes = {
   lists: PropTypes.array.isRequired,
   deleteList: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
+  getAllToDos: PropTypes.func.isRequired,
 }
 
 export default ListComponentLists

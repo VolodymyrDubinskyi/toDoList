@@ -25,14 +25,15 @@ const lists = (state = [], action) => {
     case 'ADD_TODO': {
       const newState = state.filter(elem => elem.id !== action.payload.id);
       const list = state.filter(elem => elem.id === action.payload.id)[0];
+      if (!list.todos) list.todos = []
       list.todos.push(action.payload.todo)
       newState.push(list)
       return newState
     }
     case 'REMOVE_TODO': {
-      const newState = state.filter(elem => elem.id !== action.payload.listId);
-      const list = state.filter(elem => elem.id === action.payload.listId)[0];
-      list.todos = list.todos.filter(todo => todo.id !== action.payload.todoId)
+      const newState = state.filter(elem => elem.id !== action.payload.listId.listId);
+      const list = state.filter(elem => elem.id === action.payload.listId.listId)[0];
+      list.todos = list.todos.filter(todo => todo.id !== action.payload.listId.todoId)
       newState.push(list)
       return newState
     }

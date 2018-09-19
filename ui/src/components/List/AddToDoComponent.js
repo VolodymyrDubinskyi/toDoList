@@ -4,7 +4,7 @@ import { Button, TextField } from '@material-ui/core'
 import { connect } from '../../../react-myRedux'
 import {
   addToDo,
-} from '../../actions/actions'
+} from '../../actions/todos'
 
 export class AddToDoComponent extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export class AddToDoComponent extends React.Component {
 
   addTodo = () => {
     if (this.state.inputValue === '') return
-    this.props.addToDo(this.props.user.currentList, this.state.inputValue)
+    this.props.addToDo({ listId: this.props.user.currentList, value: this.state.inputValue })
   }
 
   addToDoUsingEnter = (e) => {
@@ -64,8 +64,10 @@ const mapStateToProps = state => ({
   user: state.user,
 })
 
+
 const mapDispatchToProps = dispatch => ({
-  addToDo: (id, todoTitle) => dispatch(addToDo(id, todoTitle)),
+  addToDo: addToDo(dispatch),
 })
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddToDoComponent)

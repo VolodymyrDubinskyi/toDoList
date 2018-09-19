@@ -12,7 +12,6 @@ module.exports = {
     const db = await getMongoDBConnection()
     const collection = db.collection(workCollection);
     collection.find(query, (_, result) => {
-      // result.toArray().then(console.log)
       result.toArray().then(resultArray => resolve(resultArray))
     });
   }),

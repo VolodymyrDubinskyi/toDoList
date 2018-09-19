@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { connect } from '../../react-myRedux'
-import { logIn } from '../actions/actions'
+import { logIn, tokenLogin } from '../actions/user'
+import { getAllLists } from '../actions/lists'
 
 
 export class Authorization extends React.Component {
@@ -17,6 +18,19 @@ export class Authorization extends React.Component {
       passwordValue: '',
       errorLogin: '',
     };
+  }
+
+  componentWillMount() {
+    if (localStorage.getItem('token')) {
+      this.props.tokenLogin()
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.user.name) {
+      this.props.history.push(`/user/${this.props.user.name}`)
+      if (this.props.lists.length === 0) this.props.getAllLists()
+    }
   }
 
   updateValue(e, inputName) {
@@ -54,8 +68,8 @@ export class Authorization extends React.Component {
     const goodPassword = this.checkPasswords()
 
     if (goodLogin && goodPassword) {
-      this.props.logIn(this.state.loginValue)
-      localStorage.setItem('token', Math.ceil(Math.random() * 9999999))
+      this.props.logIn({ name: this.state.loginValue, password: this.state.passwordValue })
+      if (!localStorage.getItem('token')) this.setState({ errorPassword: 'Login or password incorrect.' })
     } else {
       e.preventDefault()
     }
@@ -90,15 +104,13 @@ export class Authorization extends React.Component {
             <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
           </FormControl>
           <div className={'authorizationSubmitBtnHolder clearfix'}>
-            <Link to={`/user/${this.state.loginValue}`}>
-              <Button
-                style={{ fontSize: '12px' }}
-                variant="contained" color="primary"
-                onClick={this.tryAuthorize}
-                className='authorizationFormSubmitBtn'>
-                Go in
+            <Button
+              style={{ fontSize: '12px' }}
+              variant="contained" color="primary"
+              onClick={this.tryAuthorize}
+              className='authorizationFormSubmitBtn'>
+              Go in
               </Button>
-            </Link>
           </div>
         </div>
       </div>)
@@ -107,10 +119,22 @@ export class Authorization extends React.Component {
 
 Authorization.propTypes = {
   logIn: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  history: PropTypes.object.isRequired,
+  tokenLogin: PropTypes.func.isRequired,
+  getAllLists: PropTypes.func.isRequired,
+  lists: PropTypes.array.isRequired,
 }
 
 const mapDispatchToProps = dispatch => ({
-  logIn: name => dispatch(logIn(name)),
+  logIn: logIn(dispatch),
+  getAllLists: getAllLists(dispatch),
+  tokenLogin: tokenLogin(dispatch),
 })
 
-export default connect(() => { }, mapDispatchToProps)(Authorization)
+const mapStateToProps = state => ({
+  user: state.user,
+  lists: state.lists,
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Authorization))

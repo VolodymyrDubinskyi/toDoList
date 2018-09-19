@@ -7,8 +7,6 @@ const collectionLists = config.DBCollections.lists
 
 module.exports = {
   list: async (ctx) => {
-    let { id } = ctx.params
-    id = id.toLowerCase()
     const { user } = ctx.state
     const list = ctx.params.id
     if (user === 'null') {
@@ -16,7 +14,7 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const checkList = await DB.get(`${collectionLists}/${user}`, { _id: ObjectId(id) })
+      const checkList = await DB.get(`${collectionLists}/${user}`, { _id: ObjectId(list) })
       const todoData = await DB.get(`${collection}/${user}/${list}`, {})
       const listTitleAndData = {
         todoData,
@@ -35,10 +33,17 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const { id } = ctx.params
-      const changes = ctx.request.body
-      const updated = await DB.update(id, changes, `${collection}/${user}/${list}`)
-      ctx.body = JSON.stringify(updated)
+      const { id } = ctx.request.body
+      let { changes } = ctx.request.body
+      let todoData = await DB.get(`${collection}/${user}/${list}`, { _id: ObjectId(id) })
+      todoData = todoData[0]
+      changes = Object.assign({}, todoData.payload, changes)
+      await DB.update(id, { payload: changes }, `${collection}/${user}/${list}`)
+      ctx.body = JSON.stringify({
+        listId: list,
+        todoId: id,
+        changes: ctx.request.body.changes,
+      })
     }
   },
 
@@ -50,23 +55,27 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const { id } = ctx.params
-      const deleted = await DB.remove(id, `${collection}/${user}/${list}`)
-      ctx.body = deleted;
+      const todoId = ctx.request.body.id
+      await DB.remove(todoId, `${collection}/${user}/${list}`)
+      ctx.body = JSON.stringify({
+        todoId,
+        listId: list,
+      });
     }
   },
 
 
   create: async (ctx) => {
     const { user } = ctx.state
-    const list = ctx.request.body.listTitle
+    const list = ctx.request.body.payload.listId
     if (user === null) {
       ctx.body = JSON.stringify({})
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
       const { body } = ctx.request
-      ctx.body = body;
+      body.payload.date = new Date().getTime() / 1000
+      body.payload.chosen = false
       const created = await DB.insert(body, `${collection}/${user}/${list}`)
       ctx.body = created;
     }
@@ -77,7 +86,6 @@ module.exports = {
     id = id.toLowerCase()
     listId = listId.toLowerCase()
     const checkList = await DB.get(`${collectionLists}/${id}`, { _id: ObjectId(listId) })
-    console.log(checkList)
     if (ctx.state.user === null) {
       ctx.body = JSON.stringify({ commit: 'Please login to see todolists' })
     } else if (checkList[0] === undefined) {

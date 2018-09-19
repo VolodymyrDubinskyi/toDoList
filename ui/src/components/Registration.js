@@ -1,11 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import {
   Button, TextField,
   FormControl, FormHelperText,
 } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+import { webServer } from '../../../config/index'
 
-export default class Registration extends React.Component {
+class Registration extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,22 +26,31 @@ export default class Registration extends React.Component {
     this.setState(newValue);
   }
 
-  checkLoginExisting = () => false
 
-  checkLogin = () => {
-    const loginExist = this.checkLoginExisting()
-    if (!this.state.loginValue) {
-      this.setState({ errorLogin: 'Login must be filled out.' })
-    } else if (this.state.loginValue.length < 6 || this.state.loginValue.length > 15) {
-      this.setState({ errorLogin: 'Login must have more then 5 characters and not more then 14.' })
-    } else if (loginExist) {
-      this.setState({ errorLogin: 'Login already exist' })
-    } else {
-      this.setState({ errorLogin: '' })
-      return true
-    }
-    return false
-  }
+  checkLogin = () => fetch(
+    `http://${webServer.host}:${webServer.port}/users/${this.state.loginValue}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': '*',
+      },
+    },
+  ).then(response => response.json())
+    .then((responce) => {
+      if (!this.state.loginValue) {
+        this.setState({ errorLogin: 'Login must be filled out.' })
+      } else if (this.state.loginValue.length < 6 || this.state.loginValue.length > 15) {
+        this.setState({ errorLogin: 'Login must have more then 5 characters and not more then 14.' })
+      } else if (responce.exist) {
+        this.setState({ errorLogin: 'Login already exist' })
+      } else {
+        this.setState({ errorLogin: '' })
+      }
+      return responce
+    })
 
   checkPasswords = () => {
     if (!this.state.passwordValue) {
@@ -56,12 +67,31 @@ export default class Registration extends React.Component {
   }
 
   registerUser = (e) => {
-    const goodLogin = this.checkLogin()
+    const login = this.checkLogin()
     const goodPassword = this.checkPasswords()
+    e.preventDefault()
 
-    if (!goodLogin || !goodPassword) {
-      e.preventDefault()
-    }
+    login.then((responce) => {
+      if (!responce.exist && goodPassword) {
+        fetch(
+          `http://${webServer.host}:${webServer.port}/users/`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              user: this.state.loginValue,
+              password: this.state.passwordValue,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': '*',
+            },
+          },
+        )
+          .then(() => { this.props.history.push('/authorization') })
+      }
+    })
   }
 
   render() {
@@ -112,3 +142,9 @@ export default class Registration extends React.Component {
       </div>)
   }
 }
+
+Registration.propTypes = {
+  history: PropTypes.object.isRequired,
+}
+
+export default withRouter(Registration)

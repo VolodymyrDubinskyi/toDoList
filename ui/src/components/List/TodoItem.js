@@ -5,7 +5,7 @@ import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
 import {
   removeToDo, editToDo,
-} from '../../actions/actions'
+} from '../../actions/todos'
 
 export class TodoItem extends React.Component {
   constructor(props) {
@@ -23,11 +23,20 @@ export class TodoItem extends React.Component {
   }
 
   deleteTodo = () => {
-    this.props.removeToDo(this.props.listId, this.props.todo.id)
+    this.props.removeToDo({
+      userId: this.props.userId,
+      listId: this.props.listId,
+      todoId: this.props.todo.id,
+    })
   }
 
   toggleChose = () => {
-    this.props.editToDo(this.props.listId, this.props.todo.id, { chosen: !this.props.todo.chosen })
+    this.props.editToDo({
+      listId: this.props.listId,
+      todoId: this.props.todo.id,
+      changes: { chosen: !this.props.todo.chosen },
+      userId: this.props.userId,
+    })
   }
 
   goToEdit = () => this.setState({ todoNowEditting: true })
@@ -41,7 +50,12 @@ export class TodoItem extends React.Component {
   stopEditing = () => this.setState({ todoNowEditting: false })
 
   saveAndStopEditing = () => {
-    this.props.editToDo(this.props.listId, this.props.todo.id, { title: this.state.editValue })
+    this.props.editToDo({
+      listId: this.props.listId,
+      todoId: this.props.todo.id,
+      changes: { value: this.state.editValue },
+      userId: this.props.userId,
+    })
     this.stopEditing()
   }
 
@@ -69,17 +83,19 @@ export class TodoItem extends React.Component {
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
   removeToDo: PropTypes.func.isRequired,
-  listId: PropTypes.number.isRequired,
+  listId: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
   editToDo: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
   listId: state.user.currentList,
+  userId: state.user.id,
 })
 
 const mapDispatchToProps = dispatch => ({
-  removeToDo: (listId, todoId) => dispatch(removeToDo(listId, todoId)),
-  editToDo: (listId, todoId, changes) => dispatch(editToDo(listId, todoId, changes)),
+  removeToDo: removeToDo(dispatch),
+  editToDo: editToDo(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)

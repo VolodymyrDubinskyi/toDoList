@@ -6,7 +6,9 @@ import {
   withRouter, Link, Route, Switch,
 } from 'react-router-dom'
 import { connect } from '../../react-myRedux'
-import { logOut, editList } from '../actions/actions'
+import logOut from '../actions/actions'
+import { editList } from '../actions/lists'
+import { editUser } from '../actions/user'
 
 
 export class Header extends React.Component {
@@ -42,12 +44,22 @@ export class Header extends React.Component {
         title: this.state.editValue,
       }
 
-      this.props.history.push(`${this.state.editValue}`)
-      this.props.editList(this.props.user.currentList, changes)
+      this.props.editList({
+        name: this.props.user.name,
+        id: this.props.user.currentList,
+        changes,
+      })
     }
   }
 
   stopEditing = () => {
+    this.props.editUser({
+      name: this.props.user.name,
+      id: this.props.user.id,
+      changes: {
+        currentList: '',
+      },
+    })
     this.setState({
       titleEdit: false,
       editValue: '',
@@ -55,6 +67,7 @@ export class Header extends React.Component {
   }
 
   render() {
+    // console.log(this.props.state)
     const editTitle = <Switch>
       <Route exact path='/user/:name/list/:listId' component={() => (
         <span style={this.state.titleEdit ? { display: 'none' } : {
@@ -123,7 +136,11 @@ export class Header extends React.Component {
               <span>{match.params.name}/</span>
               <span style={(this.state.titleEdit) ? {
                 display: 'none',
-              } : {}}>{match.params.title}</span>
+              } : {}}>{
+                  (this.props.user.currentList) ? this.props.lists.filter(
+                    obj => obj.id === match.params.title,
+                  )[0].title : null
+                }</span>
             </span>
           )
           } />
@@ -139,6 +156,7 @@ export class Header extends React.Component {
 
 Header.propTypes = {
   editList: PropTypes.func.isRequired,
+  editUser: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -149,11 +167,13 @@ Header.propTypes = {
 const mapStateToProps = state => ({
   user: state.user,
   lists: state.lists,
+  state,
 })
 
 const mapDispatchToProps = dispatch => ({
+  editUser: editUser(dispatch),
   logOut: () => dispatch(logOut()),
-  editList: (id, changes) => dispatch(editList(id, changes)),
+  editList: editList(dispatch),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

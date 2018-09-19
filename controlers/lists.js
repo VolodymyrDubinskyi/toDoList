@@ -14,9 +14,9 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const userData = await DB.get(userCollection, { user })
-      const todoData = await DB.get(`${collection}/${user}`, {})
+      const lists = await DB.get(`${collection}/${user}`, {})
       const listTitleAndData = {
-        todoData,
+        lists,
         userData: userData[0],
         ownAcc: true,
       }
@@ -32,8 +32,8 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id, changes } = ctx.request.body
-      const updated = await DB.update(ObjectId(id), changes, `${collection}/${user}`)
-      ctx.body = JSON.stringify(updated)
+      await DB.update(id, changes, `${collection}/${user}`)
+      ctx.body = JSON.stringify({ id, changes })
     }
   },
 
@@ -44,7 +44,7 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const created = await DB.insert({ title: 'noname' }, `${collection}/${user}`)
+      const created = await DB.insert({ title: 'noname', visibility: true }, `${collection}/${user}`)
       ctx.body = created;
     }
   },
@@ -56,7 +56,7 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const { id } = ctx.request.body
+      const id = ctx.request.body.payload
       const deleted = await DB.remove(ObjectId(id), `${collection}/${user}`)
       ctx.body = deleted;
     }
