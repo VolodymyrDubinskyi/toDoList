@@ -1,12 +1,18 @@
+// @flow
+
 import React from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button } from '@material-ui/core'
+
 import { connect } from '../../react-myRedux'
-import AddToDoComponentWithConnect from './List/AddToDoComponent';
+import AddToDo from './List/AddToDo';
 import HidingToggle from './List/HidingToggle';
-import ListComponentTodos from './List/ListComponentTodos'
-import ListComponentLists from './List/ListComponentLists'
+import ListComponentTodos from './List/ListTodos'
+import ListComponentLists from './List/ListLists'
+import type { callEditUserParams } from '../actions/user'
+import type { callEditListParams } from '../actions/lists'
+import type { userProps, listsProps } from '../props'
 import {
   editUser,
 } from '../actions/user'
@@ -17,7 +23,22 @@ import {
   getAllToDos,
 } from '../actions/todos'
 
-class List extends React.Component {
+type Props = {
+  lists: Array<listsProps>,
+  getAllToDos: (string) => void,
+  user: userProps,
+  history: Object,
+  editUser: (callEditUserParams) => void,
+  removeList: (string) => void,
+  addList: Function,
+  editList: (callEditListParams) => void,
+};
+
+type State = {
+  todos: Array<Object>
+}
+
+class List extends React.Component<Props, State> {
   getTodos = (id) => {
     const getList = this.props.lists.filter(elem => elem.id === id);
     if (getList[0].todos.length === 0) {
@@ -32,7 +53,15 @@ class List extends React.Component {
     }
 
 
-    let list
+    let list : {
+      visibility: boolean,
+      id: string,
+      todos: Array<Object>,
+    } = {
+      visibility: false,
+      id: '',
+      todos: [{}],
+    }
     if (this.props.user.currentList) {
       [list] = this.props.lists.filter(elem => elem.id === this.props.user.currentList)
     }
@@ -85,24 +114,22 @@ class List extends React.Component {
             <HidingToggle
               visibility={list.visibility}
               editvisibility={() => {
-                this.props.editList({ id: list.id, changes: { visibility: !list.visibility } })
+                this.props.editList({
+                  id: list.id,
+                  changes: { visibility: !list.visibility },
+                })
               }} />
             <ListComponentTodos
               user={this.props.user}
               listItems={list.todos}
             />
-            <AddToDoComponentWithConnect />
+            <AddToDo />
           </div>
         </div>} /> : <div />}
       </Switch>
     )
   }
 }
-
-List.defaultProps = {
-  todos: [],
-}
-
 
 List.propTypes = {
   addList: PropTypes.func.isRequired,

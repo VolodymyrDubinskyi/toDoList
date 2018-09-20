@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import PropTypes from 'prop-types'
 import {
@@ -5,9 +7,19 @@ import {
 } from '@material-ui/core'
 import SaveIcon from '@material-ui/icons/Save';
 import ClearIcon from '@material-ui/icons/Clear';
+import type { todoProps } from '../../props'
 
 
-const ListItemEdit = (props) => {
+type ListItemEditProps = {
+  todo: todoProps,
+  editValue: Function,
+  updateEditValue: Function,
+  saveAndStopEdditingUsingEnter: Function,
+  saveAndStopEditing: Function,
+  stopEditing: Function,
+}
+
+const ListItemEdit = (props :ListItemEditProps) => {
   const iconStyle = { width: 17, height: 17, margin: 3 }
   return <ListItem key={props.todo.title}
     style={{

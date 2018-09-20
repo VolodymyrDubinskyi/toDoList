@@ -1,13 +1,29 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {
   Button, TextField,
   FormControl, FormHelperText,
 } from '@material-ui/core'
 import { Link, withRouter } from 'react-router-dom'
-import { webServer } from '../../../config/index'
+import config from '../../config'
 
-class Registration extends React.Component {
+const { webServer } = config
+
+type Props = {
+  history: Object,
+};
+type State = {
+      todoNowEditting: boolean,
+      loginValue: string,
+      passwordValue: string,
+      confirmPasswordValue: string,
+      errorPassword: string,
+      errorLogin: string,
+}
+
+class Registration extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +36,7 @@ class Registration extends React.Component {
     };
   }
 
-  updateValue(e, inputName) {
+  updateValue(e, inputName: string) {
     const newValue = {}
     newValue[inputName] = e.target.value
     this.setState(newValue);

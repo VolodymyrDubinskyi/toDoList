@@ -1,4 +1,11 @@
-const user = (state = {}, action) => {
+// @flow
+
+type actionParams = {
+  type: string,
+  payload: any,
+}
+
+const user = (state :Object = {}, action :actionParams) => {
   switch (action.type) {
     case 'LOG_IN': {
       const newState = Object.assign({}, state, action.payload)

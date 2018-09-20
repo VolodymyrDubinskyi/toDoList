@@ -1,20 +1,35 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { Button, TextField } from '@material-ui/core'
+
+import type { callAddToDoParams } from '../../actions/todos'
 import { connect } from '../../../react-myRedux'
 import {
   addToDo,
 } from '../../actions/todos'
+import type { userProps } from '../../props'
 
-export class AddToDoComponent extends React.Component {
-  constructor(props) {
+type Props = {
+  value: number,
+  addToDo: (data: callAddToDoParams) => void,
+  user: userProps,
+};
+
+type State = {
+  inputValue: string,
+}
+
+export class AddToDoHolder extends Component<Props, State> {
+  constructor(props :Object) {
     super(props);
     this.state = {
       inputValue: '',
     };
   }
 
-  updateInputValue(e) {
+  updateInputValue(e :Object) {
     this.setState({
       inputValue: e.target.value,
     });
@@ -25,7 +40,7 @@ export class AddToDoComponent extends React.Component {
     this.props.addToDo({ listId: this.props.user.currentList, value: this.state.inputValue })
   }
 
-  addToDoUsingEnter = (e) => {
+  addToDoUsingEnter = (e :Object) => {
     if (e.keyCode === 13) {
       this.addTodo()
     }
@@ -55,19 +70,19 @@ export class AddToDoComponent extends React.Component {
   }
 }
 
-AddToDoComponent.propTypes = {
-  addToDo: PropTypes.func.isRequired,
+AddToDoHolder.propTypes = {
   user: PropTypes.object.isRequired,
+  addToDo: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state :Object) :Object => ({
   user: state.user,
 })
 
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch :Function) :Object => ({
   addToDo: addToDo(dispatch),
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddToDoComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(AddToDoHolder)

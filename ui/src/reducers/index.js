@@ -8,9 +8,4 @@ const combine = combineReducers({
   lists,
 })
 
-const reducers = {
-  user,
-  lists,
-}
-
-export { combine, reducers }
+export default combine

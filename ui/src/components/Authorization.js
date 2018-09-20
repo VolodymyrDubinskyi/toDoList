@@ -1,26 +1,47 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
+
+import type { callLogInParams } from '../actions/user'
 import { connect } from '../../react-myRedux'
 import { logIn, tokenLogin } from '../actions/user'
 import { getAllLists } from '../actions/lists'
+import type { userProps, listsProps } from '../props'
 
+type Props = {
+  tokenLogin: () => void,
+  user: userProps,
+  history: Object,
+  lists: Array<listsProps>,
+  getAllLists: () => void,
+  logIn: (callLogInParams) => void,
+};
+type State = {
+  loginValue: string,
+  todoNowEditting: boolean,
+  passwordValue: string,
+  errorLogin: string,
+  errorPassword: string,
+}
 
-export class Authorization extends React.Component {
-  constructor(props) {
+export class Authorization extends Component<Props, State> {
+  constructor(props :Object) {
     super(props);
     this.state = {
       todoNowEditting: false,
       loginValue: '',
       passwordValue: '',
       errorLogin: '',
+      errorPassword: '',
     };
   }
 
-  componentWillMount() {
+  componentWillMount() {// eslint-disable-line
     if (localStorage.getItem('token')) {
       this.props.tokenLogin()
     }
@@ -33,7 +54,7 @@ export class Authorization extends React.Component {
     }
   }
 
-  updateValue(e, inputName) {
+  updateValue(e :Object, inputName :string) {
     const newValue = {}
     newValue[inputName] = e.target.value
     this.setState(newValue);
@@ -63,12 +84,15 @@ export class Authorization extends React.Component {
     return false
   }
 
-  tryAuthorize = (e) => {
+  tryAuthorize = (e :Object) => {
     const goodLogin = this.checkLogin()
     const goodPassword = this.checkPasswords()
 
     if (goodLogin && goodPassword) {
-      this.props.logIn({ name: this.state.loginValue, password: this.state.passwordValue })
+      this.props.logIn({
+        name: this.state.loginValue,
+        password: this.state.passwordValue,
+      })
       if (!localStorage.getItem('token')) this.setState({ errorPassword: 'Login or password incorrect.' })
     } else {
       e.preventDefault()

@@ -1,6 +1,21 @@
-import { webServer } from '../../../config'
+// @flow
 
-const logInAction = info => ({
+import config from '../../config'
+
+const { webServer } = config
+
+
+const logOut = (): Object => ({
+  type: 'LOG_OUT',
+})
+
+type logInActionParams = {
+  user: string,
+  id: string,
+  visibility: boolean,
+}
+
+const logInAction = (info :logInActionParams) :Object => ({
   type: 'LOG_IN',
   payload: {
     name: info.user,
@@ -11,7 +26,12 @@ const logInAction = info => ({
   },
 })
 
-const callLogInEndpoint = payload => fetch(
+export type callLogInParams = {
+  name: string,
+  password: string,
+}
+
+const callLogInEndpoint = (payload :callLogInParams) => fetch(
   `http://${webServer.host}:${webServer.port}/users/${payload.name}/login`,
   {
     method: 'POST',
@@ -28,7 +48,7 @@ const callLogInEndpoint = payload => fetch(
   },
 ).then(response => response.json())
 
-export const logIn = dispatch => (payload) => {
+export const logIn = (dispatch :Function) => (payload :callLogInParams) => {
   callLogInEndpoint(payload)
     .then((data) => {
       localStorage.setItem('token', data.token)
@@ -44,25 +64,30 @@ const callTokenLogInEndpoint = () => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-
-export const tokenLogin = dispatch => () => {
+export const tokenLogin = (dispatch :Function) => () => {
   callTokenLogInEndpoint()
     .then((data) => {
       dispatch(logInAction(data.info))
     })
 }
 
-const editUserAction = changes => ({
+const editUserAction = (changes :Object) :Object => ({
   type: 'EDIT_USER',
   payload: changes,
 })
 
-const callEditUserInEndpoint = payload => fetch(
+export type callEditUserParams = {
+  id: string,
+  changes: Object,
+  name: string,
+}
+
+const callEditUserInEndpoint = (payload :callEditUserParams) => fetch(
   `http://${webServer.host}:${webServer.port}/users/${payload.name}`,
   {
     method: 'PATCH',
@@ -75,14 +100,16 @@ const callEditUserInEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const editUser = dispatch => (payload) => {
+export const editUser = (dispatch :Function) => (payload :callEditUserParams) => {
   callEditUserInEndpoint(payload)
     .then((data) => {
       dispatch(editUserAction(data))
     })
 }
+
+export default logOut

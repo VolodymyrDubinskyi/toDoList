@@ -1,21 +1,38 @@
+// @flow
 
-import { webServer } from '../../../config'
+import config from '../../config'
 
+const { webServer } = config
 
-const addToDoAction = data => ({
+type addToDoActionParams = {
+  _id: string,
+  payload: {
+    listId: string,
+    value: string,
+    chosen: boolean,
+    date: string,
+  }
+}
+
+const addToDoAction = (data: addToDoActionParams) :Object => ({
   type: 'ADD_TODO',
   payload: {
     id: data.payload.listId,
     todo: {
       date: data.payload.date,
-      id: data['_id'],
+      id: data._id, //eslint-disable-line
       title: data.payload.value,
       chosen: data.payload.chosen,
     },
   },
 })
 
-const callAddToDoEndpoint = payload => fetch(
+export type callAddToDoParams = {
+  listId: string,
+  value: string,
+}
+
+const callAddToDoEndpoint = (payload: callAddToDoParams) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/`,
   {
     method: 'POST',
@@ -25,12 +42,12 @@ const callAddToDoEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const addToDo = dispatch => (payload) => {
+export const addToDo = (dispatch :Function) => (payload :callAddToDoParams) => {
   callAddToDoEndpoint(payload)
     .then((data) => {
       const newData = data[0]
@@ -38,7 +55,7 @@ export const addToDo = dispatch => (payload) => {
     })
 }
 
-const callGetAllTosDoEndpoint = payload => fetch(
+const callGetAllTosDoEndpoint = (payload :string) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload}`,
   {
     method: 'GET',
@@ -47,20 +64,21 @@ const callGetAllTosDoEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
 
-export const getAllToDos = dispatch => (payload) => {
+export const getAllToDos = (dispatch :Function) => (payload :string) => {
   callGetAllTosDoEndpoint(payload)
     .then((data) => {
       data.todoData.map(todo => dispatch(addToDoAction(todo)))
     })
 }
 
-const removeToDoAction = (listId, todoId) => ({
+
+const removeToDoAction = (listId :string, todoId :string) :Object => ({
   type: 'REMOVE_TODO',
   payload: {
     listId,
@@ -68,7 +86,14 @@ const removeToDoAction = (listId, todoId) => ({
   },
 })
 
-const callRemoveToDoEndpoint = payload => fetch(
+
+export type callRemoveToDoParams = {
+  listId: string,
+  userId: string,
+  todoId: string,
+}
+
+const callRemoveToDoEndpoint = (payload :callRemoveToDoParams) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload.userId}/${payload.listId}`,
   {
     method: 'DELETE',
@@ -81,20 +106,20 @@ const callRemoveToDoEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const removeToDo = dispatch => (payload) => {
+export const removeToDo = (dispatch :Function) => (payload :callRemoveToDoParams) => {
   callRemoveToDoEndpoint(payload)
-    .then((data) => {
-      dispatch(removeToDoAction(data))
+    .then((data: {listId: string, todoId:string}) => {
+      dispatch(removeToDoAction(data.listId, data.todoId))
     })
 }
 
 
-const editToDoAction = (listId, todoId, changes) => ({
+const editToDoAction = (listId :string, todoId :string, changes :string) :Object => ({
   type: 'EDIT_TODO',
   payload: {
     listId,
@@ -103,7 +128,14 @@ const editToDoAction = (listId, todoId, changes) => ({
   },
 })
 
-const callEditToDoEndpoint = payload => fetch(
+export type callEditToDoParams = {
+  listId: string,
+  userId: string,
+  todoId: string,
+  changes: Object,
+}
+
+const callEditToDoEndpoint = (payload :callEditToDoParams) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload.userId}/${payload.listId}`,
   {
     method: 'PATCH',
@@ -117,14 +149,14 @@ const callEditToDoEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const editToDo = dispatch => (payload) => {
+export const editToDo = (dispatch :Function) => (payload :callEditToDoParams) => {
   callEditToDoEndpoint(payload)
-    .then((data) => {
+    .then((data :Object) => {
       const { changes } = data
       if (changes.value) {
         changes.title = changes.value

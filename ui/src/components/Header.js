@@ -1,18 +1,35 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 import { TextField } from '@material-ui/core';
 import {
   withRouter, Link, Route, Switch,
 } from 'react-router-dom'
+
+import type { callEditListParams } from '../actions/lists'
+import type { callEditUserParams } from '../actions/user'
 import { connect } from '../../react-myRedux'
-import logOut from '../actions/actions'
 import { editList } from '../actions/lists'
-import { editUser } from '../actions/user'
+import logOut, { editUser } from '../actions/user'
+import type { userProps, listsProps } from '../props'
 
+type Props = {
+  lists: Array<listsProps>,
+  editList: (callEditListParams) => void,
+  user: userProps,
+  editUser: (callEditUserParams) => void,
+  logOut: () => void,
+  history: Object,
+};
+type State = {
+  titleEdit: boolean,
+  editValue: string,
+}
 
-export class Header extends React.Component {
-  constructor(props) {
+export class Header extends Component<Props, State> {
+  constructor(props :Object) {
     super(props);
     this.state = {
       titleEdit: false,
@@ -28,14 +45,14 @@ export class Header extends React.Component {
   }
 
 
-  updateValue(e) {
+  updateValue(e :Object) {
     this.setState({
       editValue: e.target.value,
     });
   }
 
 
-  changeTitle = (e) => {
+  changeTitle = (e :Object) => {
     if (e.keyCode === 13) {
       this.setState({
         titleEdit: false,
@@ -67,7 +84,11 @@ export class Header extends React.Component {
   }
 
   render() {
-    // console.log(this.props.state)
+    if ((!this.props.user.currentList)
+    && (this.props.history.location.pathname)
+    && (this.props.history.location.pathname.split('/').length > 4)) {
+      this.props.history.push(`/user/${this.props.user.name}`)
+    }
     const editTitle = <Switch>
       <Route exact path='/user/:name/list/:listId' component={() => (
         <span style={this.state.titleEdit ? { display: 'none' } : {
@@ -159,8 +180,8 @@ Header.propTypes = {
   editUser: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   lists: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
 

@@ -1,20 +1,29 @@
-import { webServer } from '../../../config'
+// @flow
 
-const addListAction = data => ({
+import config from '../../config'
+
+const { webServer } = config
+
+export type addListActionParams = {
+  _id: string,
+  title: string,
+  visibility: boolean,
+}
+
+const addListAction = (data :addListActionParams) :Object => ({
   type: 'ADD_LIST',
   payload: {
-    id: data['_id'],
+    id: data._id, // eslint-disable-line
     title: data.title,
     visibility: data.visibility,
     todos: [],
   },
 })
 
-const removeListAction = id => ({
+const removeListAction = (id :string) :Object => ({
   type: 'REMOVE_LIST',
   payload: id,
 })
-
 
 const callAddListEndpoint = () => fetch(
   `http://${webServer.host}:${webServer.port}/lists`,
@@ -25,19 +34,19 @@ const callAddListEndpoint = () => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const addList = dispatch => (payload) => {
-  callAddListEndpoint(payload)
-    .then((data) => {
+export const addList = (dispatch: Function) => () => {
+  callAddListEndpoint()
+    .then((data: Array<addListActionParams>) => {
       dispatch(addListAction(data[0]))
     })
 }
 
-const callRemoveListEndpoint = payload => fetch(
+const callRemoveListEndpoint = (payload :string) => fetch(
   `http://${webServer.host}:${webServer.port}/lists`,
   {
     method: 'DELETE',
@@ -47,14 +56,14 @@ const callRemoveListEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const removeList = dispatch => (payload) => {
+export const removeList = (dispatch :Function) => (payload :string) => {
   callRemoveListEndpoint(payload)
-    .then((id) => {
+    .then((id :string) => {
       dispatch(removeListAction(id))
     })
 }
@@ -66,18 +75,18 @@ const callGetAllListsEndpoint = () => fetch(`http://${webServer.host}:${webServe
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': '*',
-    'X-Access-Token': localStorage.getItem('token'),
+    'X-Access-Token': localStorage.getItem('token') || '',
   },
 }).then(response => response.json())
 
-export const getAllLists = dispatch => (payload) => {
-  callGetAllListsEndpoint(payload)
-    .then((data) => {
+export const getAllLists = (dispatch :Function) => () => {
+  callGetAllListsEndpoint()
+    .then((data :{ lists: Array<Object>}) => {
       data.lists.map(obj => dispatch(addListAction(obj)))
     })
 }
 
-const editListAction = (id, changes) => ({
+const editListAction = (id :string, changes :Object) :Object => ({
   type: 'EDIT_LIST',
   payload: {
     id,
@@ -85,7 +94,12 @@ const editListAction = (id, changes) => ({
   },
 })
 
-const callEditListEndpoint = payload => fetch(
+export type callEditListParams = {
+  id: string,
+  changes: Object,
+}
+
+const callEditListEndpoint = (payload :callEditListParams) => fetch(
   `http://${webServer.host}:${webServer.port}/lists`,
   {
     method: 'PATCH',
@@ -98,14 +112,14 @@ const callEditListEndpoint = payload => fetch(
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token'),
+      'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
 ).then(response => response.json())
 
-export const editList = dispatch => (payload) => {
+export const editList = (dispatch :Function) => (payload :callEditListParams) => {
   callEditListEndpoint(payload)
-    .then((data) => {
+    .then((data: {id: string, changes: Object}) => {
       dispatch(editListAction(data.id, data.changes))
     })
 }

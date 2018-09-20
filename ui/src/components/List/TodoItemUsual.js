@@ -1,13 +1,22 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {
   Checkbox, IconButton, Tooltip, ListItemText, ListItem, ListItemSecondaryAction,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
+import type { todoProps } from '../../props'
 
+type Props = {
+  todo: todoProps,
+  toggleChose: Function,
+  goToEdit: Function,
+  deleteTodo: Function,
+};
 
-export default class ListItemUsual extends React.Component {
+export default class ListItemUsual extends Component<Props> {
   iconStyle = { width: 17, height: 17, margin: 3 }
 
   render() {

@@ -1,5 +1,11 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+
+import type { callRemoveToDoParams, callEditToDoParams } from '../../actions/todos'
+import type { todoProps, userProps } from '../../props'
 import { connect } from '../../../react-myRedux'
 import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
@@ -7,8 +13,24 @@ import {
   removeToDo, editToDo,
 } from '../../actions/todos'
 
-export class TodoItem extends React.Component {
-  constructor(props) {
+
+type Props = {
+  value: number,
+  user: userProps,
+  removeToDo: (callRemoveToDoParams) => void,
+  userId: string,
+  listId: string,
+  todo: todoProps,
+  editToDo: (callEditToDoParams) => void,
+  history: Object,
+};
+type State = {
+  todoNowEditting: boolean,
+  editValue: Function,
+}
+
+export class TodoItem extends Component<Props, State> {
+  constructor(props: Object) {
     super(props);
     this.state = {
       todoNowEditting: false,
@@ -16,18 +38,19 @@ export class TodoItem extends React.Component {
     };
   }
 
-  updateEditValue = (e) => {
+  updateEditValue = (e: Object) => {
     this.setState({
       editValue: e.target.value,
     });
   }
 
   deleteTodo = () => {
-    this.props.removeToDo({
+    const removeParams: callRemoveToDoParams = {
       userId: this.props.userId,
       listId: this.props.listId,
       todoId: this.props.todo.id,
-    })
+    }
+    this.props.removeToDo(removeParams)
   }
 
   toggleChose = () => {
@@ -41,7 +64,7 @@ export class TodoItem extends React.Component {
 
   goToEdit = () => this.setState({ todoNowEditting: true })
 
-  saveAndStopEdditingUsingEnter = (e) => {
+  saveAndStopEdditingUsingEnter = (e :Object) => {
     if (e.keyCode === 13) {
       this.saveAndStopEditing()
     }
@@ -85,6 +108,7 @@ TodoItem.propTypes = {
   removeToDo: PropTypes.func.isRequired,
   listId: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
   editToDo: PropTypes.func.isRequired,
 }
 
@@ -98,4 +122,4 @@ const mapDispatchToProps = dispatch => ({
   editToDo: editToDo(dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TodoItem))

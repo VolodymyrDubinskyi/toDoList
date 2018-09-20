@@ -1,4 +1,11 @@
-const lists = (state = [], action) => {
+// @flow
+
+type actionParams = {
+  type: string,
+  payload: any,
+}
+
+const lists = (state :any = [], action :actionParams) => {
   switch (action.type) {
     case 'ADD_LIST': {
       const newState = [
@@ -31,9 +38,9 @@ const lists = (state = [], action) => {
       return newState
     }
     case 'REMOVE_TODO': {
-      const newState = state.filter(elem => elem.id !== action.payload.listId.listId);
-      const list = state.filter(elem => elem.id === action.payload.listId.listId)[0];
-      list.todos = list.todos.filter(todo => todo.id !== action.payload.listId.todoId)
+      const newState = state.filter(elem => elem.id !== action.payload.listId);
+      const list = state.filter(elem => elem.id === action.payload.listId)[0];
+      list.todos = list.todos.filter(todo => todo.id !== action.payload.todoId)
       newState.push(list)
       return newState
     }

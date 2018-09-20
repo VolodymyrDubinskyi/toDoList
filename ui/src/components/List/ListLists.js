@@ -1,9 +1,22 @@
+// @flow
+
 import React from 'react';
 import PropTypes from 'prop-types'
 import { List } from '@material-ui/core'
-import ListItem from './ListItem'
 
-const ListComponentLists = props => <List>
+import ListItem from './ListItem'
+import type { listsProps, userProps } from '../../props'
+
+
+type ListListsProps = {
+  lists: Array<listsProps>,
+  getAllToDos: Function,
+  user: userProps,
+  deleteList: Function,
+  addCurrentList: Function,
+}
+
+const ListLists = (props :ListListsProps) => <List>
   {props.lists.map(list => (
     <ListItem
     getAllToDos = {props.getAllToDos}
@@ -17,11 +30,11 @@ const ListComponentLists = props => <List>
 </List>
 
 
-ListComponentLists.defaultProps = {
+ListLists.defaultProps = {
   listItems: [],
 }
 
-ListComponentLists.propTypes = {
+ListLists.propTypes = {
   addCurrentList: PropTypes.func.isRequired,
   lists: PropTypes.array.isRequired,
   deleteList: PropTypes.func.isRequired,
@@ -29,4 +42,4 @@ ListComponentLists.propTypes = {
   getAllToDos: PropTypes.func.isRequired,
 }
 
-export default ListComponentLists
+export default ListLists

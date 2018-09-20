@@ -1,8 +1,15 @@
+// @flow
+
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Checkbox } from '@material-ui/core'
 
-const HidingToggle = props => (<div className={'toggleListHolder onlyOwnPropretty'} >
+type HidingToggleProps = {
+  editvisibility: Function,
+  visibility: boolean,
+}
+
+const HidingToggle = (props :HidingToggleProps) => (<div className={'toggleListHolder onlyOwnPropretty'} >
   <Checkbox
     onChange={props.editvisibility}
     checked={props.visibility}

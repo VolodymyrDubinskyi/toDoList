@@ -1,12 +1,27 @@
-import React from 'react';
+// @flow
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {
   ListItem, ListItemText, ListItemSecondaryAction,
 } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
+import type { listsProps, userProps } from '../../props'
 
 
-class ListItemList extends React.Component {
+type Props = {
+  deleteList: (string) => void,
+  list: listsProps,
+  user: userProps,
+  history: Object,
+  addCurrentList: (string) => void,
+  getAllToDos: (string) => void,
+};
+type State = {
+  inputValue: string,
+}
+
+class ListItemList extends Component<Props, State> {
   deleteList = () => {
     this.props.deleteList(this.props.list.id)
   }

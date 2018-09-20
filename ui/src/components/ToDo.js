@@ -1,7 +1,10 @@
+// @flow
+
 import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom'
+
 import List from './List'
 import Registration from './Registration'
 import AuthorizationWithConnect from './Authorization'
