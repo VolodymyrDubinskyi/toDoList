@@ -25,6 +25,9 @@ const ListLists = (props :ListListsProps) => <List>
       key={`${list.id}`}
       deleteList={props.deleteList}
       addCurrentList={props.addCurrentList}
+      style={{
+        backgroundColor: 'red',
+      }}
     />
   ))}
 </List>

@@ -17,8 +17,8 @@ import type { userProps, listsProps } from '../props'
 
 type Props = {
   lists: Array<listsProps>,
-  editList: (callEditListParams) => void,
   user: userProps,
+  editList: (callEditListParams) => void,
   editUser: (callEditUserParams) => void,
   logOut: () => void,
   history: Object,

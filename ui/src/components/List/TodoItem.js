@@ -42,6 +42,7 @@ export class TodoItem extends Component<Props, State> {
     this.setState({
       editValue: e.target.value,
     });
+    return null
   }
 
   deleteTodo = () => {
@@ -64,15 +65,15 @@ export class TodoItem extends Component<Props, State> {
 
   goToEdit = () => this.setState({ todoNowEditting: true })
 
-  saveAndStopEdditingUsingEnter = (e :Object) => {
+  saveAndStopEdditingUsingEnter = (e: Object) => {
     if (e.keyCode === 13) {
-      this.saveAndStopEditing()
+      this.saveAndStopEdditing()
     }
   }
 
   stopEditing = () => this.setState({ todoNowEditting: false })
 
-  saveAndStopEditing = () => {
+  saveAndStopEdditing = () => {
     this.props.editToDo({
       listId: this.props.listId,
       todoId: this.props.todo.id,
@@ -87,19 +88,20 @@ export class TodoItem extends Component<Props, State> {
       todo={this.props.todo}
       toggleChose={this.toggleChose}
       goToEdit={this.goToEdit}
-      deleteTodo={this.deleteTodo} />)
+      deleteTodo={this.deleteTodo}
+    />)
 
-    const edit = (<TodoItemEdit
+    const edit = (this.state.todoNowEditting) ? (<TodoItemEdit
       saveAndStopEdditingUsingEnter={this.saveAndStopEdditingUsingEnter}
-      saveAndStopEditing={this.saveAndStopEditing}
+      saveAndStopEdditing={this.saveAndStopEdditing}
       updateEditValue={this.updateEditValue}
       stopEditing={this.stopEditing}
       todo={this.props.todo}
-      editValue={this.state.editValue} />)
+      editValue={this.state.editValue} />) : null
 
-    const todo = (this.state.todoNowEditting) ? edit : usual
+    // const todo = (this.state.todoNowEditting) ? edit : usual
 
-    return todo
+    return <div>{edit}{usual}</div>
   }
 }
 

@@ -18,10 +18,22 @@ type Props = {
   getAllToDos: (string) => void,
 };
 type State = {
-  inputValue: string,
+  hover: boolean,
 }
 
 class ListItemList extends Component<Props, State> {
+  constructor(props :Object) {
+    super(props);
+    this.state = {
+      titleEdit: false,
+      hover: false,
+    };
+  }
+
+  toggleHover = () => {
+    this.setState({ hover: !this.state.hover })
+  }
+
   deleteList = () => {
     this.props.deleteList(this.props.list.id)
   }
@@ -30,15 +42,24 @@ class ListItemList extends Component<Props, State> {
     if (this.props.user.currentList) {
       this.props.history.push(`/user/${this.props.user.name}/list/${this.props.user.currentList}`)
     }
+    const style = {
+      color: '#17394d',
+      padding: '6px 8px 2px',
+      margin: 0,
+      backgroundColor: '#fff',
+      marginBottom: 8,
+      boxShadow: '0 1px 0 rgba(9,45,66,.25)',
+      borderRadius: 3,
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: 400,
+    }
 
     return (
       <ListItem key={this.props.list.title}
-        style={{
-          padding: 0,
-          margin: 0,
-          fontSize: 20,
-        }}
+        style={style}
         dense
+        onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}
         button>
         <ListItemText
           onClick={() => {

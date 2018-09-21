@@ -3,7 +3,6 @@
 import React from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Button } from '@material-ui/core'
 
 import { connect } from '../../react-myRedux'
 import AddToDo from './List/AddToDo';
@@ -53,7 +52,7 @@ class List extends React.Component<Props, State> {
     }
 
 
-    let list : {
+    let list: {
       visibility: boolean,
       id: string,
       todos: Array<Object>,
@@ -75,18 +74,6 @@ class List extends React.Component<Props, State> {
         <Route exact path="/user/:id" component={() => <div className={'todosList'}>
           <p className={'todoListTitle'}>Todo List</p>
           <div className={'list clearfix'}>
-            <HidingToggle
-              visibility={this.props.user.visibility}
-              editvisibility={() => {
-                this.props.editUser({
-                  name: this.props.user.name,
-                  id: this.props.user.id,
-                  changes: {
-                    visibility: !this.props.user.visibility,
-                  },
-                })
-              }}
-            />
             <ListComponentLists
               user={this.props.user}
               lists={this.props.lists}
@@ -102,16 +89,25 @@ class List extends React.Component<Props, State> {
                 this.props.removeList(id)
               }}
             />
-            <Button style={{ fontSize: '12px' }}
-              variant="contained" color="primary"
-              onClick={this.props.addList}>
-              {'Create new List'}
-            </Button>
+            <p
+              onClick={this.props.addList}
+              style={{
+                fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
+                fontSize: 14,
+                padding: '0 8px 4px',
+                lineHeight: '20px',
+                fontWeight: 400,
+                color: '#6b808c',
+                cursor: 'pointer',
+              }}>{'+ Create new List'}</p>
           </div></div>} />
         {(list) ? <Route exact path="/user/:id/list/:list" component={() => <div className={'todosList'}>
           <p className={'todoListTitle'}>Todo List</p>
           <div className={'list clearfix'}>
             <HidingToggle
+              title={(this.props.user.currentList) ? this.props.lists.filter(
+                obj => obj.id === this.props.user.currentList,
+              )[0].title : null}
               visibility={list.visibility}
               editvisibility={() => {
                 this.props.editList({
