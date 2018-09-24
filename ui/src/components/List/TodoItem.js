@@ -99,9 +99,7 @@ export class TodoItem extends Component<Props, State> {
       todo={this.props.todo}
       editValue={this.state.editValue} />) : null
 
-    // const todo = (this.state.todoNowEditting) ? edit : usual
-
-    return <div>{edit}{usual}</div>
+    return <div style={{ fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif' }}>{edit}{usual}</div>
   }
 }
 
@@ -115,7 +113,6 @@ TodoItem.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  listId: state.user.currentList,
   userId: state.user.id,
 })
 

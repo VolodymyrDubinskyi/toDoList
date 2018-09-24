@@ -21,6 +21,7 @@
     "koa-router": "^7.4.0",
     "koa-send": "^5.0.0",
     "mongodb": "^2.2.36",
+    "react-dnd-html5-backend": "^5.0.1",
     "swig": "^1.4.2"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "eslint-plugin-import": "^2.14.0",
     "jest": "^23.6.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-static": "^5.0.0"
+    "koa-static": "^5.0.0",
+    "react-dnd": "^5.0.0"
   }
 }

@@ -14,6 +14,7 @@ html {
 
 body {
   margin: 0;
+  background-color: rgb(75, 191, 107)
 }
 
 .clearfix::after {
@@ -390,8 +391,11 @@ body {
     border-radius: 0;
   }
   .todosList {
-    width: 500px;
-    margin: 0 auto;
+    display: inline-block;
+    margin: 0 4px;
+  }
+  .todosList:first-child {
+    margin: 0 4px 0 8px;
   }
 }
 
@@ -501,7 +505,6 @@ a {
   background-color: #fff;
   position: relative;
   word-wrap: break-word;
-
 }
 
 .todoListItem:hover {
@@ -564,8 +567,34 @@ a {
   padding: 6px 12px;
   text-align: center;
   box-sizing: border-box;
- border-radius: 3px;
- position: absolute;
- bottom: -45px;
- left: 0;
+  border-radius: 3px;
+  position: absolute;
+  bottom: -45px;
+  left: 0;
+}
+
+.addNewTodo:hover {
+  color: #17394d;
+}
+
+.addNewTodo:hover .addToDoPlus {
+  color: #17394d;
+}
+
+.addToDoPlus {
+  color: #8da6b4;
+}
+
+.addNewTodo {
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  padding: 8px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #798d99;
+  cursor: pointer;
+}
+
+.addNewTodo:hover .addNewTodoText{
+  text-decoration: underline;
 }

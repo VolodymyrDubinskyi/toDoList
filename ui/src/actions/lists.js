@@ -1,6 +1,9 @@
 // @flow
 
 import config from '../../config'
+import {
+  getAllToDos,
+} from './todos'
 
 const { webServer } = config
 
@@ -10,7 +13,7 @@ export type addListActionParams = {
   visibility: boolean,
 }
 
-const addListAction = (data :addListActionParams) :Object => ({
+const addListAction = (data: addListActionParams): Object => ({
   type: 'ADD_LIST',
   payload: {
     id: data._id, // eslint-disable-line
@@ -20,7 +23,7 @@ const addListAction = (data :addListActionParams) :Object => ({
   },
 })
 
-const removeListAction = (id :string) :Object => ({
+const removeListAction = (id: string): Object => ({
   type: 'REMOVE_LIST',
   payload: id,
 })
@@ -46,7 +49,7 @@ export const addList = (dispatch: Function) => () => {
     })
 }
 
-const callRemoveListEndpoint = (payload :string) => fetch(
+const callRemoveListEndpoint = (payload: string) => fetch(
   `http://${webServer.host}:${webServer.port}/lists`,
   {
     method: 'DELETE',
@@ -61,9 +64,9 @@ const callRemoveListEndpoint = (payload :string) => fetch(
   },
 ).then(response => response.json())
 
-export const removeList = (dispatch :Function) => (payload :string) => {
+export const removeList = (dispatch: Function) => (payload: string) => {
   callRemoveListEndpoint(payload)
-    .then((id :string) => {
+    .then((id: string) => {
       dispatch(removeListAction(id))
     })
 }
@@ -79,14 +82,19 @@ const callGetAllListsEndpoint = () => fetch(`http://${webServer.host}:${webServe
   },
 }).then(response => response.json())
 
-export const getAllLists = (dispatch :Function) => () => {
+export const getAllLists = (dispatch: Function) => () => {
   callGetAllListsEndpoint()
-    .then((data :{ lists: Array<Object>}) => {
-      data.lists.map(obj => dispatch(addListAction(obj)))
+    .then((data: { lists: Array<Object> }) => {
+      data.lists.map((obj) => {
+        dispatch(addListAction(obj))
+        getAllToDos(dispatch)(obj['_id']) //eslint-disable-line
+        return null
+      })
     })
 }
 
-const editListAction = (id :string, changes :Object) :Object => ({
+
+const editListAction = (id: string, changes: Object): Object => ({
   type: 'EDIT_LIST',
   payload: {
     id,
@@ -99,7 +107,7 @@ export type callEditListParams = {
   changes: Object,
 }
 
-const callEditListEndpoint = (payload :callEditListParams) => fetch(
+const callEditListEndpoint = (payload: callEditListParams) => fetch(
   `http://${webServer.host}:${webServer.port}/lists`,
   {
     method: 'PATCH',
@@ -117,9 +125,9 @@ const callEditListEndpoint = (payload :callEditListParams) => fetch(
   },
 ).then(response => response.json())
 
-export const editList = (dispatch :Function) => (payload :callEditListParams) => {
+export const editList = (dispatch: Function) => (payload: callEditListParams) => {
   callEditListEndpoint(payload)
-    .then((data: {id: string, changes: Object}) => {
+    .then((data: { id: string, changes: Object }) => {
       dispatch(editListAction(data.id, data.changes))
     })
 }

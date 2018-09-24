@@ -12,6 +12,7 @@ type Props = {
   lists: Array<listsProps>,
   title: string,
   user: userProps,
+  list: listsProps,
   editList: (callEditListParams) => void,
 };
 type State = {
@@ -41,7 +42,7 @@ class HidingToggle extends Component<Props, State> {
 
       this.props.editList({
         name: this.props.user.name,
-        id: this.props.user.currentList,
+        id: this.props.list.id,
         changes,
       })
     }
@@ -54,7 +55,7 @@ class HidingToggle extends Component<Props, State> {
 
     this.props.editList({
       name: this.props.user.name,
-      id: this.props.user.currentList,
+      id: this.props.list.id,
       changes,
     })
   }
@@ -84,6 +85,7 @@ class HidingToggle extends Component<Props, State> {
 
 HidingToggle.propTypes = {
   title: PropTypes.string.isRequired,
+  list: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({

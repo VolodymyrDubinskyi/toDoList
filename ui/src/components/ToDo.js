@@ -24,8 +24,7 @@ const ToDo = () => <Router>
       <Route exact path="/registration" component={() => <Registration />} />
       <Route exact path="/authorization" component={() => <AuthorizationWithConnect />} />
       <Route exact path="/" component={() => <AuthorizationWithConnect />} />
-      <Route exact path="*" component={() => <List />
-      } />
+      <Route exact path="*" component={() => <List />} />
     </Switch>
     <HeaderWithConnect />
   </div>

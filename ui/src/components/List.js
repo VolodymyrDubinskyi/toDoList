@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { connect } from '../../react-myRedux'
 import AddToDo from './List/AddToDo';
 import HidingToggle from './List/HidingToggle';
 import ListComponentTodos from './List/ListTodos'
-import ListComponentLists from './List/ListLists'
 import type { callEditUserParams } from '../actions/user'
 import type { callEditListParams } from '../actions/lists'
 import type { userProps, listsProps } from '../props'
@@ -51,79 +50,47 @@ class List extends React.Component<Props, State> {
       return null
     }
 
+    let allLists = []
 
-    let list: {
-      visibility: boolean,
-      id: string,
-      todos: Array<Object>,
-    } = {
-      visibility: false,
-      id: '',
-      todos: [{}],
-    }
-    if (this.props.user.currentList) {
-      [list] = this.props.lists.filter(elem => elem.id === this.props.user.currentList)
+    if (this.props.lists[0]) {
+      allLists = this.props.lists.map(elem => <div className={'todosList'} key={elem.id}>
+        <div className={'list clearfix'}>
+          <HidingToggle
+            list={elem}
+            title={(elem.id) ? this.props.lists.filter(
+              obj => obj.id === elem.id,
+            )[0].title : null}
+            visibility={elem.visibility}
+            editvisibility={() => {
+              this.props.editList({
+                id: elem.id,
+                changes: { visibility: !elem.visibility },
+              })
+            }} />
+          <ListComponentTodos
+            list={elem}
+            getTodos={this.getTodos}
+            user={this.props.user}
+            listItems={elem.todos}
+          />
+          <AddToDo list={elem} />
+        </div>
+      </div>)
     }
 
-    if (this.props.history.location.pathname.split('/').length > 4 && !list) {
-      this.props.history.push(`/user/${this.props.user.name}`)
+    if (this.props.lists[0]) {
+      return <div
+        style={{
+          width: '100vw',
+          height: 'calc(100vh - 66px)',
+          paddingTop: 66,
+          display: 'flex',
+          position: 'relative',
+        }}>
+        {allLists.map(obj => obj)}
+      </div>
     }
-
-    return (
-      <Switch>
-        <Route exact path="/user/:id" component={() => <div className={'todosList'}>
-          <p className={'todoListTitle'}>Todo List</p>
-          <div className={'list clearfix'}>
-            <ListComponentLists
-              user={this.props.user}
-              lists={this.props.lists}
-              getAllToDos={this.getTodos}
-              addCurrentList={(id) => {
-                this.props.editUser({
-                  name: this.props.user.name,
-                  id: this.props.user.id,
-                  changes: { currentList: id },
-                })
-              }}
-              deleteList={(id) => {
-                this.props.removeList(id)
-              }}
-            />
-            <p
-              onClick={this.props.addList}
-              style={{
-                fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
-                fontSize: 14,
-                padding: '0 8px 4px',
-                lineHeight: '20px',
-                fontWeight: 400,
-                color: '#6b808c',
-                cursor: 'pointer',
-              }}>{'+ Create new List'}</p>
-          </div></div>} />
-        {(list) ? <Route exact path="/user/:id/list/:list" component={() => <div className={'todosList'}>
-          <p className={'todoListTitle'}>Todo List</p>
-          <div className={'list clearfix'}>
-            <HidingToggle
-              title={(this.props.user.currentList) ? this.props.lists.filter(
-                obj => obj.id === this.props.user.currentList,
-              )[0].title : null}
-              visibility={list.visibility}
-              editvisibility={() => {
-                this.props.editList({
-                  id: list.id,
-                  changes: { visibility: !list.visibility },
-                })
-              }} />
-            <ListComponentTodos
-              user={this.props.user}
-              listItems={list.todos}
-            />
-            <AddToDo />
-          </div>
-        </div>} /> : <div />}
-      </Switch>
-    )
+    return <div />
   }
 }
 

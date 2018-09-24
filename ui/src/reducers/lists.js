@@ -5,17 +5,19 @@ type actionParams = {
   payload: any,
 }
 
-const lists = (state :any = [], action :actionParams) => {
+const lists = (state: any = [], action: actionParams) => {
   switch (action.type) {
     case 'ADD_LIST': {
       const newState = [
         ...state,
       ];
       newState.push(action.payload)
+      newState.sort((a, b) => a.id > b.id)
       return newState
     }
     case 'REMOVE_LIST': {
       const newState = state.filter(elem => elem.id !== action.payload);
+      newState.sort((a, b) => a.id > b.id)
       return newState
     }
     case 'EDIT_LIST': {
@@ -35,6 +37,9 @@ const lists = (state :any = [], action :actionParams) => {
       if (!list.todos) list.todos = []
       list.todos.push(action.payload.todo)
       newState.push(list)
+      newState.sort((a, b) => {
+        return a.id > b.id
+      })
       return newState
     }
     case 'REMOVE_TODO': {
@@ -42,6 +47,7 @@ const lists = (state :any = [], action :actionParams) => {
       const list = state.filter(elem => elem.id === action.payload.listId)[0];
       list.todos = list.todos.filter(todo => todo.id !== action.payload.todoId)
       newState.push(list)
+      newState.sort((a, b) => a.id > b.id)
       return newState
     }
     case 'EDIT_TODO': {
@@ -54,6 +60,7 @@ const lists = (state :any = [], action :actionParams) => {
       todos.sort((a, b) => a.date > b.date)
       list.todos = todos
       newState.push(list)
+      newState.sort((a, b) => a.id > b.id)
       return newState
     }
     default:

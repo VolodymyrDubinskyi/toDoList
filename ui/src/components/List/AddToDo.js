@@ -2,9 +2,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import {
-  Button, TextField, IconButton, Tooltip,
-} from '@material-ui/core'
 import ClearIcon from '@material-ui/icons/Clear';
 
 import type { callAddToDoParams } from '../../actions/todos'
@@ -13,7 +10,7 @@ import {
   addToDo,
 } from '../../actions/todos'
 import editComponent from '../../actions/components'
-import type { userProps } from '../../props'
+import type { userProps, listsProps } from '../../props'
 
 type Props = {
   value: number,
@@ -21,10 +18,10 @@ type Props = {
   user: userProps,
   components: Object,
   editComponent: Function,
+  list: listsProps,
 };
 
 type State = {
-  canAddNewTodo: boolean,
   inputValue: string,
 }
 
@@ -33,7 +30,6 @@ export class AddToDoHolder extends Component<Props, State> {
     super(props);
     this.state = {
       inputValue: '',
-      canAddNewTodo: false,
     };
   }
 
@@ -45,7 +41,8 @@ export class AddToDoHolder extends Component<Props, State> {
 
   addTodo = () => {
     if (this.state.inputValue === '') return
-    this.props.addToDo({ listId: this.props.user.currentList, value: this.state.inputValue })
+    this.setState({ inputValue: '' })
+    this.props.addToDo({ listId: this.props.list.id, value: this.state.inputValue })
   }
 
   addToDoUsingEnter = (e: Object) => {
@@ -55,7 +52,7 @@ export class AddToDoHolder extends Component<Props, State> {
   }
 
   goToTodoAdding = () => {
-    this.props.editComponent({ canAddNewTodo: true })
+    this.props.editComponent({ [`${this.props.list.id}canAddNewTodo`]: true })
     window.addEventListener('mousedown', this.goToUsual)
   }
 
@@ -65,7 +62,7 @@ export class AddToDoHolder extends Component<Props, State> {
       return null
     }
     window.removeEventListener('mousedown', this.goToUsual)
-    this.props.editComponent({ canAddNewTodo: false })
+    this.props.editComponent({ [`${this.props.list.id}canAddNewTodo`]: false })
     return null
   }
 
@@ -75,14 +72,8 @@ export class AddToDoHolder extends Component<Props, State> {
         onClick={this.goToTodoAdding}
         className='addNewTodo'
         style={{
-          fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
-          fontSize: 14,
-          padding: '0 14px 4px',
-          lineHeight: '20px',
-          fontWeight: 400,
-          color: '#6b808c',
-          cursor: 'pointer',
-        }}><b style={{ fontSize: 20 }}>{'+'}</b>{' Create new todo'}
+        }}><b style={{ fontSize: 20 }} className='addToDoPlus'>{'+ '}</b><span className='addNewTodoText'
+        >{'Create new todo'}</span>
       </div>
     </div>
     )
@@ -118,13 +109,13 @@ export class AddToDoHolder extends Component<Props, State> {
       top: 8,
     }}>
         <ClearIcon
-        className='closeAddTodoIcon'
+          className='closeAddTodoIcon'
         />
       </div></>
 
     return (
       <div className={'onlyOwnPropretty'} style={{ margin: 0 }}>
-        {this.props.components.canAddNewTodo ? addingTodosState : usualPosition}
+        {this.props.components[`${this.props.list.id}canAddNewTodo`] ? addingTodosState : usualPosition}
       </div>)
   }
 }
