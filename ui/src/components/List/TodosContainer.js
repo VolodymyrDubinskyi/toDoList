@@ -75,7 +75,7 @@ const listTarget = {
       return
     }
 
-    props.moveCard(dragIndex, hoverIndex)
+    props.moveList(dragIndex, hoverIndex)
 
     monitor.getItem().index = hoverIndex //eslint-disable-line
   },

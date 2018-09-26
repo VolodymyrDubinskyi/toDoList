@@ -57,7 +57,7 @@ const lists = (state: any = [], action: actionParams) => {
       let changingTodo = list.todos.filter(todo => todo.id === action.payload.todoId)[0]
       changingTodo = Object.assign({}, changingTodo, action.payload.changes)
       todos.push(changingTodo)
-      todos.sort((a, b) => a.date > b.date)
+      todos.sort((a, b) => a.index > b.index)
       list.todos = todos
       newState.push(list)
       newState.sort((a, b) => a.index > b.index)

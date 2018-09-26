@@ -10,7 +10,7 @@ import {
 import { findDOMNode } from 'react-dom'
 
 import type { callRemoveToDoParams, callEditToDoParams } from '../../actions/todos'
-import type { todoProps, userProps } from '../../props'
+import type { todoProps, userProps, listProps } from '../../props'
 import { connect } from '../../../react-myRedux'
 import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
@@ -22,29 +22,33 @@ import itemTypes from '../../ItemTypes'
 
 const todoTarget = {
   hover(props, monitor, component) {
-    // const dragIndex = monitor.getItem().index
-    // const hoverIndex = props.elem.index
+    const dragIndex = monitor.getItem().index
+    const hoverIndex = props.todo.index
 
-    // if (dragIndex === hoverIndex) {
-    //   return
-    // }
+    if (dragIndex === hoverIndex) {
+      return
+    }
 
-    // // $FlowFixMe
-    // const hoverBoundingRect = findDOMNode(component).getBoundingClientRect() //eslint-disable-line
-    // const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2
-    // const clientOffset = monitor.getClientOffset()
-    // const hoverClientX = clientOffset.x - hoverBoundingRect.left
+    if (monitor.getItem().listId !== props.listId) {
+      return
+    }
 
-    // if (dragIndex < hoverIndex && hoverClientX < hoverMiddleX) {
-    //   return
-    // }
-    // if (dragIndex > hoverIndex && hoverClientX > hoverMiddleX) {
-    //   return
-    // }
+    // $FlowFixMe
+    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect() //eslint-disable-line
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+    const clientOffset = monitor.getClientOffset()
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top
 
-    // props.moveCard(dragIndex, hoverIndex)
+    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+      return
+    }
+    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      return
+    }
 
-    // monitor.getItem().index = hoverIndex //eslint-disable-line
+    props.moveTodo(dragIndex, hoverIndex)
+
+    monitor.getItem().index = hoverIndex //eslint-disable-line
   },
 }
 
@@ -54,14 +58,21 @@ const todoSource = {
       id: props.todo.id,
       index: props.todo.index,
       listId: props.listId,
+      userId: props.userId,
     };
   },
-  // endDrag(props: Object) {
-  //   props.lists.map((obj) => {
-  //     props.editList({ id: obj.id, changes: { index: obj.index } })
-  //     return null
-  //   })
-  // },
+  endDrag(props) {
+    const list = props.lists.filter(elem => elem.id === props.listId)[0];
+    list.todos.map((obj, index) => {
+      props.editToDo({
+        listId: props.listId,
+        todoId: obj.id,
+        changes: { index },
+        userId: props.userId,
+      })
+      return null
+    })
+  },
 };
 
 function collect(connectDND, monitor) {
@@ -80,6 +91,10 @@ type Props = {
   listId: string,
   todo: todoProps,
   editToDo: (callEditToDoParams) => void,
+  connectDropTarget: Function,
+  connectDragSource: Function,
+  lists: Array<listProps>,
+  isDragging: boolean,
 };
 type State = {
   todoNowEditting: boolean,
@@ -156,7 +171,13 @@ export class TodoItem extends Component<Props, State> {
       todo={this.props.todo}
       editValue={this.state.editValue} />) : null
 
-    return <div style={{ fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif' }}>{edit}{usual}</div>
+    return this.props.connectDropTarget(<div
+      style={{ fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif', position: 'relative' }}
+    >{this.props.isDragging ? <div className='draggingTodoHolder' /> : null}<div
+      style={this.props.isDragging ? { opacity: 0 } : {}}>
+        {edit}
+        {this.props.connectDragSource(<div>{usual}</div>)}
+      </div></div>)
   }
 }
 
@@ -170,6 +191,7 @@ TodoItem.propTypes = {
 
 const mapStateToProps = state => ({
   userId: state.user.id,
+  lists: state.lists,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -177,11 +199,10 @@ const mapDispatchToProps = dispatch => ({
   editToDo: editToDo(dispatch),
 })
 
-
-export default DragSource(itemTypes.LIST, todoSource, collect)(
-  DropTarget(itemTypes.LIST, todoTarget, (connectDND: DropTargetConnector) => ({
-    connectDropTarget: connectDND.dropTarget(),
-  }))(connect(mapStateToProps, mapDispatchToProps)(TodoItem)),
+export default connect(mapStateToProps, mapDispatchToProps)(
+  DragSource(itemTypes.TODO, todoSource, collect)(
+    DropTarget(itemTypes.TODO, todoTarget, (connectDND: DropTargetConnector) => ({
+      connectDropTarget: connectDND.dropTarget(),
+    }))(TodoItem),
+  ),
 )
-
-// export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)

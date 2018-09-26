@@ -42,7 +42,7 @@ module.exports = {
       const { id } = ctx.request.body
       let { changes } = ctx.request.body
       let todoData = await DB.get(`${collection}/${user}/${list}`, { _id: ObjectId(id) })
-      todoData = todoData[0]
+      todoData = todoData[0] //eslint-disable-line
       changes = Object.assign({}, todoData.payload, changes)
       await DB.update(id, { payload: changes }, `${collection}/${user}/${list}`)
       ctx.body = JSON.stringify({
@@ -82,6 +82,8 @@ module.exports = {
       const { body } = ctx.request
       body.payload.date = new Date().getTime() / 1000
       body.payload.chosen = false
+      const todoData = await DB.get(`${collection}/${user}/${list}`, {})
+      body.payload.index = todoData.length
       const created = await DB.insert(body, `${collection}/${user}/${list}`)
       ctx.body = created;
     }

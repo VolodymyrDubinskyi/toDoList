@@ -42,7 +42,7 @@ class List extends React.Component<Props, State> {
     this.state = { lists: props.lists }
   }
 
-  moveCard = (dragIndex, hoverIndex) => {
+  moveList = (dragIndex, hoverIndex) => {
     const { lists } = this.state
     const dragCard = lists[dragIndex]
 
@@ -60,7 +60,7 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.lists)
+    // console.log(this.props)
     if (this.props.lists.length > this.state.lists.length) {
       const newState = []
       this.props.lists.map(obj => newState.push(obj))
@@ -86,7 +86,7 @@ class List extends React.Component<Props, State> {
       user={this.props.user}
       listItems={elem.todos}
       lists={this.props.lists}
-      moveCard={this.moveCard}
+      moveList={this.moveList}
     />)
 
     if (this.props.lists[0]) {
