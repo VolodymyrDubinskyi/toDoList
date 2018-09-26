@@ -23,7 +23,7 @@ const ListItemEdit = (props: ListItemEditProps) => {
   // const iconStyle = { width: 17, height: 17, margin: 3 }
   const itemEdit = (<div>
     <div
-      onClick={props.stopEditing}
+      onMouseDown={props.stopEditing}
       style={{
         position: 'fixed',
         top: 0,

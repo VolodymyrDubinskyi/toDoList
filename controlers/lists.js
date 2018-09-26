@@ -15,6 +15,12 @@ module.exports = {
     } else {
       const userData = await DB.get(userCollection, { user })
       const lists = await DB.get(`${collection}/${user}`, {})
+      lists.map(async (obj, index) => {
+        if (obj.index === undefined) {
+          await DB.update(obj['_id'], { index }, `${collection}/${user}`) //eslint-disable-line
+        }
+        return null
+      })
       const listTitleAndData = {
         lists,
         userData: userData[0],
@@ -44,7 +50,11 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const created = await DB.insert({ title: 'noname', visibility: true }, `${collection}/${user}`)
+      const lists = await DB.get(`${collection}/${user}`, {})
+      const created = await DB.insert(
+        { title: 'noname', visibility: true, index: lists.length },
+        `${collection}/${user}`,
+      )
       ctx.body = created;
     }
   },

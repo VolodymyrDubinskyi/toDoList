@@ -6,6 +6,7 @@ const { webServer } = config
 
 type addToDoActionParams = {
   _id: string,
+  index: number,
   payload: {
     listId: string,
     value: string,
@@ -23,6 +24,7 @@ const addToDoAction = (data: addToDoActionParams) :Object => ({
       id: data._id, //eslint-disable-line
       title: data.payload.value,
       chosen: data.payload.chosen,
+      index: data.index,
     },
   },
 })

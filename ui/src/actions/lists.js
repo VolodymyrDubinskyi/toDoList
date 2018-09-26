@@ -11,6 +11,7 @@ export type addListActionParams = {
   _id: string,
   title: string,
   visibility: boolean,
+  index: number,
 }
 
 const addListAction = (data: addListActionParams): Object => ({
@@ -18,8 +19,8 @@ const addListAction = (data: addListActionParams): Object => ({
   payload: {
     id: data._id, // eslint-disable-line
     title: data.title,
-    visibility: data.visibility,
     todos: [],
+    index: data.index,
   },
 })
 
@@ -126,6 +127,7 @@ const callEditListEndpoint = (payload: callEditListParams) => fetch(
 ).then(response => response.json())
 
 export const editList = (dispatch: Function) => (payload: callEditListParams) => {
+  dispatch(editListAction(payload.id, payload.changes))
   callEditListEndpoint(payload)
     .then((data: { id: string, changes: Object }) => {
       dispatch(editListAction(data.id, data.changes))

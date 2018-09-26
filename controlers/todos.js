@@ -16,6 +16,12 @@ module.exports = {
     } else {
       const checkList = await DB.get(`${collectionLists}/${user}`, { _id: ObjectId(list) })
       const todoData = await DB.get(`${collection}/${user}/${list}`, {})
+      todoData.map(async (obj, index) => {
+        if (obj.index === undefined) {
+          await DB.update(obj['_id'], { index }, `${collection}/${user}/${list}`) //eslint-disable-line
+        }
+        return null
+      })
       const listTitleAndData = {
         todoData,
         listInfo: checkList[0],

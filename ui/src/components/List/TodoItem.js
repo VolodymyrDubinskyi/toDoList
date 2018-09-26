@@ -2,7 +2,12 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import {
+  DragSource,
+  DropTarget,
+  DropTargetConnector,
+} from 'react-dnd';
+import { findDOMNode } from 'react-dom'
 
 import type { callRemoveToDoParams, callEditToDoParams } from '../../actions/todos'
 import type { todoProps, userProps } from '../../props'
@@ -12,7 +17,60 @@ import TodoItemEdit from './TodoItemEdit'
 import {
   removeToDo, editToDo,
 } from '../../actions/todos'
+import itemTypes from '../../ItemTypes'
 
+
+const todoTarget = {
+  hover(props, monitor, component) {
+    // const dragIndex = monitor.getItem().index
+    // const hoverIndex = props.elem.index
+
+    // if (dragIndex === hoverIndex) {
+    //   return
+    // }
+
+    // // $FlowFixMe
+    // const hoverBoundingRect = findDOMNode(component).getBoundingClientRect() //eslint-disable-line
+    // const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2
+    // const clientOffset = monitor.getClientOffset()
+    // const hoverClientX = clientOffset.x - hoverBoundingRect.left
+
+    // if (dragIndex < hoverIndex && hoverClientX < hoverMiddleX) {
+    //   return
+    // }
+    // if (dragIndex > hoverIndex && hoverClientX > hoverMiddleX) {
+    //   return
+    // }
+
+    // props.moveCard(dragIndex, hoverIndex)
+
+    // monitor.getItem().index = hoverIndex //eslint-disable-line
+  },
+}
+
+const todoSource = {
+  beginDrag(props) {
+    return {
+      id: props.todo.id,
+      index: props.todo.index,
+      listId: props.listId,
+    };
+  },
+  // endDrag(props: Object) {
+  //   props.lists.map((obj) => {
+  //     props.editList({ id: obj.id, changes: { index: obj.index } })
+  //     return null
+  //   })
+  // },
+};
+
+function collect(connectDND, monitor) {
+  return {
+    connectDragSource: connectDND.dragSource(),
+    connectDragPreview: connectDND.dragPreview(),
+    isDragging: monitor.isDragging(),
+  }
+}
 
 type Props = {
   value: number,
@@ -22,7 +80,6 @@ type Props = {
   listId: string,
   todo: todoProps,
   editToDo: (callEditToDoParams) => void,
-  history: Object,
 };
 type State = {
   todoNowEditting: boolean,
@@ -108,7 +165,6 @@ TodoItem.propTypes = {
   removeToDo: PropTypes.func.isRequired,
   listId: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
   editToDo: PropTypes.func.isRequired,
 }
 
@@ -121,4 +177,11 @@ const mapDispatchToProps = dispatch => ({
   editToDo: editToDo(dispatch),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TodoItem))
+
+export default DragSource(itemTypes.LIST, todoSource, collect)(
+  DropTarget(itemTypes.LIST, todoTarget, (connectDND: DropTargetConnector) => ({
+    connectDropTarget: connectDND.dropTarget(),
+  }))(connect(mapStateToProps, mapDispatchToProps)(TodoItem)),
+)
+
+// export default connect(mapStateToProps, mapDispatchToProps)(TodoItem)

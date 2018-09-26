@@ -2,7 +2,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types'
-// import { List } from '@material-ui/core'
 
 import TodoItemWithConnect from './TodoItem'
 import type { todoProps, listsProps } from '../../props'
