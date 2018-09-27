@@ -8,6 +8,7 @@ import {
   DropTargetConnector,
 } from 'react-dnd';
 import { findDOMNode } from 'react-dom'
+import { getEmptyImage } from 'react-dnd-html5-backend'
 
 import type { callRemoveToDoParams, callEditToDoParams } from '../../actions/todos'
 import type { todoProps, userProps, listProps } from '../../props'
@@ -54,7 +55,7 @@ const todoTarget = {
       return
     }
 
-    props.moveTodo(dragIndex, hoverIndex, props.listId)
+    props.moveTodo(hoverIndex, monitor.getItem().id)
 
     monitor.getItem().index = hoverIndex //eslint-disable-line
   },
@@ -70,6 +71,7 @@ const todoSource = {
     };
   },
   endDrag(props) {
+    props.stopMove();
     let newListId;
     const { id } = props.todo
     props.lists.map((list) => {
@@ -78,6 +80,18 @@ const todoSource = {
       return null
     })
     const checkSameListId = newListId === props.listId
+
+    if (!checkSameListId) {
+      const removeParams: callRemoveToDoParams = {
+        userId: props.userId,
+        listId: props.listId,
+        todoId: props.todo.id,
+      }
+      props.removeToDo(removeParams)
+      const index = props.removeToDoInState(newListId,
+        props.listId, props.todo.id, props.todo.title)
+      props.addToDo({ listId: newListId, value: props.todo.title, index })
+    }
 
     const list = props.lists.filter(elem => elem.id === newListId)[0];
     list.todos.map((obj, index) => {
@@ -92,18 +106,6 @@ const todoSource = {
       })
       return null
     })
-
-    if (!checkSameListId) {
-      const removeParams: callRemoveToDoParams = {
-        userId: props.userId,
-        listId: props.listId,
-        todoId: props.todo.id,
-      }
-      props.removeToDo(removeParams)
-      const index = props.removeToDoInState(newListId,
-        props.listId, props.todo.id, props.todo.title)
-      props.addToDo({ listId: newListId, value: props.todo.title, index })
-    }
   },
 };
 
@@ -127,6 +129,9 @@ type Props = {
   connectDragSource: Function,
   lists: Array<listProps>,
   isDragging: boolean,
+  moved: boolean,
+  stopMove: Function,
+  connectDragPreview: Function,
 };
 type State = {
   todoNowEditting: boolean,
@@ -202,11 +207,12 @@ export class TodoItem extends Component<Props, State> {
       stopEditing={this.stopEditing}
       todo={this.props.todo}
       editValue={this.state.editValue} />) : null
+    const moved = this.props.moved || this.props.isDragging
 
     return this.props.connectDropTarget(<div
       style={{ fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif', position: 'relative' }}
-    >{this.props.isDragging ? <div className='draggingTodoHolder' /> : null}<div
-      style={this.props.isDragging ? { opacity: 0 } : {}}>
+    >{moved ? <div className='draggingTodoHolder' /> : null}<div
+      style={moved ? { opacity: 0 } : {}}>
         {edit}
         {this.props.connectDragSource(<div>{usual}</div>)}
       </div></div>)

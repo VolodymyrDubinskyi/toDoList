@@ -20,20 +20,31 @@ type Props = {
 
 type State = {
   listItems: Array<todoProps>,
+  moved: string,
 }
 
 class ListTodos extends React.Component<Props, State> {
   constructor(props: Object) {
     super(props)
-    this.state = { listItems: props.listItems }
+    this.state = { listItems: props.listItems, moved: '' }
   }
 
-  moveTodo = (dragIndex, hoverIndex) => {
-    const todos = this.state.listItems
-    const dragCard = todos[dragIndex]
+  stopMove = () => {
+    this.setState({
+      moved: '',
+    })
+  }
 
+  moveTodo = (hoverIndex, todoId) => {
+    let newDragIndex = 0
+    this.state.listItems.map((obj, index) => {
+      if (obj.id === todoId) newDragIndex = index
+      return null
+    })
+    const todos = this.state.listItems
+    const dragCard = todos[newDragIndex]
     const newTodos = todos
-    newTodos.splice(dragIndex, 1)
+    newTodos.splice(newDragIndex, 1)
     newTodos.splice(hoverIndex, 0, dragCard)
     newTodos.forEach((obj, i) => {
       const newObj = obj
@@ -44,11 +55,12 @@ class ListTodos extends React.Component<Props, State> {
 
     this.setState({
       listItems: newTodos,
+      moved: todoId,
     })
   }
 
   render() {
-    if (this.state.listItems !== this.props.listItems) {
+    if (this.state.listItems.length !== this.props.listItems.length) {
       this.setState({ listItems: this.props.listItems })
     }
     const { listItems } = this.state
@@ -62,6 +74,7 @@ class ListTodos extends React.Component<Props, State> {
     return <div>
       {listItems.map((todo) => {
         if (todo) {
+          const moved = todo.id === this.state.moved
           return <TodoItemWithConnect
             todo={todo}
             key={`${todo.id}`}
@@ -69,6 +82,8 @@ class ListTodos extends React.Component<Props, State> {
             changeList={this.props.changeList}
             removeToDoInState={this.props.removeToDoInState}
             listId={this.props.list.id}
+            moved={moved}
+            stopMove={this.stopMove}
           />
         }
         return null
