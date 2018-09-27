@@ -83,7 +83,9 @@ module.exports = {
       body.payload.date = new Date().getTime() / 1000
       body.payload.chosen = false
       const todoData = await DB.get(`${collection}/${user}/${list}`, {})
-      body.payload.index = todoData.length
+      console.log(body.payload)
+      if (!body.payload.index) body.payload.index = todoData.length
+      console.log(body.payload)
       const created = await DB.insert(body, `${collection}/${user}/${list}`)
       ctx.body = created;
     }

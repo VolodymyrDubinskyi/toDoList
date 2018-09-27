@@ -57,7 +57,7 @@ export const addToDo = (dispatch :Function) => (payload :callAddToDoParams) => {
     })
 }
 
-const callGetAllTosDoEndpoint = (payload :string) => fetch(
+const callGetAllToDoEndpoint = (payload :string) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload}`,
   {
     method: 'GET',
@@ -73,14 +73,14 @@ const callGetAllTosDoEndpoint = (payload :string) => fetch(
 
 
 export const getAllToDos = (dispatch :Function) => (payload :string) => {
-  callGetAllTosDoEndpoint(payload)
+  callGetAllToDoEndpoint(payload)
     .then((data) => {
       data.todoData.map(todo => dispatch(addToDoAction(todo)))
     })
 }
 
 
-const removeToDoAction = (listId :string, todoId :string) :Object => ({
+export const removeToDoAction = (listId :string, todoId :string) :Object => ({
   type: 'REMOVE_TODO',
   payload: {
     listId,

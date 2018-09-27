@@ -27,6 +27,8 @@ type Props = {
   connectDragSource: Function,
   connectDragPreview: Function,
   connectDropTarget: Function,
+  changeList: Function,
+  removeToDoInState: Function,
 }
 
 const listSource = {
@@ -36,9 +38,9 @@ const listSource = {
       index: props.list.index,
     };
   },
-  endDrag(props: Object) {
-    props.lists.map((obj) => {
-      props.editList({ id: obj.id, changes: { index: obj.index } })
+  endDrag(props) {
+    props.lists.map((obj, index) => {
+      props.editList({ id: obj.id, changes: { index } })
       return null
     })
   },
@@ -98,9 +100,11 @@ class TodosContainer extends React.Component<Props> {
                 )[0].title : null} />
             </div>)}
             <ListTodos
+              changeList={this.props.changeList}
               list={this.props.elem}
               user={this.props.user}
               listItems={this.props.elem.todos}
+              removeToDoInState={this.props.removeToDoInState}
             />
             <AddToDo list={this.props.elem} />
           </div>

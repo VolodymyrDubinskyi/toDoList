@@ -2,58 +2,24 @@
 
 import React from 'react';
 import PropTypes from 'prop-types'
-import {
-  DropTarget,
-  DropTargetConnector,
-} from 'react-dnd';
 
 import TodoItemWithConnect from './TodoItem'
 import type { todoProps, listsProps } from '../../props'
 import { connect } from '../../../react-myRedux'
-import itemTypes from '../../ItemTypes'
-
+import {
+  removeToDo, editToDo,
+} from '../../actions/todos'
 
 type Props = {
   listItems: Array<todoProps>,
   list: listsProps,
   connectDropTarget: Function,
+  changeList: Function,
+  removeToDoInState: Function,
 }
 
 type State = {
   listItems: Array<todoProps>,
-}
-
-
-const todoTarget = {
-  hover(props, monitor, component) {
-    const dragIndex = monitor.getItem().index
-    const hoverIndex = props.todo.index
-
-    if (dragIndex === hoverIndex) {
-      return
-    }
-
-    if (monitor.getItem().listId !== props.listId) {
-      return
-    }
-
-    // $FlowFixMe
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect() //eslint-disable-line
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-    const clientOffset = monitor.getClientOffset()
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top
-
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return
-    }
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return
-    }
-
-    props.moveTodo(dragIndex, hoverIndex)
-
-    monitor.getItem().index = hoverIndex //eslint-disable-line
-  },
 }
 
 class ListTodos extends React.Component<Props, State> {
@@ -62,7 +28,7 @@ class ListTodos extends React.Component<Props, State> {
     this.state = { listItems: props.listItems }
   }
 
-  moveTodo = (dragIndex: number, hoverIndex: number) => {
+  moveTodo = (dragIndex, hoverIndex) => {
     const todos = this.state.listItems
     const dragCard = todos[dragIndex]
 
@@ -71,6 +37,7 @@ class ListTodos extends React.Component<Props, State> {
     newTodos.splice(hoverIndex, 0, dragCard)
     newTodos.forEach((obj, i) => {
       const newObj = obj
+      if (!obj) return null
       newObj.index = i
       return newObj
     })
@@ -94,11 +61,13 @@ class ListTodos extends React.Component<Props, State> {
 
     return <div>
       {listItems.map((todo) => {
-        if (todo.id) {
+        if (todo) {
           return <TodoItemWithConnect
             todo={todo}
             key={`${todo.id}`}
             moveTodo={this.moveTodo}
+            changeList={this.props.changeList}
+            removeToDoInState={this.props.removeToDoInState}
             listId={this.props.list.id}
           />
         }
@@ -112,4 +81,13 @@ ListTodos.propTypes = {
   listItems: PropTypes.array.isRequired,
 }
 
-export default connect(() => { }, () => { })(ListTodos)
+const mapDispatchToProps = dispatch => ({
+  removeToDo: removeToDo(dispatch),
+  editToDo: editToDo(dispatch),
+})
+
+const mapStateToProps = state => ({
+  userId: state.user.id,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListTodos)

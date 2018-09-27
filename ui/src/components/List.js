@@ -18,7 +18,7 @@ import {
   addList, removeList, editList,
 } from '../actions/lists'
 import {
-  getAllToDos,
+  getAllToDos, removeToDo,
 } from '../actions/todos'
 
 type Props = {
@@ -30,6 +30,7 @@ type Props = {
   addList: Function,
   editList: (callEditListParams) => void,
   getAllToDos: (string) => void,
+  removeToDo: Function,
 };
 
 type State = {
@@ -59,8 +60,64 @@ class List extends React.Component<Props, State> {
     })
   }
 
+  changeList = (todoId, oldListId, newListId) => {
+    const lists = this.state.lists.filter(elem => (elem.id !== oldListId) && (elem.id !== newListId));
+    const oldList = this.state.lists.filter(elem => elem.id === oldListId)[0];
+    const newList = this.state.lists.filter(elem => elem.id === newListId)[0];
+
+    let oldListTodos = oldList.todos
+    const newListTodos = newList.todos
+    const currentTodo = oldListTodos.filter(elem => elem.id === todoId)[0];
+
+    if (currentTodo === undefined) return
+
+    oldListTodos = oldListTodos.filter(elem => elem.id !== todoId);
+    newListTodos.push(currentTodo)
+    newListTodos.forEach((obj, i) => {
+      const newObj = obj
+      newObj.index = i
+      return newObj
+    })
+    newListTodos.forEach((obj, index) => {
+      const newObj = obj
+      newObj.index = index
+      return newObj
+    })
+    newListTodos.sort((a, b) => {
+      if (a.index > b.index) {
+        return 1
+      }
+      return -1
+    })
+    newList.todos = newListTodos
+    oldList.todos = oldListTodos
+
+    const newState = [oldList, newList, ...lists]
+    newState.sort((a, b) => {
+      if (a.index > b.index) {
+        return 1
+      }
+      return -1
+    })
+    this.setState({
+      lists: newState,
+    })
+  }
+
+  removeToDoInState = (newListId, oldListId, oldId, title) => {
+    const newList = this.props.lists.filter(list => list.id === newListId)[0];
+    const listTodos = newList.todos.filter(todo => todo.title === title);
+    const oldTodo = listTodos.filter(todo => todo.id === oldId)[0]
+    const removeParams = {
+      userId: this.props.user.id,
+      listId: newList.id,
+      todoId: oldTodo.id,
+    }
+    this.props.removeToDo(removeParams)
+    return oldTodo.index
+  }
+
   render() {
-    // console.log(this.props)
     if (this.props.lists.length > this.state.lists.length) {
       const newState = []
       this.props.lists.map(obj => newState.push(obj))
@@ -85,8 +142,10 @@ class List extends React.Component<Props, State> {
       list={elem}
       user={this.props.user}
       listItems={elem.todos}
-      lists={this.props.lists}
+      lists={this.state.lists}
       moveList={this.moveList}
+      changeList={this.changeList}
+      removeToDoInState={this.removeToDoInState}
     />)
 
     if (this.props.lists[0]) {
@@ -126,6 +185,7 @@ const mapDispatchToProps = dispatch => ({
   editUser: editUser(dispatch),
   editList: editList(dispatch),
   getAllToDos: getAllToDos(dispatch),
+  removeToDo: removeToDo(dispatch),
 })
 
 const ListWithContext = DragDropContext(HTML5Backend)(List)

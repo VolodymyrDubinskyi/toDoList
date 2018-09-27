@@ -15,7 +15,7 @@ import { connect } from '../../../react-myRedux'
 import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
 import {
-  removeToDo, editToDo,
+  removeToDo, editToDo, addToDo,
 } from '../../actions/todos'
 import itemTypes from '../../ItemTypes'
 
@@ -30,7 +30,15 @@ const todoTarget = {
     }
 
     if (monitor.getItem().listId !== props.listId) {
-      return
+      props.changeList(monitor.getItem().id, monitor.getItem().listId, props.listId)
+      monitor.getItem().listId = props.listId //eslint-disable-line
+      props.lists.map((obj) => {
+        obj.todos.map((todo) => {
+          if (todo.id === monitor.getItem().id) monitor.getItem().index = todo.index//eslint-disable-line
+          return null
+        })
+        return null
+      })
     }
 
     // $FlowFixMe
@@ -46,7 +54,7 @@ const todoTarget = {
       return
     }
 
-    props.moveTodo(dragIndex, hoverIndex)
+    props.moveTodo(dragIndex, hoverIndex, props.listId)
 
     monitor.getItem().index = hoverIndex //eslint-disable-line
   },
@@ -62,16 +70,40 @@ const todoSource = {
     };
   },
   endDrag(props) {
-    const list = props.lists.filter(elem => elem.id === props.listId)[0];
+    let newListId;
+    const { id } = props.todo
+    props.lists.map((list) => {
+      const findedTodoById = list.todos.filter(curListTodo => curListTodo.id === id);
+      if (findedTodoById.length === 1) newListId = list.id
+      return null
+    })
+    const checkSameListId = newListId === props.listId
+
+    const list = props.lists.filter(elem => elem.id === newListId)[0];
     list.todos.map((obj, index) => {
+      if ((obj.id === id) && !checkSameListId) {
+        return null
+      }
       props.editToDo({
-        listId: props.listId,
+        listId: newListId || props.listId,
         todoId: obj.id,
         changes: { index },
         userId: props.userId,
       })
       return null
     })
+
+    if (!checkSameListId) {
+      const removeParams: callRemoveToDoParams = {
+        userId: props.userId,
+        listId: props.listId,
+        todoId: props.todo.id,
+      }
+      props.removeToDo(removeParams)
+      const index = props.removeToDoInState(newListId,
+        props.listId, props.todo.id, props.todo.title)
+      props.addToDo({ listId: newListId, value: props.todo.title, index })
+    }
   },
 };
 
@@ -197,6 +229,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   removeToDo: removeToDo(dispatch),
   editToDo: editToDo(dispatch),
+  addToDo: addToDo(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(
