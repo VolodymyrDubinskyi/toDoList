@@ -6,9 +6,9 @@ import {
   Button, FormControl, TextField, FormHelperText,
 } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import type { callLogInParams } from '../actions/user'
-import { connect } from '../../react-myRedux'
 import { logIn, tokenLogin } from '../actions/user'
 import { getAllLists } from '../actions/lists'
 import type { userProps, listsProps } from '../props'
@@ -150,7 +150,7 @@ Authorization.propTypes = {
   lists: PropTypes.array.isRequired,
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   logIn: logIn(dispatch),
   getAllLists: getAllLists(dispatch),
   tokenLogin: tokenLogin(dispatch),

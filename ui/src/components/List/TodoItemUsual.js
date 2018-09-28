@@ -10,6 +10,7 @@ type Props = {
   toggleChose: Function,
   goToEdit: Function,
   deleteTodo: Function,
+  title: string,
 };
 type State = {
 }
@@ -43,7 +44,7 @@ export default class ListItemUsual extends Component<Props, State> {
       style={style}
       className='todoListItem'>
       <div style={{ cursor: 'pointer', fontSize: '1em' }}>
-      {this.props.todo.title}
+      {this.props.title}
       </div>
       <div className='todoEditIcoHolder'>
         <CreateIcon

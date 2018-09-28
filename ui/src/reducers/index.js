@@ -1,4 +1,4 @@
-import combineReducers from '../../react-myRedux/combineReducers'
+import { combineReducers } from 'redux'
 
 import user from './user'
 import lists from './lists'

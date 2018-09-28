@@ -2,11 +2,11 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import type { callEditListParams } from '../../actions/lists'
 import type { userProps, listsProps } from '../../props'
-import { connect } from '../../../react-myRedux'
-import { editList } from '../../actions/lists'
+import { editList, removeList } from '../../actions/lists'
 
 type Props = {
   lists: Array<listsProps>,
@@ -94,8 +94,9 @@ const mapStateToProps = state => ({
   state,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   editList: editList(dispatch),
+  removeList: removeList(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HidingToggle)

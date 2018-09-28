@@ -3,9 +3,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import ClearIcon from '@material-ui/icons/Clear';
+import { connect } from 'react-redux'
 
 import type { callAddToDoParams } from '../../actions/todos'
-import { connect } from '../../../react-myRedux'
 import {
   addToDo,
 } from '../../actions/todos'

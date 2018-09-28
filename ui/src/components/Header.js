@@ -7,10 +7,10 @@ import { TextField } from '@material-ui/core';
 import {
   withRouter, Link, Route, Switch,
 } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import type { callEditListParams } from '../actions/lists'
 import type { callEditUserParams } from '../actions/user'
-import { connect } from '../../react-myRedux'
 import { editList } from '../actions/lists'
 import logOut, { editUser } from '../actions/user'
 import type { userProps, listsProps } from '../props'
@@ -29,7 +29,7 @@ type State = {
 }
 
 export class Header extends Component<Props, State> {
-  constructor(props :Object) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       titleEdit: false,
@@ -45,14 +45,14 @@ export class Header extends Component<Props, State> {
   }
 
 
-  updateValue(e :Object) {
+  updateValue(e: Object) {
     this.setState({
       editValue: e.target.value,
     });
   }
 
 
-  changeTitle = (e :Object) => {
+  changeTitle = (e: Object) => {
     if (e.keyCode === 13) {
       this.setState({
         titleEdit: false,
@@ -85,8 +85,8 @@ export class Header extends Component<Props, State> {
 
   render() {
     if ((!this.props.user.currentList)
-    && (this.props.history.location.pathname)
-    && (this.props.history.location.pathname.split('/').length > 4)) {
+      && (this.props.history.location.pathname)
+      && (this.props.history.location.pathname.split('/').length > 4)) {
       this.props.history.push(`/user/${this.props.user.name}`)
     }
     const editTitle = <Switch>
@@ -191,7 +191,7 @@ const mapStateToProps = state => ({
   state,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   editUser: editUser(dispatch),
   logOut: () => dispatch(logOut()),
   editList: editList(dispatch),

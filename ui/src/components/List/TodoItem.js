@@ -8,15 +8,14 @@ import {
   DropTargetConnector,
 } from 'react-dnd';
 import { findDOMNode } from 'react-dom'
-import { getEmptyImage } from 'react-dnd-html5-backend'
+import { connect } from 'react-redux'
 
 import type { callRemoveToDoParams, callEditToDoParams } from '../../actions/todos'
 import type { todoProps, userProps, listProps } from '../../props'
-import { connect } from '../../../react-myRedux'
 import TodoItemUsual from './TodoItemUsual'
 import TodoItemEdit from './TodoItemEdit'
 import {
-  removeToDo, editToDo, addToDo,
+  removeToDo, addToDo,
 } from '../../actions/todos'
 import itemTypes from '../../ItemTypes'
 
@@ -55,7 +54,7 @@ const todoTarget = {
       return
     }
 
-    props.moveTodo(hoverIndex, monitor.getItem().id)
+    props.moveTodo(hoverIndex, monitor.getItem().id, props.listId)
 
     monitor.getItem().index = hoverIndex //eslint-disable-line
   },
@@ -72,40 +71,52 @@ const todoSource = {
   },
   endDrag(props) {
     props.stopMove();
-    let newListId;
-    const { id } = props.todo
-    props.lists.map((list) => {
-      const findedTodoById = list.todos.filter(curListTodo => curListTodo.id === id);
-      if (findedTodoById.length === 1) newListId = list.id
-      return null
-    })
-    const checkSameListId = newListId === props.listId
-
-    if (!checkSameListId) {
-      const removeParams: callRemoveToDoParams = {
-        userId: props.userId,
-        listId: props.listId,
-        todoId: props.todo.id,
-      }
-      props.removeToDo(removeParams)
-      const index = props.removeToDoInState(newListId,
-        props.listId, props.todo.id, props.todo.title)
-      props.addToDo({ listId: newListId, value: props.todo.title, index })
-    }
-
-    const list = props.lists.filter(elem => elem.id === newListId)[0];
-    list.todos.map((obj, index) => {
-      if ((obj.id === id) && !checkSameListId) {
+    setTimeout(() => {
+      let newListId;
+      const { id } = props.todo
+      props.lists.map((list) => {
+        const findedTodoById = list.todos.filter(curListTodo => curListTodo.id === id);
+        if (findedTodoById.length === 1) newListId = list.id
         return null
-      }
-      props.editToDo({
-        listId: newListId || props.listId,
-        todoId: obj.id,
-        changes: { index },
-        userId: props.userId,
       })
-      return null
-    })
+      const checkSameListId = newListId === props.listId
+
+      if (!checkSameListId) {
+        const removeParams: callRemoveToDoParams = {
+          userId: props.userId,
+          listId: props.listId,
+          todoId: props.todo.id,
+        }
+        props.removeToDo(removeParams)
+        const index = props.removeToDoInState(newListId,
+          props.listId, props.todo.id, props.todo.title)
+        props.addToDo({ listId: newListId, value: props.todo.title, index })
+      }
+
+      if (newListId === props.listId) {
+        props.changeTodoIndexes(newListId, checkSameListId, id)
+      } else {
+        const list = props.lists.filter(elem => elem.id === newListId)[0];
+        list.todos.sort((a, b) => {
+          if (a.index > b.index) {
+            return 1
+          }
+          return -1
+        })
+        list.todos.map((obj, index) => {
+          if ((obj.id === id) && !checkSameListId) {
+            return null
+          }
+          props.editToDo({
+            listId: newListId || props.listId,
+            todoId: obj.id,
+            changes: { index },
+            userId: props.userId,
+          })
+          return null
+        })
+      }
+    }, 0)
   },
 };
 
@@ -136,6 +147,7 @@ type Props = {
 type State = {
   todoNowEditting: boolean,
   editValue: Function,
+  todo: todoProps,
 }
 
 export class TodoItem extends Component<Props, State> {
@@ -144,6 +156,7 @@ export class TodoItem extends Component<Props, State> {
     this.state = {
       todoNowEditting: false,
       editValue: props.todo.title,
+      todo: props.todo,
     };
   }
 
@@ -193,8 +206,16 @@ export class TodoItem extends Component<Props, State> {
   }
 
   render() {
+    const currentList = this.props.lists.filter(list => list.id === this.props.listId)[0];
+    const currentTodo = currentList.todos.filter(todo => todo.id === this.props.todo.id)[0];
+    let newTitle = this.props.todo.title
+    if (currentTodo) {
+      newTitle = currentTodo.title
+    }
+
     const usual = (<TodoItemUsual
       todo={this.props.todo}
+      title={newTitle}
       toggleChose={this.toggleChose}
       goToEdit={this.goToEdit}
       deleteTodo={this.deleteTodo}
@@ -232,9 +253,8 @@ const mapStateToProps = state => ({
   lists: state.lists,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   removeToDo: removeToDo(dispatch),
-  editToDo: editToDo(dispatch),
   addToDo: addToDo(dispatch),
 })
 

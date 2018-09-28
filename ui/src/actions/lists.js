@@ -1,11 +1,12 @@
 // @flow
 
-import config from '../../config'
 import {
   getAllToDos,
 } from './todos'
-
-const { webServer } = config
+import {
+  callAddListEndpoint,
+  callGetAllListsEndpoint,
+} from '../FetchCalls/list'
 
 export type addListActionParams = {
   _id: string,
@@ -29,20 +30,6 @@ const removeListAction = (id: string): Object => ({
   payload: id,
 })
 
-const callAddListEndpoint = () => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token') || '',
-    },
-  },
-).then(response => response.json())
-
 export const addList = (dispatch: Function) => () => {
   callAddListEndpoint()
     .then((data: Array<addListActionParams>) => {
@@ -50,38 +37,11 @@ export const addList = (dispatch: Function) => () => {
     })
 }
 
-const callRemoveListEndpoint = (payload: string) => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
-  {
-    method: 'DELETE',
-    body: JSON.stringify({ payload }),
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token') || '',
-    },
-  },
-).then(response => response.json())
 
 export const removeList = (dispatch: Function) => (payload: string) => {
-  callRemoveListEndpoint(payload)
-    .then((id: string) => {
-      dispatch(removeListAction(id))
-    })
+  dispatch(removeListAction(payload))
 }
 
-const callGetAllListsEndpoint = () => fetch(`http://${webServer.host}:${webServer.port}/lists`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': '*',
-    'X-Access-Token': localStorage.getItem('token') || '',
-  },
-}).then(response => response.json())
 
 export const getAllLists = (dispatch: Function) => () => {
   callGetAllListsEndpoint()
@@ -108,28 +68,7 @@ export type callEditListParams = {
   changes: Object,
 }
 
-const callEditListEndpoint = (payload: callEditListParams) => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
-  {
-    method: 'PATCH',
-    body: JSON.stringify({
-      id: payload.id,
-      changes: payload.changes,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-      'X-Access-Token': localStorage.getItem('token') || '',
-    },
-  },
-).then(response => response.json())
 
 export const editList = (dispatch: Function) => (payload: callEditListParams) => {
   dispatch(editListAction(payload.id, payload.changes))
-  callEditListEndpoint(payload)
-    .then((data: { id: string, changes: Object }) => {
-      dispatch(editListAction(data.id, data.changes))
-    })
 }

@@ -2,11 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types'
-// import {
-//   IconButton, Tooltip, TextField, ListItem, ListItemSecondaryAction,
-// } from '@material-ui/core'
-// import SaveIcon from '@material-ui/icons/Save';
-// import ClearIcon from '@material-ui/icons/Clear';
+
 import type { todoProps } from '../../props'
 
 

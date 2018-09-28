@@ -1,26 +1,28 @@
 // @flow
 
 import React from 'react';
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import TodoItemWithConnect from './TodoItem'
 import type { todoProps, listsProps } from '../../props'
-import { connect } from '../../../react-myRedux'
 import {
-  removeToDo, editToDo,
+  removeToDo,
 } from '../../actions/todos'
 
 type Props = {
   listItems: Array<todoProps>,
   list: listsProps,
-  connectDropTarget: Function,
   changeList: Function,
   removeToDoInState: Function,
+  moved: string,
+  setMoveIndex: Function,
+  stopMove: Function,
+  userId: string,
+  editToDo: Function,
 }
 
 type State = {
   listItems: Array<todoProps>,
-  moved: string,
 }
 
 class ListTodos extends React.Component<Props, State> {
@@ -29,11 +31,6 @@ class ListTodos extends React.Component<Props, State> {
     this.state = { listItems: props.listItems, moved: '' }
   }
 
-  stopMove = () => {
-    this.setState({
-      moved: '',
-    })
-  }
 
   moveTodo = (hoverIndex, todoId) => {
     let newDragIndex = 0
@@ -55,7 +52,29 @@ class ListTodos extends React.Component<Props, State> {
 
     this.setState({
       listItems: newTodos,
-      moved: todoId,
+    })
+    this.props.setMoveIndex(todoId);
+  }
+
+  changeTodoIndexes = (listId, checkSameListId, id) => {
+    const todos = this.state.listItems
+    todos.sort((a, b) => {
+      if (a.index > b.index) {
+        return 1
+      }
+      return -1
+    })
+    todos.map((obj, index) => {
+      if ((obj.id === id) && !checkSameListId) {
+        return null
+      }
+      this.props.editToDo({
+        listId,
+        todoId: obj.id,
+        changes: { index },
+        userId: this.props.userId,
+      })
+      return null
     })
   }
 
@@ -74,7 +93,7 @@ class ListTodos extends React.Component<Props, State> {
     return <div>
       {listItems.map((todo) => {
         if (todo) {
-          const moved = todo.id === this.state.moved
+          const moved = todo.id === this.props.moved
           return <TodoItemWithConnect
             todo={todo}
             key={`${todo.id}`}
@@ -83,7 +102,10 @@ class ListTodos extends React.Component<Props, State> {
             removeToDoInState={this.props.removeToDoInState}
             listId={this.props.list.id}
             moved={moved}
-            stopMove={this.stopMove}
+            stopMove={this.props.stopMove}
+            listItems={listItems}
+            changeTodoIndexes={this.changeTodoIndexes}
+            editToDo={this.props.editToDo}
           />
         }
         return null
@@ -92,16 +114,12 @@ class ListTodos extends React.Component<Props, State> {
   }
 }
 
-ListTodos.propTypes = {
-  listItems: PropTypes.array.isRequired,
-}
-
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   removeToDo: removeToDo(dispatch),
-  editToDo: editToDo(dispatch),
 })
 
 const mapStateToProps = state => ({
+  lists: state.lists,
   userId: state.user.id,
 })
 

@@ -20,6 +20,7 @@ type Props = {
     id: string,
     todos: Array<todosProps>
   },
+  moved: string,
   editList: (callEditListParams) => void,
   lists: Array<listsProps>,
   user: userProps,
@@ -29,6 +30,9 @@ type Props = {
   connectDropTarget: Function,
   changeList: Function,
   removeToDoInState: Function,
+  setMoveIndex: Function,
+  stopMove: Function,
+  editToDo: Function,
 }
 
 const listSource = {
@@ -97,7 +101,7 @@ class TodosContainer extends React.Component<Props> {
                 list={this.props.elem}
                 title={(this.props.elem.id) ? this.props.lists.filter(
                   obj => obj.id === this.props.elem.id,
-                )[0].title : null} />
+                )[0].title : ''} />
             </div>)}
             <ListTodos
               changeList={this.props.changeList}
@@ -105,6 +109,10 @@ class TodosContainer extends React.Component<Props> {
               user={this.props.user}
               listItems={this.props.elem.todos}
               removeToDoInState={this.props.removeToDoInState}
+              moved={this.props.moved}
+              setMoveIndex={this.props.setMoveIndex}
+              stopMove={this.props.stopMove}
+              editToDo={this.props.editToDo}
             />
             <AddToDo list={this.props.elem} />
           </div>
@@ -113,8 +121,6 @@ class TodosContainer extends React.Component<Props> {
     ))
   }
 }
-
-// const TodosContainerContext = DragDropContext(HTML5Backend)(TodosContainer)
 
 export default DragSource(itemTypes.LIST, listSource, collect)(
   DropTarget(itemTypes.LIST, listTarget, (connect: DropTargetConnector) => ({
