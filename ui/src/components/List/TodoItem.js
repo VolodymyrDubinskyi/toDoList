@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {
@@ -17,6 +15,9 @@ import TodoItemEdit from './TodoItemEdit'
 import {
   removeToDo, addToDo,
 } from '../../actions/todos'
+import {
+  editList,
+} from '../../actions/lists'
 import itemTypes from '../../ItemTypes'
 
 
@@ -72,14 +73,14 @@ const todoSource = {
   endDrag(props) {
     props.stopMove();
     setTimeout(() => {
-      let newListId;
+      let newList;
       const { id } = props.todo
       props.lists.map((list) => {
         const findedTodoById = list.todos.filter(curListTodo => curListTodo.id === id);
-        if (findedTodoById.length === 1) newListId = list.id
+        if (findedTodoById.length === 1) newList = list
         return null
       })
-      const checkSameListId = newListId === props.listId
+      const checkSameListId = newList.id === props.listId
 
       if (!checkSameListId) {
         const removeParams: callRemoveToDoParams = {
@@ -88,15 +89,17 @@ const todoSource = {
           todoId: props.todo.id,
         }
         props.removeToDo(removeParams)
-        const index = props.removeToDoInState(newListId,
-          props.listId, props.todo.id, props.todo.title)
-        props.addToDo({ listId: newListId, value: props.todo.title, index })
+        const todosId = newList.todos.map(obj => obj.id)
+        props.editList({
+          id: newList.id,
+          changes: { todos: [...todosId] },
+        })
       }
 
-      if (newListId === props.listId) {
-        props.changeTodoIndexes(newListId, checkSameListId, id)
+      if (newList.id === props.listId) {
+        props.changeTodoIndexes(newList.id, checkSameListId, id)
       } else {
-        const list = props.lists.filter(elem => elem.id === newListId)[0];
+        const list = props.lists.filter(elem => elem.id === newList.id)[0];
         list.todos.sort((a, b) => {
           if (a.index > b.index) {
             return 1
@@ -108,7 +111,7 @@ const todoSource = {
             return null
           }
           props.editToDo({
-            listId: newListId || props.listId,
+            listId: newList.id || props.listId,
             todoId: obj.id,
             changes: { index },
             userId: props.userId,
@@ -256,6 +259,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch: Function) => ({
   removeToDo: removeToDo(dispatch),
   addToDo: addToDo(dispatch),
+  editList: editList(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(

@@ -1,8 +1,10 @@
+// @flow
+
 import config from '../../config'
 
 const { webServer } = config
 
-export const callAddToDoEndpoint = payload => fetch(
+export const callAddToDoEndpoint = (payload: Object) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/`,
   {
     method: 'POST',
@@ -15,9 +17,14 @@ export const callAddToDoEndpoint = payload => fetch(
       'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
-).then(response => response.json())
+).then((response) => {
+  if (!response.ok) {
+    throw Error('Request was unsuccessful')
+  }
+  return response.json()
+})
 
-export const callGetAllToDoEndpoint = payload => fetch(
+export const callGetAllToDoEndpoint = (payload: string) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload}`,
   {
     method: 'GET',
@@ -31,7 +38,7 @@ export const callGetAllToDoEndpoint = payload => fetch(
   },
 ).then(response => response.json())
 
-export const callRemoveToDoEndpoint = payload => fetch(
+export const callRemoveToDoEndpoint = (payload: Object) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload.userId}/${payload.listId}`,
   {
     method: 'DELETE',
@@ -47,9 +54,9 @@ export const callRemoveToDoEndpoint = payload => fetch(
       'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
-).then(response => response.json())
+)
 
-export const callEditToDoEndpoint = payload => fetch(
+export const callEditToDoEndpoint = (payload: Object) => fetch(
   `http://${webServer.host}:${webServer.port}/todos/${payload.userId}/${payload.listId}`,
   {
     method: 'PATCH',

@@ -43,6 +43,7 @@ const listSource = {
     };
   },
   endDrag(props) {
+    props.stopMoveList()
     props.lists.map((obj, index) => {
       props.editList({ id: obj.id, changes: { index } })
       return null
@@ -99,6 +100,7 @@ class TodosContainer extends React.Component<Props> {
             {this.props.connectDragSource(<div>
               <HidingToggle
                 list={this.props.elem}
+                lists={this.props.lists}
                 title={(this.props.elem.id) ? this.props.lists.filter(
                   obj => obj.id === this.props.elem.id,
                 )[0].title : ''} />

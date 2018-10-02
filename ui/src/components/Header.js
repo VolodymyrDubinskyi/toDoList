@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 
 import type { callEditListParams } from '../actions/lists'
 import type { callEditUserParams } from '../actions/user'
-import { editList } from '../actions/lists'
+import { editList, addList } from '../actions/lists'
 import logOut, { editUser } from '../actions/user'
 import type { userProps, listsProps } from '../props'
 
@@ -114,6 +114,7 @@ export class Header extends Component<Props, State> {
 
     return (
       <div className={'header'}>
+      {/* <button onClick={this.props.addList}>1111</button> */}
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Switch>
             <Route exact path="/registration" component={() => (
@@ -195,6 +196,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
   editUser: editUser(dispatch),
   logOut: () => dispatch(logOut()),
   editList: editList(dispatch),
+  addList: addList(dispatch),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

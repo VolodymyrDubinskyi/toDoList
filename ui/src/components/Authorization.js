@@ -10,7 +10,6 @@ import { connect } from 'react-redux'
 
 import type { callLogInParams } from '../actions/user'
 import { logIn, tokenLogin } from '../actions/user'
-import { getAllLists } from '../actions/lists'
 import type { userProps, listsProps } from '../props'
 
 type Props = {
@@ -18,7 +17,6 @@ type Props = {
   user: userProps,
   history: Object,
   lists: Array<listsProps>,
-  getAllLists: () => void,
   logIn: (callLogInParams) => void,
 };
 type State = {
@@ -50,7 +48,6 @@ export class Authorization extends Component<Props, State> {
   componentDidUpdate() {
     if (this.props.user.name) {
       this.props.history.push(`/user/${this.props.user.name}`)
-      if (this.props.lists.length === 0) this.props.getAllLists()
     }
   }
 
@@ -146,13 +143,11 @@ Authorization.propTypes = {
   user: PropTypes.object,
   history: PropTypes.object.isRequired,
   tokenLogin: PropTypes.func.isRequired,
-  getAllLists: PropTypes.func.isRequired,
   lists: PropTypes.array.isRequired,
 }
 
 const mapDispatchToProps = (dispatch: Function) => ({
   logIn: logIn(dispatch),
-  getAllLists: getAllLists(dispatch),
   tokenLogin: tokenLogin(dispatch),
 })
 

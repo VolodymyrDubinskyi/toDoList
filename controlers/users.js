@@ -1,39 +1,74 @@
 const jwt = require('jwt-simple');
-const DB = require('../services/db');
+
+const DB = require('../services/db')
 const secret = require('./secret')
 const config = require('../config/index')
+const User = require('../schems/user')
 
 const collection = config.DBCollections.users
 
 module.exports = {
   checkUser: async (ctx) => {
-    const userData = await DB.get(collection, { user: ctx.params.id.toLowerCase() })
-    if (userData[0]) {
-      ctx.body = JSON.stringify({ exist: true })
-    } else {
-      ctx.body = JSON.stringify({ exist: false })
-    }
+    await DB.get({
+      user: ctx.state.user,
+    }, User).then((user) => {
+      if (!user) {
+        ctx.body = JSON.stringify({ exist: true })
+      } else {
+        ctx.body = JSON.stringify({ exist: false })
+      }
+    })
   },
 
   tokenLogin: async (ctx) => {
-    if (ctx.state.user === null) {
+    if (!ctx.state.user) {
       ctx.body = { ok: false }
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const userData = await DB.get(collection, {
-        user: ctx.state.user,
-      })
-
-      ctx.body = {
-        info: {
-          id: userData[0]['_id'],
-          user: userData[0].user,
-          visibility: userData[0].visibility,
-          currentList: userData[0].currentList,
-        },
-      }
+      await DB.get({
+        name: ctx.state.user[0].name,
+      }, User)
+        .then(user => user[0])
+        .then((user) => {
+          ctx.body = {
+            info: {
+              id: user['_id'], //eslint-disable-line
+              user: user.name,
+              lists: user.lists,
+            },
+          }
+        })
     }
+  },
+
+  login: async (ctx) => {
+    const { body } = ctx.request
+    const query = {
+      name: body.login.toLowerCase(),
+      password: body.password.toLowerCase(),
+    }
+
+    await DB.get(query, User)
+      .then(user => user[0])
+      .then((user) => {
+        if (user !== null) {
+          const payload = { login: body.login };
+          const token = jwt.encode(payload, secret.getSecret());
+          ctx.body = {
+            token,
+            info: {
+              id: user['_id'], //eslint-disable-line
+              user: user.name,
+              lists: user.lists,
+            },
+          }
+        } else {
+          ctx.body = JSON.stringify({})
+          ctx.status = 401;
+          ctx.throw(401, 'Unauthorized');
+        }
+      })
   },
 
   update: async (ctx) => {
@@ -48,37 +83,17 @@ module.exports = {
     }
   },
 
-  login: async (ctx) => {
-    const { body } = ctx.request
-    const userData = await DB.get(collection, {
-      user: body.login.toLowerCase(),
-      password: body.password.toLowerCase(),
-    })
-    if (userData.length !== 0) {
-      const payload = { login: body.login };
-      const token = jwt.encode(payload, secret.getSecret());
-      ctx.body = {
-        token,
-        info: {
-          id: userData[0]['_id'],
-          user: userData[0].user,
-          visibility: userData[0].visibility,
-          currentList: userData[0].currentList,
-        },
-      }
-    } else {
-      ctx.body = JSON.stringify({})
-      ctx.status = 401;
-      ctx.throw(401, 'Unauthorized');
-    }
-  },
-
   create: async (ctx) => {
     const { body } = ctx.request
     body.password = body.password.toLowerCase()
     body.user = body.user.toLowerCase()
+
+    const newUserBody = {
+      name: body.user,
+      password: body.password,
+      lists: [],
+    }
+    await DB.insert(newUserBody, User)
     ctx.body = body;
-    const created = await DB.insert(body, collection)
-    ctx.body = created;
   },
 }

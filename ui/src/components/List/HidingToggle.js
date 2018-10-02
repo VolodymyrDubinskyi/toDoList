@@ -17,19 +17,22 @@ type Props = {
 };
 type State = {
   editValue: string,
+  edditing: boolean,
 }
 
 class HidingToggle extends Component<Props, State> {
   constructor(props: Object) {
     super(props);
     this.state = {
-      editValue: this.props.title,
+      editValue: props.list.title,
+      edditing: false,
     };
   }
 
   updateValue = (e: Object) => {
     this.setState({
       editValue: e.target.value,
+      edditing: true,
     });
   }
 
@@ -40,8 +43,10 @@ class HidingToggle extends Component<Props, State> {
         title: this.state.editValue,
       }
 
+      this.setState({
+        edditing: false,
+      });
       this.props.editList({
-        name: this.props.user.name,
         id: this.props.list.id,
         changes,
       })
@@ -53,6 +58,9 @@ class HidingToggle extends Component<Props, State> {
       title: this.state.editValue,
     }
 
+    this.setState({
+      edditing: false,
+    });
     this.props.editList({
       name: this.props.user.name,
       id: this.props.list.id,
@@ -61,12 +69,21 @@ class HidingToggle extends Component<Props, State> {
   }
 
   render() {
+    if (!this.state.edditing) {
+      const list = this.props.lists.filter(obj => obj.id === this.props.list.id)[0]
+      if (list.title !== this.state.editValue) {
+        this.setState({
+          editValue: list.title,
+        })
+      }
+    }
     return (<div
       style={{
         padding: '10px 36px 8px 8px',
         margin: 0,
       }}
     >
+      {/* <button onClick={() => { this.props.removeList(this.props.list.id) }}>1111</button> */}
       <textarea
         className={'toggleHolderTitle'}
         value={this.state.editValue}

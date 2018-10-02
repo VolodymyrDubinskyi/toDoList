@@ -8,10 +8,8 @@ import {
 type addToDoActionParams = {
   _id: string,
   payload: {
-    listId: string,
-    value: string,
-    chosen: boolean,
-    date: string,
+    id: string,
+    title: string,
     index: number,
   }
 }
@@ -19,12 +17,10 @@ type addToDoActionParams = {
 const addToDoAction = (data: addToDoActionParams): Object => ({
   type: 'ADD_TODO',
   payload: {
-    id: data.payload.listId,
+    id: data['_id'], //eslint-disable-line
     todo: {
-      date: data.payload.date,
-      id: data._id, //eslint-disable-line
-      title: data.payload.value,
-      chosen: data.payload.chosen,
+      id: data.payload.id,
+      title: data.payload.title,
       index: data.payload.index,
     },
   },
@@ -38,7 +34,7 @@ export type callAddToDoParams = {
 export const addToDo = (dispatch: Function) => (payload: callAddToDoParams) => {
   callAddToDoEndpoint(payload)
     .then((data) => {
-      const newData = data[0]
+      const newData = data[0] ? data[0] : data
       dispatch(addToDoAction(newData))
     })
 }
@@ -46,7 +42,18 @@ export const addToDo = (dispatch: Function) => (payload: callAddToDoParams) => {
 export const getAllToDos = (dispatch: Function) => (payload: string) => {
   callGetAllToDoEndpoint(payload)
     .then((data) => {
-      data.todoData.map(todo => dispatch(addToDoAction(todo)))
+      data.todoData.map((todo) => {
+        const newTodo = {
+          _id: data.listInfo,
+          payload: {
+            id: todo[0]['_id'], //eslint-disable-line
+            title: todo[0].title,
+            index: todo[0].index,
+          },
+        }
+        dispatch(addToDoAction(newTodo))
+        return null
+      })
     })
 }
 
@@ -91,7 +98,7 @@ export const editToDo = (dispatch: Function) => (payload: callEditToDoParams) =>
   const { changes } = payload
   if (changes.value) {
     changes.title = changes.value
-    changes.value = null
+    delete changes.value
   }
   dispatch(editToDoAction(payload.listId, payload.todoId, payload.changes))
 }

@@ -82,7 +82,7 @@ export class AddToDoHolder extends Component<Props, State> {
       label="Enter new Todo"
       value={this.state.inputValue}
       style={{
-        margin: '0 10px 6px',
+        margin: '0 0 6px',
         width: '236px',
         padding: '6px 8px',
         resize: 'vertical',

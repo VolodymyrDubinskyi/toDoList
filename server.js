@@ -4,17 +4,22 @@ const cors = require('@koa/cors');
 const Router = require('koa-router');
 const send = require('koa-send');
 const koaStatic = require('koa-static');
+const mongoose = require('mongoose')
+
 const todos = require('./controlers/todos');
 const users = require('./controlers/users');
 const lists = require('./controlers/lists');
 const secret = require('./controlers/secret')
 const config = require('./config/index')
 
+const url = `mongodb://${config.db.host}:${config.db.port}/${config.db.dbName}`;
+
 const { port } = config.webServer
 const router = new Router();
 const app = new Koa();
 app.use(bodyParser());
 app.use(cors());
+mongoose.connect(url)
 
 app.use(async (ctx, next) => {
   let user = null
@@ -41,7 +46,6 @@ router
   .delete('/lists', lists.remove)
   .patch('/lists', lists.update)
   .post('/lists/:id', lists.getUserList)
-  .get('/lists/:id/todos/:listId', todos.checkUserTodo)
   .get('/users/login', users.tokenLogin)
   .get('/users/:id', users.checkUser)
   .post('/users/:id/login', users.login)

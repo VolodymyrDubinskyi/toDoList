@@ -1,44 +1,34 @@
-const { MongoClient } = require('mongodb');
-const { ObjectID } = require('mongodb');
-const config = require('../config/index')
-
-const url = `mongodb://${config.db.host}:${config.db.port}/${config.db.dbName}`;
-
-const getMongoDBConnection = () => (
-  new Promise(resolve => MongoClient.connect(url, (_, db) => resolve(db))))
+const mongoose = require('mongoose')
 
 module.exports = {
-  get: (workCollection, query) => new Promise(async (resolve) => {
-    const db = await getMongoDBConnection()
-    const collection = db.collection(workCollection);
-    collection.find(query, (_, result) => {
-      result.toArray().then(resultArray => resolve(resultArray))
-    });
-  }),
-
-  remove: (id, workCollection) => new Promise(async (resolve) => {
-    const db = await getMongoDBConnection()
-    const collection = db.collection(workCollection);
-    collection.deleteMany({ _id: ObjectID(id) }, () => {
-      resolve(id)
-    })
-  }),
-
-  insert: (body, workCollection) => new Promise(async (resolve) => {
-    const db = await getMongoDBConnection()
-    const collection = db.collection(workCollection);
-    collection.insertOne(body, (err, result) => {
-      resolve(result.ops)
-    })
-  }),
-
-  update: (id, changes, workCollection) => new Promise(async (resolve) => {
-    const db = await getMongoDBConnection()
-    const collection = db.collection(workCollection);
-    collection.updateOne({ _id: ObjectID(id) },
-      { $set: changes },
-      () => {
-        resolve(Object.assign({ id }, changes))
+  get: (query, type) => new Promise(async (resolve) => {
+    await type.find(query)
+      .exec(async (err, comeBack) => {
+        if (err) throw err;
+        resolve(comeBack)
       });
+  }),
+
+  remove: (query, type) => new Promise(async (resolve) => {
+    const db = await type.findOneAndRemove(query)
+    resolve(db)
+  }),
+
+  insert: (body, Type) => new Promise(async (resolve) => {
+    const newObj = new Type({
+      ...body,
+      _id: new mongoose.Types.ObjectId(),
+    })
+    await newObj.save()
+    resolve(newObj)
+  }),
+
+  update: (id, changes, Type) => new Promise(async (resolve) => {
+    await Type.findById(id, async (err, obj) => {
+      const key = Object.keys(changes)[0]
+      obj[key] = changes[key] //eslint-disable-line
+      await obj.save()
+      resolve(obj)
+    })
   }),
 }

@@ -11,6 +11,7 @@ const lists = (state: any = [], action: actionParams) => {
       const newState = [
         ...state,
       ];
+      newState.todos = []
       const newList = action.payload;
       newState.push(newList)
       newState.sort((a, b) => a.index > b.index)
@@ -21,8 +22,12 @@ const lists = (state: any = [], action: actionParams) => {
       newState.sort((a, b) => a.index > b.index)
       return newState
     }
-    case 'EDIT_LIST': {
+    case 'EDIT_LIST_REDUCER': {
+      console.log('++')
       let newState = [...state]
+      if (action.payload.changes.todos) {
+        return state
+      }
       newState = newState.map((elem) => {
         let newElem = elem
         if (newElem.id === action.payload.id) {
@@ -36,7 +41,7 @@ const lists = (state: any = [], action: actionParams) => {
     case 'ADD_TODO': {
       const newState = state.filter(elem => elem.id !== action.payload.id);
       const list = state.filter(elem => elem.id === action.payload.id)[0];
-      if (!list.todos) list.todos = []
+      if (!list.todos[0].title) list.todos = []
       list.todos.push(action.payload.todo)
       newState.push(list)
       newState.sort((a, b) => a.index > b.index)
@@ -50,7 +55,7 @@ const lists = (state: any = [], action: actionParams) => {
       newState.sort((a, b) => a.index > b.index)
       return newState
     }
-    case 'EDIT_TODO': {
+    case 'EDIT_TODO_REDUCER': {
       const newState = state.filter(elem => elem.id !== action.payload.listId);
       const list = state.filter(elem => elem.id === action.payload.listId)[0];
       const todos = list.todos.filter(todo => todo.id !== action.payload.todoId)

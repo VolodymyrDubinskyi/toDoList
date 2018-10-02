@@ -13,6 +13,7 @@ export type addListActionParams = {
   title: string,
   visibility: boolean,
   index: number,
+  todos: Array<Object>,
 }
 
 const addListAction = (data: addListActionParams): Object => ({
@@ -20,7 +21,7 @@ const addListAction = (data: addListActionParams): Object => ({
   payload: {
     id: data._id, // eslint-disable-line
     title: data.title,
-    todos: [],
+    todos: data.todos,
     index: data.index,
   },
 })
@@ -34,6 +35,7 @@ export const addList = (dispatch: Function) => () => {
   callAddListEndpoint()
     .then((data: Array<addListActionParams>) => {
       dispatch(addListAction(data[0]))
+      getAllToDos(dispatch)(data[0]['_id']) //eslint-disable-line
     })
 }
 
@@ -47,8 +49,8 @@ export const getAllLists = (dispatch: Function) => () => {
   callGetAllListsEndpoint()
     .then((data: { lists: Array<Object> }) => {
       data.lists.map((obj) => {
-        dispatch(addListAction(obj))
-        getAllToDos(dispatch)(obj['_id']) //eslint-disable-line
+        dispatch(addListAction(obj[0]))
+        getAllToDos(dispatch)(obj[0]['_id']) //eslint-disable-line
         return null
       })
     })

@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 import TodosContainer from './List/TodosContainer';
 import type { callEditUserParams } from '../actions/user'
-import type { callEditListParams } from '../actions/lists'
 import type { userProps, listsProps } from '../props'
 import {
   editUser,
@@ -18,7 +17,7 @@ import {
   addList, removeList, editList,
 } from '../actions/lists'
 import {
-  getAllToDos, removeToDo, editToDo,
+  removeToDo, editToDo,
 } from '../actions/todos'
 
 type Props = {
@@ -28,21 +27,27 @@ type Props = {
   editUser: (callEditUserParams) => void,
   removeList: (string) => void,
   addList: Function,
-  editList: (callEditListParams) => void,
-  getAllToDos: (string) => void,
   removeToDo: Function,
   editToDo: Function,
+  editList: Function,
 };
 
 type State = {
   lists: Array<Object>,
   moved: string,
+  listMoved: boolean,
 }
 
 class List extends React.Component<Props, State> {
   constructor(props: Object) {
     super(props)
-    this.state = { lists: props.lists, moved: '' }
+    this.state = { lists: props.lists, moved: '', listMoved: false }
+  }
+
+  stopMoveList = () => {
+    this.setState({
+      listMoved: false,
+    })
   }
 
   moveList = (dragIndex, hoverIndex) => {
@@ -59,6 +64,7 @@ class List extends React.Component<Props, State> {
     })
     this.setState({
       lists: newLists,
+      listMoved: true,
     })
   }
 
@@ -144,6 +150,29 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
+    // for (let i = 0; i < this.props.lists.length; i++) {
+    //   console.log(this.props.lists[i])
+    // }
+    if (!this.state.listMoved) {
+      let indexSame = true
+      this.state.lists.map((obj, i) => {
+        if (this.state.lists[i].index !== this.props.lists[i].index) {
+          indexSame = false
+        }
+        return null
+      })
+      if (!indexSame) {
+        const lists = this.props.lists.sort((a, b) => {
+          if (a.index > b.index) {
+            return 1
+          }
+          return -1
+        })
+        this.setState({
+          lists,
+        })
+      }
+    }
     if (!this.props.user.name) {
       this.props.history.push('/authorization')
       return null
@@ -156,7 +185,8 @@ class List extends React.Component<Props, State> {
     const propsTodosLength = this.props.lists.reduce(add, 0);
     const stateTodosLength = this.state.lists.reduce(add, 0);
 
-    if (propsTodosLength !== stateTodosLength) {
+    if ((propsTodosLength !== stateTodosLength)
+      || (this.props.lists.length !== this.state.lists.length)) {
       const newState = []
       this.props.lists.map(obj => newState.push(obj))
       newState.sort((a, b) => {
@@ -170,7 +200,6 @@ class List extends React.Component<Props, State> {
 
     const allLists = this.state.lists.map(elem => <TodosContainer
       key={elem.id}
-      editList={this.props.editList}
       elem={elem}
       list={elem}
       user={this.props.user}
@@ -183,6 +212,8 @@ class List extends React.Component<Props, State> {
       stopMove={this.stopMove}
       setMoveIndex={this.setMoveIndex}
       editToDo={this.props.editToDo}
+      editList={this.props.editList}
+      stopMoveList={this.stopMoveList}
     />)
 
     if (this.props.lists[0]) {
@@ -207,11 +238,11 @@ List.propTypes = {
   lists: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired,
   editUser: PropTypes.func.isRequired,
-  editList: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
+  state,
   lists: state.lists,
   user: state.user,
 })
@@ -222,7 +253,6 @@ const mapDispatchToProps = (dispatch: Function) => ({
   editUser: editUser(dispatch),
   editToDo: editToDo(dispatch),
   editList: editList(dispatch),
-  getAllToDos: getAllToDos(dispatch),
   removeToDo: removeToDo(dispatch),
 })
 

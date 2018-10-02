@@ -58,4 +58,4 @@ export const callEditListEndpoint = payload => fetch(
       'X-Access-Token': localStorage.getItem('token') || '',
     },
   },
-).then(response => response.json())
+)

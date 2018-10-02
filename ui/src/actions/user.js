@@ -6,6 +6,9 @@ import {
   callLogInEndpoint,
 } from '../FetchCalls/user'
 
+import {
+  getAllLists,
+} from './lists'
 
 const logOut = (): Object => ({
   type: 'LOG_OUT',
@@ -14,17 +17,15 @@ const logOut = (): Object => ({
 type logInActionParams = {
   user: string,
   id: string,
-  visibility: boolean,
+  lists: Array<string>,
 }
 
 const logInAction = (info: logInActionParams): Object => ({
   type: 'LOG_IN',
   payload: {
     name: info.user,
-    visibility: info.visibility,
     id: info.id,
-    lists: [],
-    currentList: '',
+    lists: info.lists,
   },
 })
 
@@ -38,6 +39,7 @@ export const logIn = (dispatch: Function) => (payload: callLogInParams) => {
     .then((data) => {
       localStorage.setItem('token', data.token)
       dispatch(logInAction(data.info))
+      getAllLists(dispatch)()
     })
 }
 
@@ -45,6 +47,7 @@ export const tokenLogin = (dispatch: Function) => () => {
   callTokenLogInEndpoint()
     .then((data) => {
       dispatch(logInAction(data.info))
+      getAllLists(dispatch)()
     })
 }
 

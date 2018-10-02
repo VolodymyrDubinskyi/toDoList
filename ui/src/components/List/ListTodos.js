@@ -92,7 +92,7 @@ class ListTodos extends React.Component<Props, State> {
 
     return <div>
       {listItems.map((todo) => {
-        if (todo) {
+        if (todo.id) {
           const moved = todo.id === this.props.moved
           return <TodoItemWithConnect
             todo={todo}
