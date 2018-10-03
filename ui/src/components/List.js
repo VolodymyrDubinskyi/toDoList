@@ -30,18 +30,25 @@ type Props = {
   removeToDo: Function,
   editToDo: Function,
   editList: Function,
+  todos: Array<Object>,
 };
 
 type State = {
   lists: Array<Object>,
   moved: string,
+  todos: Array<Object>,
   listMoved: boolean,
 }
 
 class List extends React.Component<Props, State> {
   constructor(props: Object) {
     super(props)
-    this.state = { lists: props.lists, moved: '', listMoved: false }
+    this.state = {
+      lists: props.lists,
+      moved: '',
+      listMoved: false,
+      todos: props.todos,
+    }
   }
 
   stopMoveList = () => {
@@ -69,41 +76,14 @@ class List extends React.Component<Props, State> {
   }
 
   changeList = (todoId, oldListId, newListId) => {
-    const lists = this.state.lists.filter((elem) => {
-      const filter = (elem.id !== oldListId) && (elem.id !== newListId)
-      return filter
-    });
     const oldList = this.state.lists.filter(elem => elem.id === oldListId)[0];
     const newList = this.state.lists.filter(elem => elem.id === newListId)[0];
 
-    let oldListTodos = oldList.todos
-    const newListTodos = newList.todos
-    const currentTodo = oldListTodos.filter(elem => elem.id === todoId)[0];
+    const index = oldList.todos.indexOf(todoId)
+    oldList.todos.splice(index, 1)
+    newList.todos.push(todoId)
 
-    if (currentTodo === undefined) return
-
-    oldListTodos = oldListTodos.filter(elem => elem.id !== todoId);
-    newListTodos.push(currentTodo)
-    newListTodos.forEach((obj, i) => {
-      const newObj = obj
-      newObj.index = i
-      return newObj
-    })
-    newListTodos.forEach((obj, index) => {
-      const newObj = obj
-      newObj.index = index
-      return newObj
-    })
-    newListTodos.sort((a, b) => {
-      if (a.index > b.index) {
-        return 1
-      }
-      return -1
-    })
-    newList.todos = newListTodos
-    oldList.todos = oldListTodos
-
-    const newState = [oldList, newList, ...lists]
+    const newState = [oldList, newList]
     newState.sort((a, b) => {
       if (a.index > b.index) {
         return 1
@@ -150,29 +130,7 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
-    // for (let i = 0; i < this.props.lists.length; i++) {
-    //   console.log(this.props.lists[i])
-    // }
-    if (!this.state.listMoved) {
-      let indexSame = true
-      this.state.lists.map((obj, i) => {
-        if (this.state.lists[i].index !== this.props.lists[i].index) {
-          indexSame = false
-        }
-        return null
-      })
-      if (!indexSame) {
-        const lists = this.props.lists.sort((a, b) => {
-          if (a.index > b.index) {
-            return 1
-          }
-          return -1
-        })
-        this.setState({
-          lists,
-        })
-      }
-    }
+    console.log(this.props.state.todos)
     if (!this.props.user.name) {
       this.props.history.push('/authorization')
       return null
@@ -184,6 +142,30 @@ class List extends React.Component<Props, State> {
 
     const propsTodosLength = this.props.lists.reduce(add, 0);
     const stateTodosLength = this.state.lists.reduce(add, 0);
+    this.state.lists.map((obj, i) => {
+      if (!this.state.listMoved) {
+        let newState = []
+        this.props.lists.map(list => newState.push(list))
+        newState.sort((a, b) => {
+          if (a.index > b.index) {
+            return 1
+          }
+          return -1
+        })
+        if (this.state.lists[i].title !== newState[i].title) {
+          newState = newState.map((list, index) => {
+            const newObj = list
+            newObj.index = index
+            return newObj
+          })
+
+          this.setState({
+            lists: newState,
+          })
+        }
+      }
+      return null
+    })
 
     if ((propsTodosLength !== stateTodosLength)
       || (this.props.lists.length !== this.state.lists.length)) {
@@ -195,7 +177,9 @@ class List extends React.Component<Props, State> {
         }
         return -1
       })
-      this.setState({ lists: newState })
+      this.setState({
+        lists: newState,
+      })
     }
 
     const allLists = this.state.lists.map(elem => <TodosContainer
@@ -214,6 +198,7 @@ class List extends React.Component<Props, State> {
       editToDo={this.props.editToDo}
       editList={this.props.editList}
       stopMoveList={this.stopMoveList}
+      todos={this.props.todos}
     />)
 
     if (this.props.lists[0]) {
@@ -244,6 +229,7 @@ List.propTypes = {
 const mapStateToProps = state => ({
   state,
   lists: state.lists,
+  todos: state.todos,
   user: state.user,
 })
 

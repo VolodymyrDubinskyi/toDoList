@@ -23,6 +23,7 @@ type Props = {
   moved: string,
   editList: (callEditListParams) => void,
   lists: Array<listsProps>,
+  list: Object,
   user: userProps,
   isDragging: boolean,
   connectDragSource: Function,
@@ -33,6 +34,7 @@ type Props = {
   setMoveIndex: Function,
   stopMove: Function,
   editToDo: Function,
+  todos: Array<Object>,
 }
 
 const listSource = {
@@ -44,7 +46,8 @@ const listSource = {
   },
   endDrag(props) {
     props.stopMoveList()
-    props.lists.map((obj, index) => {
+    const { lists } = props
+    lists.map((obj, index) => {
       props.editList({ id: obj.id, changes: { index } })
       return null
     })
@@ -90,6 +93,15 @@ const listTarget = {
 
 class TodosContainer extends React.Component<Props> {
   render() {
+    const idOfListTodos = this.props.list.todos
+    const { todos } = this.props
+    const listItems = todos.filter((obj) => {
+      if (idOfListTodos.indexOf(obj.id) !== -1) {
+        return true
+      }
+      return false
+    })
+
     return this.props.connectDropTarget(this.props.connectDragPreview(
       <div className={'todosList'}
         key={this.props.elem.id}>
@@ -109,7 +121,7 @@ class TodosContainer extends React.Component<Props> {
               changeList={this.props.changeList}
               list={this.props.elem}
               user={this.props.user}
-              listItems={this.props.elem.todos}
+              listItems={listItems}
               removeToDoInState={this.props.removeToDoInState}
               moved={this.props.moved}
               setMoveIndex={this.props.setMoveIndex}

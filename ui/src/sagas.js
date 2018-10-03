@@ -12,16 +12,19 @@ import {
 } from './FetchCalls/list'
 
 function* editTodoAsync(action) {
-  const { payload, type } = action
+  const { payload } = action
   const oldState = yield select();
-  // console.log('oldState', oldState)
-
-  yield put({ type: 'EDIT_TODO_REDUCER', payload });
-
-  const fetchPayload = yield callEditToDoEndpoint(payload)
-  // console.log(type)
-  // console.log(payload)
-  // console.log(fetchPayload)
+  console.log(oldState.todos)
+  const { todoId } = payload
+  const changeKey = Object.keys(payload.changes)[0]
+  const todo = oldState.todos.filter(elem => elem.id === todoId)[0];
+  try {
+    yield callEditToDoEndpoint(payload)
+    // yield put({ type: 'EDIT_TODO_REDUCER', payload });
+  } catch (err) {
+    if (todo) payload.changes[changeKey] = todo[changeKey]
+    // yield put({ type: 'EDIT_TODO_REDUCER', payload });
+  }
 }
 
 function* watchEditTodoAsync() {
@@ -30,11 +33,48 @@ function* watchEditTodoAsync() {
 
 
 function* removeTodoAsync(action) {
-  const { payload, type } = action
-  const fetchPayload = yield callRemoveToDoEndpoint(payload)
-  // console.log(type)
-  // console.log(payload)
-  // console.log(fetchPayload)
+  const { payload } = action
+  const oldState = yield select();
+  const { listId, todoId } = payload
+
+  let listWithDeleted
+  oldState.lists.map((obj) => {
+    obj.todos.map((id) => {
+      if (id === todoId) {
+        listWithDeleted = obj
+      }
+      return null
+    })
+    return null
+  })
+
+  const listWhereWasDeleted = oldState.lists.filter(elem => elem.id === listId)[0]
+  const [...todosWithDeleted] = listWithDeleted.todos
+  const [...todosWhereWasDeleted] = listWhereWasDeleted.todos
+
+  todosWhereWasDeleted.push(todoId)
+  todosWithDeleted.splice(todosWithDeleted.indexOf(todoId), 1)
+
+  try {
+    yield callRemoveToDoEndpoint(payload)
+    yield put({ type: 'REMOVE_TODO_REDUCER', payload });
+  } catch (err) {
+    const payloadDeleteTodo = {
+      id: listWithDeleted.id,
+      changes: {
+        todos: todosWithDeleted,
+      },
+    }
+    const payloadAddTodo = {
+      id: listWhereWasDeleted.id,
+      changes: {
+        todos: todosWhereWasDeleted,
+      },
+    }
+
+    yield put({ type: 'EDIT_LIST_REDUCER', payload: payloadDeleteTodo })
+    yield put({ type: 'EDIT_LIST_REDUCER', payload: payloadAddTodo })
+  }
 }
 
 function* watchRemoveTodoAsync() {
@@ -42,19 +82,19 @@ function* watchRemoveTodoAsync() {
 }
 
 function* editListAsync(action) {
-  const { payload, type } = action
+  const { payload } = action
   const oldState = yield select();
   const { id } = payload
   const changeKey = Object.keys(payload.changes)[0]
   const list = oldState.lists.filter(elem => elem.id === id)[0];
   try {
-    // console.log(payload)
-    yield put({ type: 'EDIT_LIST_REDUCER', payload });
     yield callEditListEndpoint(payload)
-  } catch (err) {
-    payload.changes[changeKey] = list[changeKey]
-    console.log(payload)
     yield put({ type: 'EDIT_LIST_REDUCER', payload });
+  } catch (err) {
+    if (changeKey !== 'todos') {
+      payload.changes[changeKey] = list[changeKey]
+      yield put({ type: 'EDIT_LIST_REDUCER', payload });
+    }
   }
 }
 
@@ -63,11 +103,8 @@ function* watchEditListAsync() {
 }
 
 function* removeListAsync(action) {
-  const { payload, type } = action
-  const fetchPayload = yield callRemoveListEndpoint(payload)
-  // console.log(type)
-  // console.log(payload)
-  // console.log(fetchPayload)
+  const { payload } = action
+  yield callRemoveListEndpoint(payload)
 }
 
 function* watchRemoveListAsync() {

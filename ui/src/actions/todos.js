@@ -43,15 +43,17 @@ export const getAllToDos = (dispatch: Function) => (payload: string) => {
   callGetAllToDoEndpoint(payload)
     .then((data) => {
       data.todoData.map((todo) => {
-        const newTodo = {
-          _id: data.listInfo,
-          payload: {
-            id: todo[0]['_id'], //eslint-disable-line
-            title: todo[0].title,
-            index: todo[0].index,
-          },
+        if (todo[0]) {
+          const newTodo = {
+            _id: data.listInfo,
+            payload: {
+              id: todo[0]['_id'], //eslint-disable-line
+              title: todo[0].title,
+              index: todo[0].index,
+            },
+          }
+          dispatch(addToDoAction(newTodo))
         }
-        dispatch(addToDoAction(newTodo))
         return null
       })
     })

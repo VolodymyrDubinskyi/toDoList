@@ -62,7 +62,6 @@ class HidingToggle extends Component<Props, State> {
       edditing: false,
     });
     this.props.editList({
-      name: this.props.user.name,
       id: this.props.list.id,
       changes,
     })

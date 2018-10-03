@@ -45,7 +45,8 @@ module.exports = {
     } else {
       const { id, changes } = ctx.request.body
       await DB.update(id, changes, List)
-      ctx.body = JSON.stringify({ id, changes })
+      const updated = JSON.stringify({ id, changes })
+      ctx.body = updated
     }
   },
 

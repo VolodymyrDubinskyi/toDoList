@@ -12,6 +12,7 @@ import {
 type Props = {
   listItems: Array<todoProps>,
   list: listsProps,
+  todos: Array<Object>,
   changeList: Function,
   removeToDoInState: Function,
   moved: string,
@@ -82,6 +83,17 @@ class ListTodos extends React.Component<Props, State> {
     if (this.state.listItems.length !== this.props.listItems.length) {
       this.setState({ listItems: this.props.listItems })
     }
+
+    if (this.props.moved === '') {
+      this.state.listItems.map((obj, i) => {
+        if (this.props.listItems[i] === undefined) return null
+        if (obj.title !== this.props.listItems[i].title) {
+          this.setState({ listItems: this.props.listItems })
+        }
+        return null
+      })
+    }
+
     const { listItems } = this.state
     listItems.sort((a, b) => {
       if (a.index > b.index) {
@@ -120,6 +132,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
 
 const mapStateToProps = state => ({
   lists: state.lists,
+  todos: state.todos,
   userId: state.user.id,
 })
 

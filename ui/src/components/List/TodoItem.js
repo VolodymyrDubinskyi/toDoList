@@ -76,23 +76,20 @@ const todoSource = {
       let newList;
       const { id } = props.todo
       props.lists.map((list) => {
-        const findedTodoById = list.todos.filter(curListTodo => curListTodo.id === id);
+        const findedTodoById = list.todos.filter(curListTodo => curListTodo === id);
         if (findedTodoById.length === 1) newList = list
         return null
       })
       const checkSameListId = newList.id === props.listId
 
       if (!checkSameListId) {
-        const removeParams: callRemoveToDoParams = {
-          userId: props.userId,
-          listId: props.listId,
-          todoId: props.todo.id,
-        }
-        props.removeToDo(removeParams)
-        const todosId = newList.todos.map(obj => obj.id)
+        const oldListTodosId = props.listItems.map(obj => obj.id)
+        oldListTodosId.splice(oldListTodosId.indexOf(id), 1)
+
+        props.removeToDo({ listId: props.listId, todoId: id })
         props.editList({
           id: newList.id,
-          changes: { todos: [...todosId] },
+          changes: { todos: [...newList.todos] },
         })
       }
 
