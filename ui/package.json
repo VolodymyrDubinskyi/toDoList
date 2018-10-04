@@ -61,6 +61,8 @@
     "immutability-helper": "^2.8.1",
     "jest": "^23.6.0",
     "node-sass": "^4.9.3",
+    "react-notification": "^6.8.4",
+    "react-notifications": "^1.4.3",
     "react-scripts-ts": "^2.17.0",
     "react-test-renderer": "^16.5.1",
     "rimraf": "^2.6.2",

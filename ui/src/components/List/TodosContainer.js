@@ -47,8 +47,8 @@ const listSource = {
   endDrag(props) {
     props.stopMoveList()
     const { lists } = props
-    lists.map((obj, index) => {
-      props.editList({ id: obj.id, changes: { index } })
+    lists.map((obj) => {
+      props.editList({ id: obj.id, changes: { index: obj.index } })
       return null
     })
   },

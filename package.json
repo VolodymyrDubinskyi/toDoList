@@ -36,6 +36,8 @@
     "koa-bodyparser": "^4.2.1",
     "koa-static": "^5.0.0",
     "mongoose": "^5.3.0",
-    "react-dnd": "^5.0.0"
+    "react-dnd": "^5.0.0",
+    "react-notification": "^6.8.4",
+    "react-notifications": "^1.4.3"
   }
 }

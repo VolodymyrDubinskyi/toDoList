@@ -8,11 +8,13 @@ import {
   withRouter, Link, Route, Switch,
 } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { NotificationManager } from 'react-notifications';
 
 import type { callEditListParams } from '../actions/lists'
 import type { callEditUserParams } from '../actions/user'
 import { editList, addList } from '../actions/lists'
-import logOut, { editUser } from '../actions/user'
+import logOut, { editUser, clearStore } from '../actions/user'
+import { removeNotification } from '../actions/notification'
 import type { userProps, listsProps } from '../props'
 
 type Props = {
@@ -22,6 +24,9 @@ type Props = {
   editUser: (callEditUserParams) => void,
   logOut: () => void,
   history: Object,
+  clearStore: Function,
+  removeNotification: Function,
+  notifications: Array<Object>,
 };
 type State = {
   titleEdit: boolean,
@@ -84,6 +89,11 @@ export class Header extends Component<Props, State> {
   }
 
   render() {
+    this.props.notifications.map((obj) => {
+      NotificationManager[obj.type](obj.head, obj.info)
+      this.props.removeNotification(obj.id)
+      return null
+    })
     if ((!this.props.user.currentList)
       && (this.props.history.location.pathname)
       && (this.props.history.location.pathname.split('/').length > 4)) {
@@ -114,7 +124,7 @@ export class Header extends Component<Props, State> {
 
     return (
       <div className={'header'}>
-      {/* <button onClick={this.props.addList}>1111</button> */}
+        {/* <button onClick={this.props.addList}>1111</button> */}
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Switch>
             <Route exact path="/registration" component={() => (
@@ -138,6 +148,7 @@ export class Header extends Component<Props, State> {
                 style={{ float: 'right', fontSize: '15px' }}
                 onClick={() => {
                   this.props.logOut()
+                  this.props.clearStore()
                   localStorage.removeItem('token')
                 }}
                 className='headerButton'>
@@ -187,7 +198,9 @@ Header.propTypes = {
 
 
 const mapStateToProps = state => ({
+  notifications: state.notifications,
   user: state.user,
+  todos: state.todos,
   lists: state.lists,
   state,
 })
@@ -197,6 +210,8 @@ const mapDispatchToProps = (dispatch: Function) => ({
   logOut: () => dispatch(logOut()),
   editList: editList(dispatch),
   addList: addList(dispatch),
+  clearStore: clearStore(dispatch),
+  removeNotification: removeNotification(dispatch),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

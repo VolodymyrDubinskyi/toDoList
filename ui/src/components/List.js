@@ -130,7 +130,6 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.state.todos)
     if (!this.props.user.name) {
       this.props.history.push('/authorization')
       return null
@@ -142,8 +141,8 @@ class List extends React.Component<Props, State> {
 
     const propsTodosLength = this.props.lists.reduce(add, 0);
     const stateTodosLength = this.state.lists.reduce(add, 0);
-    this.state.lists.map((obj, i) => {
-      if (!this.state.listMoved) {
+    if (!this.state.listMoved) {
+      this.state.lists.map((obj, i) => {
         let newState = []
         this.props.lists.map(list => newState.push(list))
         newState.sort((a, b) => {
@@ -163,9 +162,9 @@ class List extends React.Component<Props, State> {
             lists: newState,
           })
         }
-      }
-      return null
-    })
+        return null
+      })
+    }
 
     if ((propsTodosLength !== stateTodosLength)
       || (this.props.lists.length !== this.state.lists.length)) {
@@ -211,9 +210,27 @@ class List extends React.Component<Props, State> {
           position: 'relative',
         }}>
         {allLists.map(obj => obj)}
+        <div className='todosList' onClick={this.props.addList}>
+          <div className='addNewListContainer'>
+            <span>+ Add new list</span>
+          </div>
+        </div>
       </div>
     }
-    return <div />
+    return <div
+    style={{
+      width: '100vw',
+      height: 'calc(100vh - 68px)',
+      paddingTop: 68,
+      display: 'flex',
+      position: 'relative',
+    }}>
+    <div className='todosList' onClick={this.props.addList}>
+      <div className='addNewListContainer'>
+        <span>+ Add new list</span>
+      </div>
+    </div>
+  </div>
   }
 }
 

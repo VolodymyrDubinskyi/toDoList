@@ -11,19 +11,39 @@ import {
   callEditListEndpoint,
 } from './FetchCalls/list'
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
+
 function* editTodoAsync(action) {
   const { payload } = action
   const oldState = yield select();
-  console.log(oldState.todos)
   const { todoId } = payload
   const changeKey = Object.keys(payload.changes)[0]
   const todo = oldState.todos.filter(elem => elem.id === todoId)[0];
   try {
+    yield put({ type: 'EDIT_TODO_REDUCER', payload });
     yield callEditToDoEndpoint(payload)
-    // yield put({ type: 'EDIT_TODO_REDUCER', payload });
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'info',
+        head: 'Todo edited',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
   } catch (err) {
+    yield (delay(2000))
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'error',
+        head: 'Some connection problems, pls try aging',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
     if (todo) payload.changes[changeKey] = todo[changeKey]
-    // yield put({ type: 'EDIT_TODO_REDUCER', payload });
+    yield put({ type: 'EDIT_TODO_REDUCER', payload });
   }
 }
 
@@ -58,7 +78,26 @@ function* removeTodoAsync(action) {
   try {
     yield callRemoveToDoEndpoint(payload)
     yield put({ type: 'REMOVE_TODO_REDUCER', payload });
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'info',
+        head: 'Todo removed',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
   } catch (err) {
+    yield (delay(2000))
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'error',
+        head: 'Some connection problems, pls try aging',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
     const payloadDeleteTodo = {
       id: listWithDeleted.id,
       changes: {
@@ -88,11 +127,31 @@ function* editListAsync(action) {
   const changeKey = Object.keys(payload.changes)[0]
   const list = oldState.lists.filter(elem => elem.id === id)[0];
   try {
-    yield callEditListEndpoint(payload)
     yield put({ type: 'EDIT_LIST_REDUCER', payload });
+    yield callEditListEndpoint(payload)
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'info',
+        head: 'List edited',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
   } catch (err) {
+    yield (delay(2000))
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'error',
+        head: 'Some connection problems, pls try aging',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
     if (changeKey !== 'todos') {
       payload.changes[changeKey] = list[changeKey]
+      yield put({ type: 'EDIT_LIST_REDUCER', payload });
       yield put({ type: 'EDIT_LIST_REDUCER', payload });
     }
   }

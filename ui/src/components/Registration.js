@@ -6,6 +6,8 @@ import {
   Button, TextField,
   FormControl, FormHelperText,
 } from '@material-ui/core'
+import { NotificationManager } from 'react-notifications';
+
 import { Link, withRouter } from 'react-router-dom'
 import config from '../../config'
 
@@ -15,12 +17,12 @@ type Props = {
   history: Object,
 };
 type State = {
-      todoNowEditting: boolean,
-      loginValue: string,
-      passwordValue: string,
-      confirmPasswordValue: string,
-      errorPassword: string,
-      errorLogin: string,
+  todoNowEditting: boolean,
+  loginValue: string,
+  passwordValue: string,
+  confirmPasswordValue: string,
+  errorPassword: string,
+  errorLogin: string,
 }
 
 class Registration extends Component<Props, State> {
@@ -35,6 +37,25 @@ class Registration extends Component<Props, State> {
       errorLogin: '',
     };
   }
+
+  createNotification = (type, head, info) => () => {
+    switch (type) {
+      case 'info':
+        NotificationManager.info(head, info, 3000);
+        break;
+      case 'success':
+        NotificationManager.success(head, info, 3000);
+        break;
+      case 'warning':
+        NotificationManager.warning(head, info, 3000);
+        break;
+      case 'error':
+        NotificationManager.error(head, info, 3000);
+        break;
+      default: return null
+    }
+    return null
+  };
 
   updateValue(e, inputName: string) {
     const newValue = {}
@@ -57,24 +78,24 @@ class Registration extends Component<Props, State> {
   ).then(response => response.json())
     .then((responce) => {
       if (!this.state.loginValue) {
-        this.setState({ errorLogin: 'Login must be filled out.' })
+        this.createNotification('warning', 'Warning', 'Login must be filled out.')()
       } else if (this.state.loginValue.length < 6 || this.state.loginValue.length > 15) {
-        this.setState({ errorLogin: 'Login must have more then 5 characters and not more then 14.' })
+        this.createNotification('warning', 'Warning', 'Login must have more then 5 characters and not more then 14.')()
       } else if (responce.exist) {
-        this.setState({ errorLogin: 'Login already exist' })
-      } else {
-        this.setState({ errorLogin: '' })
+        this.createNotification('warning', 'Warning', 'Login already exist')()
       }
       return responce
     })
 
   checkPasswords = () => {
     if (!this.state.passwordValue) {
-      this.setState({ errorPassword: 'Password must be filled out.' })
+      this.createNotification('warning', 'Warning', 'Password must be filled out.')()
     } else if (this.state.passwordValue.length < 6 || this.state.passwordValue.length > 15) {
-      this.setState({ errorPassword: 'Password must have more then 5 characters and not more then 14.' })
+      this.createNotification('warning',
+        'Warning',
+        'Password must have more then 5 characters and not more then 14.')()
     } else if (this.state.passwordValue !== this.state.confirmPasswordValue) {
-      this.setState({ errorPassword: 'Your password and confirmation password do not match.' })
+      this.createNotification('warning', 'Warning', 'Your password and confirmation password do not match.')()
     } else {
       this.setState({ errorPassword: '' })
       return true
@@ -105,7 +126,10 @@ class Registration extends Component<Props, State> {
             },
           },
         )
-          .then(() => { this.props.history.push('/authorization') })
+          .then(() => {
+            this.createNotification('success', 'Profile Created', '')()
+            this.props.history.push('/authorization')
+          })
       }
     })
   }

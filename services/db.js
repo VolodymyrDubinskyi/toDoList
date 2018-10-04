@@ -26,8 +26,10 @@ module.exports = {
   update: (id, changes, Type) => new Promise(async (resolve) => {
     await Type.findById(id, async (err, obj) => {
       const key = Object.keys(changes)[0]
-      obj[key] = changes[key] //eslint-disable-line
-      await obj.save()
+      if (obj) {
+        obj[key] = changes[key] //eslint-disable-line
+        await obj.save()
+      }
       resolve(obj)
     })
   }),

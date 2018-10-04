@@ -4,6 +4,7 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom'
+import { NotificationContainer } from 'react-notifications';
 
 import List from './List'
 import Registration from './Registration'
@@ -27,6 +28,7 @@ const ToDo = () => <Router>
       <Route exact path="*" component={() => <List />} />
     </Switch>
     <HeaderWithConnect />
+  <NotificationContainer />
   </div>
 </Router>
 

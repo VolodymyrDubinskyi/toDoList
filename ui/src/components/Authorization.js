@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { NotificationManager } from 'react-notifications';
 
 import type { callLogInParams } from '../actions/user'
 import { logIn, tokenLogin } from '../actions/user'
@@ -39,6 +40,25 @@ export class Authorization extends Component<Props, State> {
     };
   }
 
+  createNotification = (type: string, head: string, info: string) => () => {
+    switch (type) {
+      case 'info':
+        NotificationManager.info(head, info, 3000);
+        break;
+      case 'success':
+        NotificationManager.success(head, info, 3000);
+        break;
+      case 'warning':
+        NotificationManager.warning(head, info, 3000);
+        break;
+      case 'error':
+        NotificationManager.error(head, info, 3000);
+        break;
+      default: return null
+    }
+    return null
+  };
+
   componentWillMount() {// eslint-disable-line
     if (localStorage.getItem('token')) {
       this.props.tokenLogin()
@@ -59,11 +79,10 @@ export class Authorization extends Component<Props, State> {
 
   checkLogin = () => {
     if (!this.state.loginValue) {
-      this.setState({ errorLogin: 'Login must be filled out.' })
+      this.createNotification('warning', 'Warning', 'Login must be filled out.')()
     } else if (this.state.loginValue.length < 6 || this.state.loginValue.length > 15) {
-      this.setState({ errorLogin: 'Login must have more then 5 characters and not more then 14.' })
+      this.createNotification('warning', 'Warning', 'Login must have more then 5 characters and not more then 14.')()
     } else {
-      this.setState({ errorLogin: '' })
       return true
     }
     return false
@@ -71,11 +90,10 @@ export class Authorization extends Component<Props, State> {
 
   checkPasswords = () => {
     if (!this.state.passwordValue) {
-      this.setState({ errorPassword: 'Password must be filled out.' })
+      this.createNotification('warning', 'Warning', 'Password must be filled out.')()
     } else if (this.state.passwordValue.length < 6 || this.state.passwordValue.length > 15) {
-      this.setState({ errorPassword: 'Password must have more then 5 characters and not more then 14.' })
+      this.createNotification('warning', 'Warning', 'Password must have more then 5 characters and not more then 14.')()
     } else {
-      this.setState({ errorPassword: '' })
       return true
     }
     return false
@@ -90,7 +108,12 @@ export class Authorization extends Component<Props, State> {
         name: this.state.loginValue,
         password: this.state.passwordValue,
       })
-      if (!localStorage.getItem('token')) this.setState({ errorPassword: 'Login or password incorrect.' })
+
+      if (!localStorage.getItem('token') !== '') {
+        this.createNotification('success', 'Welcome back', `${this.state.loginValue}`)()
+      } else {
+        this.createNotification('warning', 'Warning', 'Login or password incorrect.')()
+      }
     } else {
       e.preventDefault()
     }

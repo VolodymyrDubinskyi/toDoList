@@ -1,4 +1,4 @@
-// @flow
+import { addNotification } from './notification';
 
 import {
   getAllToDos,
@@ -33,9 +33,26 @@ const removeListAction = (id: string): Object => ({
 
 export const addList = (dispatch: Function) => () => {
   callAddListEndpoint()
-    .then((data: Array<addListActionParams>) => {
-      dispatch(addListAction(data[0]))
-      getAllToDos(dispatch)(data[0]['_id']) //eslint-disable-line
+    .then((data) => {
+      const gettedData = data[0] ? data[0] : data
+      if (gettedData) {
+        addNotification(dispatch)({
+          type: 'success',
+          head: 'U create List',
+          info: `${gettedData['_id']} - get created`, //eslint-disable-line
+          id: Math.ceil(Math.random() * 9999999999),
+        })
+      }
+      dispatch(addListAction(gettedData))
+      getAllToDos(dispatch)(gettedData['_id']) //eslint-disable-line
+    })
+    .catch(() => {
+      addNotification(dispatch)({
+        type: 'error',
+        head: 'Something go wrong',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      })
     })
 }
 

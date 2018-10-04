@@ -62,6 +62,15 @@ export type callEditUserParams = {
   name: string,
 }
 
+const clearStoreAction = (): Object => ({
+  type: 'CLEAR_STORE',
+  payload: {},
+})
+
+export const clearStore = (dispatch: Function) => () => {
+  dispatch(clearStoreAction())
+}
+
 export const editUser = (dispatch: Function) => (payload: callEditUserParams) => {
   callEditUserInEndpoint(payload)
     .then(data => data)

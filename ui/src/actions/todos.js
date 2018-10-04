@@ -1,4 +1,5 @@
 // @flow
+import { addNotification } from './notification';
 
 import {
   callAddToDoEndpoint,
@@ -35,6 +36,12 @@ export const addToDo = (dispatch: Function) => (payload: callAddToDoParams) => {
   callAddToDoEndpoint(payload)
     .then((data) => {
       const newData = data[0] ? data[0] : data
+      addNotification(dispatch)({
+        type: 'success',
+        head: 'U create Todo',
+        info: `${newData.payload.title} - get created`,
+        id: Math.ceil(Math.random() * 9999999999),
+      })
       dispatch(addToDoAction(newData))
     })
 }

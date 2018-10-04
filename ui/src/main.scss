@@ -621,3 +621,31 @@ a {
   z-index: 10;
   border-radius: 3px;
 }
+
+.addNewListContainer {
+  background-color: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  height: 32px;
+  margin: 20px auto;
+  min-height: 32px;
+  width: 272px;
+}
+
+.addNewListContainer:hover {
+  background-color: rgba(0,0,0,.24);
+}
+
+.addNewListContainer span {
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  height: 20px;
+  margin:  0 4px 4px 4px;
+  line-height: 20px;
+  padding: 6px 8px;
+}
