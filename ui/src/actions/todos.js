@@ -7,7 +7,7 @@ import {
 } from '../FetchCalls/todo'
 
 type addToDoActionParams = {
-  _id: string,
+  id: string,
   payload: {
     id: string,
     title: string,
@@ -18,7 +18,7 @@ type addToDoActionParams = {
 const addToDoAction = (data: addToDoActionParams): Object => ({
   type: 'ADD_TODO',
   payload: {
-    id: data['_id'], //eslint-disable-line
+    id: data.id,
     todo: {
       id: data.payload.id,
       title: data.payload.title,
@@ -35,13 +35,21 @@ export type callAddToDoParams = {
 export const addToDo = (dispatch: Function) => (payload: callAddToDoParams) => {
   callAddToDoEndpoint(payload)
     .then((data) => {
-      const newData = data[0] ? data[0] : data
+      let newData = data[0] ? data[0] : data
       addNotification(dispatch)({
         type: 'success',
         head: 'U create Todo',
-        info: `${newData.payload.title} - get created`,
+        info: `${newData.title} - get created`,
         id: Math.ceil(Math.random() * 9999999999),
       })
+      newData = {
+        id: payload.listId,
+        payload: {
+          id: newData.id,
+          title: newData.title,
+          index: newData.index,
+        },
+      }
       dispatch(addToDoAction(newData))
     })
 }
@@ -50,13 +58,13 @@ export const getAllToDos = (dispatch: Function) => (payload: string) => {
   callGetAllToDoEndpoint(payload)
     .then((data) => {
       data.todoData.map((todo) => {
-        if (todo[0]) {
+        if (todo) {
           const newTodo = {
-            _id: data.listInfo,
+            id: data.listInfo,
             payload: {
-              id: todo[0]['_id'], //eslint-disable-line
-              title: todo[0].title,
-              index: todo[0].index,
+              id: todo.id, //eslint-disable-line
+              title: todo.title,
+              index: todo.index,
             },
           }
           dispatch(addToDoAction(newTodo))

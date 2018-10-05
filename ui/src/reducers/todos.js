@@ -24,7 +24,7 @@ const todos = (state: any = [], action: actionParams) => {
       return newState
     }
     case 'CLEAR_STORE': {
-      const newState = {}
+      const newState = []
       return newState
     }
     default:

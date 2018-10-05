@@ -9,7 +9,7 @@ import {
 } from '../FetchCalls/list'
 
 export type addListActionParams = {
-  _id: string,
+  id: string,
   title: string,
   visibility: boolean,
   index: number,
@@ -19,9 +19,9 @@ export type addListActionParams = {
 const addListAction = (data: addListActionParams): Object => ({
   type: 'ADD_LIST',
   payload: {
-    id: data._id, // eslint-disable-line
+    id: data.id, // eslint-disable-line
     title: data.title,
-    todos: data.todos,
+    todos: JSON.parse(data.todos),
     index: data.index,
   },
 })
@@ -39,12 +39,12 @@ export const addList = (dispatch: Function) => () => {
         addNotification(dispatch)({
           type: 'success',
           head: 'U create List',
-          info: `${gettedData['_id']} - get created`, //eslint-disable-line
+          info: `${gettedData.id} - get created`, //eslint-disable-line
           id: Math.ceil(Math.random() * 9999999999),
         })
       }
       dispatch(addListAction(gettedData))
-      getAllToDos(dispatch)(gettedData['_id']) //eslint-disable-line
+      getAllToDos(dispatch)(gettedData.id) //eslint-disable-line
     })
     .catch(() => {
       addNotification(dispatch)({
@@ -67,7 +67,7 @@ export const getAllLists = (dispatch: Function) => () => {
     .then((data: { lists: Array<Object> }) => {
       data.lists.map((obj) => {
         dispatch(addListAction(obj[0]))
-        getAllToDos(dispatch)(obj[0]['_id']) //eslint-disable-line
+        getAllToDos(dispatch)(obj[0].id) //eslint-disable-line
         return null
       })
     })

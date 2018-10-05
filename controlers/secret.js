@@ -1,7 +1,7 @@
 const jwt = require('jwt-simple');
 const DB = require('../services/db');
 const config = require('../config/index')
-const User = require('../schems/user')
+const User = require('../sequelize/user')
 
 const secret = config.secret.key
 

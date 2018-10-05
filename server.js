@@ -45,7 +45,6 @@ router
   .post('/lists', lists.create)
   .delete('/lists', lists.remove)
   .patch('/lists', lists.update)
-  .post('/lists/:id', lists.getUserList)
   .get('/users/login', users.tokenLogin)
   .get('/users/:id', users.checkUser)
   .post('/users/:id/login', users.login)
@@ -60,3 +59,36 @@ app
   .use(router.allowedMethods());
 
 app.listen(port, () => console.log(`listen on port ${port}`))
+
+// ------------------------------------------------------------------------------- //
+
+
+// const newConfig = config.sequelize;
+
+// const sequelize = new Sequelize(
+//   newConfig.database,
+//   newConfig.username,
+//   newConfig.password,
+//   newConfig,
+// );
+
+// const User = sequelize.define('user', {
+//   firstName: {
+//     type: Sequelize.STRING,
+//   },
+//   lastName: {
+//     type: Sequelize.STRING,
+//   },
+// });
+
+// User.sync({ force: false }).then(() => User.create({
+//   firstName: 'new',
+//   lastName: 'user',
+// }));
+
+// User.findAll().then((data) => {
+//   data.map((eachUser) => {
+//     console.log(eachUser.dataValues)
+//     return null
+//   })
+// })

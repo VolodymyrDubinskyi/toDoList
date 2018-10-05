@@ -1,6 +1,6 @@
 const DB = require('../services/db');
-const Todo = require('../schems/todo')
-const List = require('../schems/list')
+const Todo = require('../sequelize/todo')
+const List = require('../sequelize/list')
 
 
 module.exports = {
@@ -13,17 +13,20 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const newList = await DB.get({
-        _id: listId,
+        id: listId,
       }, List)
 
-      let todos = newList[0].todos.map(async (id) => {
+      let { todos } = newList[0]
+      todos = JSON.parse(todos)
+      todos = todos.map(async (id) => {
         const list = await DB.get({
-          _id: id,
+          id,
         }, Todo)
-        return list
+        return list[0]
       })
 
       todos = await Promise.all(todos)
+
       const listTitleAndData = {
         todoData: todos,
         listInfo: listId,
@@ -53,13 +56,13 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const deleted = await DB.remove({ _id: id }, List)
-      List.findById(listTitle, (err, newList) => { //eslint-disable-line
-        const index = newList.todos.indexOf(id); //eslint-disable-line
-        newList.todos.splice(index, 1)
-        newList.save();
-      });
-      ctx.body = deleted;
+      const getList = await DB.get({ id: listTitle }, List)
+      let { todos } = getList[0]
+      todos = JSON.parse(todos)
+      todos.splice(todos.indexOf(id), 1)
+
+      todos = await DB.update(listTitle, { todos }, List)
+      ctx.body = todos;
     }
   },
 
@@ -71,26 +74,21 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const allLists = await DB.get({}, List)
+      const allTodos = await DB.get({}, Todo)
 
       const { body } = ctx.request
       const todo = {
         title: body.payload.value,
-        index: allLists.length,
+        index: allTodos.length,
       }
       const created = await DB.insert(todo, Todo)
-      await List.findById(list, async (err, newList) => {
-        newList.todos.push(created['_id']); //eslint-disable-line
-        newList.save();
-        ctx.body = JSON.stringify({
-          _id: list,
-          payload: {
-            id: created['_id'], //eslint-disable-line
-            title: body.payload.value,
-            index: allLists.length,
-          },
-        })
-      });
+      const getList = await DB.get({ id: list }, List)
+      let { todos } = getList[0]
+      todos = JSON.parse(todos)
+      todos.push(created.id)
+
+      await DB.update(list, { todos }, List)
+      ctx.body = created;
     }
   },
 }

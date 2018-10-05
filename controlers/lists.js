@@ -1,10 +1,6 @@
 const DB = require('../services/db');
-const config = require('../config/index')
-const List = require('../schems/list')
-const User = require('../schems/user')
-
-const collection = config.DBCollections.lists
-const userCollection = config.DBCollections.users
+const List = require('../sequelize/list')
+const User = require('../sequelize/user')
 
 
 module.exports = {
@@ -18,10 +14,10 @@ module.exports = {
       const userData = await DB.get({
         name: ctx.state.user[0].name,
       }, User)
-      const listsId = userData[0].lists
+      const listsId = JSON.parse(userData[0].lists)
       let lists = listsId.map(async (id) => {
         const list = await DB.get({
-          '_id': id, //eslint-disable-line
+          id,
         }, List)
         return list
       })
@@ -54,12 +50,13 @@ module.exports = {
     const { body } = ctx.request
     const { user } = ctx.state
 
-    const userDb = await DB.get({ _id: user[0]['_id'] }, User) //eslint-disable-line
+    const userDb = await DB.get({ id: user[0].id }, User)
 
-    const newUserBody = {
+    const userLists = JSON.parse(userDb[0].lists)
+    const newListBody = {
       title: 'no title',
-      index: userDb[0].lists.length,
-      lists: [],
+      index: userLists.length,
+      todos: [],
     }
 
     ctx.body = body;
@@ -68,13 +65,13 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const created = await DB.insert(newUserBody, List)
+      const created = await DB.insert(newListBody, List)
 
-      User.findById(user[0]['_id'], (err, newUser) => { //eslint-disable-line
-        newUser.lists.push(created['_id']); //eslint-disable-line
-        newUser.save();
-      });
+      const getUser = await DB.get({ id: user[0].id }, User)
+      const lists = JSON.parse(getUser[0].lists)
+      lists.push(created.id)
 
+      await DB.update(getUser[0].id, { lists }, User)
       ctx.body = created;
     }
   },
@@ -87,34 +84,14 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const id = ctx.request.body.payload
-      const deleted = await DB.remove({ _id: id }, List)
+      const deleted = await DB.remove({ id }, List)
 
-      User.findById(user[0]['_id'], (err, newUser) => { //eslint-disable-line
-        const index = newUser.lists.indexOf(deleted._id); //eslint-disable-line
+      User.findById(user[0].id, (err, newUser) => {
+        const index = newUser.lists.indexOf(deleted.id)
         newUser.lists.splice(index, 1)
         newUser.save();
       });
       ctx.body = deleted;
     }
   },
-
-  getUserList: async (ctx) => {
-    let { id } = ctx.params
-    id = id.toLowerCase()
-    const userData = await DB.get(userCollection, { user: id })
-    if (ctx.state.user === null) {
-      ctx.body = JSON.stringify({ commit: 'Please login to see todolists' })
-    } else if ((ctx.state.user !== id) && !userData[0].visibility) {
-      ctx.body = JSON.stringify({ commit: `You have no rights to acess ${id} todolist` })
-    } else {
-      const todoData = await DB.get(`${collection}/${id}`, {})
-      const listTitleAndData = {
-        todoData,
-        userData: userData[0],
-        ownAcc: ctx.state.user === id,
-      }
-      ctx.body = JSON.stringify(listTitleAndData)
-    }
-  },
-
 }

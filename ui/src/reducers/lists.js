@@ -33,7 +33,7 @@ const lists = (state: any = [], action: actionParams) => {
     }
     case 'ADD_TODO': {
       const [...newState] = state.filter(elem => elem.id !== action.payload.id);
-      const list = state.filter(elem => elem.id === action.payload.id)[0];
+      const list = state.filter(elem => elem.id === +action.payload.id)[0];
       if (!list.todos[0]) list.todos = []
       if (list.todos.indexOf(action.payload.todo.id) === -1) {
         list.todos.push(action.payload.todo.id)
@@ -50,7 +50,7 @@ const lists = (state: any = [], action: actionParams) => {
       return newState
     }
     case 'CLEAR_STORE': {
-      const newState = {}
+      const newState = []
       return newState
     }
     default:

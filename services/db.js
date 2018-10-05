@@ -1,36 +1,33 @@
-const mongoose = require('mongoose')
-
 module.exports = {
-  get: (query, type) => new Promise(async (resolve) => {
-    await type.find(query)
-      .exec(async (err, comeBack) => {
-        if (err) throw err;
-        resolve(comeBack)
-      });
-  }),
-
-  remove: (query, type) => new Promise(async (resolve) => {
-    const db = await type.findOneAndRemove(query)
-    resolve(db)
-  }),
-
-  insert: (body, Type) => new Promise(async (resolve) => {
-    const newObj = new Type({
-      ...body,
-      _id: new mongoose.Types.ObjectId(),
+  get: (query, typeNew) => new Promise(async (resolve) => {
+    typeNew.findAll({ where: { ...query } }).then((data) => {
+      const callBack = data.map(eachObj => eachObj.dataValues)
+      resolve(callBack)
     })
-    await newObj.save()
-    resolve(newObj)
   }),
 
-  update: (id, changes, Type) => new Promise(async (resolve) => {
-    await Type.findById(id, async (err, obj) => {
-      const key = Object.keys(changes)[0]
-      if (obj) {
-        obj[key] = changes[key] //eslint-disable-line
-        await obj.save()
-      }
-      resolve(obj)
+  remove: (query, typeNew) => new Promise(async (resolve) => {
+    const removed = typeNew.destroy({
+      where: { ...query },
+    })
+    resolve(removed)
+  }),
+
+  insert: (body, typeNew) => new Promise(async (resolve) => {
+    const resolveObj = typeNew.sync({ force: false }).then(() => typeNew.create({ ...body }));
+    const obj = await resolveObj
+    resolve(obj.dataValues)
+  }),
+
+  update: (id, changes, typeNew) => new Promise(async (resolve) => {
+    typeNew.update(
+      { ...changes },
+      { where: { id } },
+    )
+
+    typeNew.findAll({ where: { id } }).then((data) => {
+      const callBack = data.map(eachObj => eachObj.dataValues)
+      resolve(callBack[0])
     })
   }),
 }

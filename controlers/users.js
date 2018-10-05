@@ -2,17 +2,16 @@ const jwt = require('jwt-simple');
 
 const DB = require('../services/db')
 const secret = require('./secret')
-const config = require('../config/index')
-const User = require('../schems/user')
+const User = require('../sequelize/user')
 
-const collection = config.DBCollections.users
 
 module.exports = {
   checkUser: async (ctx) => {
+    const userName = ctx.req.url.split('/')[2]
     await DB.get({
-      user: ctx.state.user,
+      name: userName,
     }, User).then((user) => {
-      if (!user) {
+      if (user[0]) {
         ctx.body = JSON.stringify({ exist: true })
       } else {
         ctx.body = JSON.stringify({ exist: false })
@@ -33,9 +32,9 @@ module.exports = {
         .then((user) => {
           ctx.body = {
             info: {
-              id: user['_id'], //eslint-disable-line
+              id: user.id, //eslint-disable-line
               user: user.name,
-              lists: user.lists,
+              lists: JSON.parse(user.lists),
             },
           }
         })
@@ -58,9 +57,9 @@ module.exports = {
           ctx.body = {
             token,
             info: {
-              id: user['_id'], //eslint-disable-line
+              id: user.id, //eslint-disable-line
               user: user.name,
-              lists: user.lists,
+              lists: JSON.parse(user.lists),
             },
           }
         } else {
@@ -78,7 +77,7 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { changes, id } = ctx.request.body
-      await DB.update(id, changes, collection)
+      await DB.update(id, { changes }, User)
       ctx.body = JSON.stringify(changes)
     }
   },

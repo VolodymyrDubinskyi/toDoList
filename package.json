@@ -14,6 +14,7 @@
     "delay": "^3.1.0",
     "ejs": "^2.6.1",
     "eslint-plugin-react": "^7.11.1",
+    "express": "^4.16.3",
     "jade": "^1.11.0",
     "jwt-simple": "^0.5.1",
     "koa": "^2.5.2",
@@ -21,8 +22,16 @@
     "koa-router": "^7.4.0",
     "koa-send": "^5.0.0",
     "mongodb": "^2.2.36",
+    "mssql": "^4.2.1",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.1",
+    "pg": "^7.5.0",
+    "pg-hstore": "^2.3.2",
     "react-dnd-html5-backend": "^5.0.1",
-    "swig": "^1.4.2"
+    "sequelize": "^4.39.0",
+    "sqlite3": "^4.0.2",
+    "swig": "^1.4.2",
+    "tedious": "^2.6.4"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.0.0",

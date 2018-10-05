@@ -210,27 +210,27 @@ class List extends React.Component<Props, State> {
           position: 'relative',
         }}>
         {allLists.map(obj => obj)}
-        <div className='todosList' onClick={this.props.addList}>
-          <div className='addNewListContainer'>
+        <div className='todosList'>
+          <div className='addNewListContainer' onClick={this.props.addList}>
             <span>+ Add new list</span>
           </div>
         </div>
       </div>
     }
     return <div
-    style={{
-      width: '100vw',
-      height: 'calc(100vh - 68px)',
-      paddingTop: 68,
-      display: 'flex',
-      position: 'relative',
-    }}>
-    <div className='todosList' onClick={this.props.addList}>
-      <div className='addNewListContainer'>
-        <span>+ Add new list</span>
+      style={{
+        width: '100vw',
+        height: 'calc(100vh - 68px)',
+        paddingTop: 68,
+        display: 'flex',
+        position: 'relative',
+      }}>
+      <div className='todosList' onClick={this.props.addList}>
+        <div className='addNewListContainer'>
+          <span>+ Add new list</span>
+        </div>
       </div>
     </div>
-  </div>
   }
 }
 

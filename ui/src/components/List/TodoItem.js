@@ -243,8 +243,8 @@ export class TodoItem extends Component<Props, State> {
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
   removeToDo: PropTypes.func.isRequired,
-  listId: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
+  listId: PropTypes.number.isRequired,
+  userId: PropTypes.number.isRequired,
   editToDo: PropTypes.func.isRequired,
 }
 
