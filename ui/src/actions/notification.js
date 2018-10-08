@@ -10,7 +10,7 @@ export const removeNotification = (dispatch: Function) => (payload) => {
 const addNotificationAction = data => ({
   type: 'ADD_NOTIFICATION',
   payload: {
-    id: data.id, // eslint-disable-line
+    id: data.id,
     type: data.type,
     head: data.head,
     info: data.info,

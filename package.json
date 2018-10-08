@@ -21,6 +21,7 @@
     "koa-route": "^3.2.0",
     "koa-router": "^7.4.0",
     "koa-send": "^5.0.0",
+    "koa-socket.io": "^1.1.2",
     "mongodb": "^2.2.36",
     "mssql": "^4.2.1",
     "mysql": "^2.16.0",
@@ -29,6 +30,7 @@
     "pg-hstore": "^2.3.2",
     "react-dnd-html5-backend": "^5.0.1",
     "sequelize": "^4.39.0",
+    "socket.io": "^2.1.1",
     "sqlite3": "^4.0.2",
     "swig": "^1.4.2",
     "tedious": "^2.6.4"

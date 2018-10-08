@@ -82,7 +82,6 @@ class HidingToggle extends Component<Props, State> {
         margin: 0,
       }}
     >
-      {/* <button onClick={() => { this.props.removeList(this.props.list.id) }}>1111</button> */}
       <textarea
         className={'toggleHolderTitle'}
         value={this.state.editValue}

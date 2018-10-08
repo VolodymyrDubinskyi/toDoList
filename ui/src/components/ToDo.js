@@ -11,7 +11,6 @@ import Registration from './Registration'
 import AuthorizationWithConnect from './Authorization'
 import HeaderWithConnect from './Header'
 
-
 const ToDo = () => <Router>
   <div style={{
     width: '100vw',
@@ -28,7 +27,7 @@ const ToDo = () => <Router>
       <Route exact path="*" component={() => <List />} />
     </Switch>
     <HeaderWithConnect />
-  <NotificationContainer />
+    <NotificationContainer />
   </div>
 </Router>
 

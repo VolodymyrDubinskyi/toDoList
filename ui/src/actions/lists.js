@@ -7,6 +7,11 @@ import {
   callAddListEndpoint,
   callGetAllListsEndpoint,
 } from '../FetchCalls/list'
+import {
+  addList as addListSocket,
+  changeList as changeListSocket,
+  removeList as removeListSocket,
+} from '../socket'
 
 export type addListActionParams = {
   id: string,
@@ -44,7 +49,7 @@ export const addList = (dispatch: Function) => () => {
         })
       }
       dispatch(addListAction(gettedData))
-      getAllToDos(dispatch)(gettedData.id) //eslint-disable-line
+      addListSocket(addListAction(gettedData))
     })
     .catch(() => {
       addNotification(dispatch)({
@@ -58,6 +63,7 @@ export const addList = (dispatch: Function) => () => {
 
 
 export const removeList = (dispatch: Function) => (payload: string) => {
+  removeListSocket(removeListAction(payload))
   dispatch(removeListAction(payload))
 }
 
@@ -89,5 +95,6 @@ export type callEditListParams = {
 
 
 export const editList = (dispatch: Function) => (payload: callEditListParams) => {
+  changeListSocket(editListAction(payload.id, payload.changes))
   dispatch(editListAction(payload.id, payload.changes))
 }

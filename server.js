@@ -6,6 +6,10 @@ const send = require('koa-send');
 const koaStatic = require('koa-static');
 const mongoose = require('mongoose')
 
+const app = new Koa();
+const server = require('http').createServer(app.callback());
+const io = require('socket.io')(server);
+
 const todos = require('./controlers/todos');
 const users = require('./controlers/users');
 const lists = require('./controlers/lists');
@@ -14,9 +18,8 @@ const config = require('./config/index')
 
 const url = `mongodb://${config.db.host}:${config.db.port}/${config.db.dbName}`;
 
-const { port } = config.webServer
 const router = new Router();
-const app = new Koa();
+
 app.use(bodyParser());
 app.use(cors());
 mongoose.connect(url)
@@ -50,7 +53,13 @@ router
   .post('/users/:id/login', users.login)
   .patch('/users/:id', users.update)
   .post('/users/', users.create)
-  .get('*', async (ctx) => {
+  .get('/user/*', async (ctx) => {
+    await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
+  })
+  .get('/authorization', async (ctx) => {
+    await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
+  })
+  .get('/registration', async (ctx) => {
     await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
   })
 
@@ -58,37 +67,25 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(port, () => console.log(`listen on port ${port}`))
+io.on('connection', (socket) => {
+  socket.on('change todo', (changes) => {
+    socket.broadcast.emit('change todo', changes);
+  });
+  socket.on('change list', (changes) => {
+    socket.broadcast.emit('change list', changes);
+  });
+  socket.on('remove list', (changes) => {
+    socket.broadcast.emit('remove list', changes);
+  });
+  socket.on('remove todo', (changes) => {
+    socket.broadcast.emit('remove todo', changes);
+  });
+  socket.on('add list', (changes) => {
+    socket.broadcast.emit('add list', changes);
+  });
+  socket.on('add todo', (changes) => {
+    socket.broadcast.emit('add todo', changes);
+  });
+});
 
-// ------------------------------------------------------------------------------- //
-
-
-// const newConfig = config.sequelize;
-
-// const sequelize = new Sequelize(
-//   newConfig.database,
-//   newConfig.username,
-//   newConfig.password,
-//   newConfig,
-// );
-
-// const User = sequelize.define('user', {
-//   firstName: {
-//     type: Sequelize.STRING,
-//   },
-//   lastName: {
-//     type: Sequelize.STRING,
-//   },
-// });
-
-// User.sync({ force: false }).then(() => User.create({
-//   firstName: 'new',
-//   lastName: 'user',
-// }));
-
-// User.findAll().then((data) => {
-//   data.map((eachUser) => {
-//     console.log(eachUser.dataValues)
-//     return null
-//   })
-// })
+server.listen(3000)

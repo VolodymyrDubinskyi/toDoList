@@ -49,13 +49,11 @@ export class Header extends Component<Props, State> {
     });
   }
 
-
   updateValue(e: Object) {
     this.setState({
       editValue: e.target.value,
     });
   }
-
 
   changeTitle = (e: Object) => {
     if (e.keyCode === 13) {
@@ -124,7 +122,6 @@ export class Header extends Component<Props, State> {
 
     return (
       <div className={'header'}>
-        {/* <button onClick={this.props.addList}>1111</button> */}
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Switch>
             <Route exact path="/registration" component={() => (

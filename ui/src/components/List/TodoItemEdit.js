@@ -16,7 +16,6 @@ type ListItemEditProps = {
 }
 
 const ListItemEdit = (props: ListItemEditProps) => {
-  // const iconStyle = { width: 17, height: 17, margin: 3 }
   const itemEdit = (<div>
     <div
       onMouseDown={props.stopEditing}

@@ -10,6 +10,12 @@ import {
   callRemoveListEndpoint,
   callEditListEndpoint,
 } from './FetchCalls/list'
+// import {
+//   changeTodo,
+//   changeList,
+//   removeList,
+//   removeTodo,
+// } from './socket'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
@@ -21,6 +27,7 @@ function* editTodoAsync(action) {
   const todo = oldState.todos.filter(elem => elem.id === todoId)[0];
   try {
     yield put({ type: 'EDIT_TODO_REDUCER', payload });
+    // yield changeTodo(action)
     yield callEditToDoEndpoint(payload)
     yield put({
       type: 'ADD_NOTIFICATION',
@@ -76,6 +83,7 @@ function* removeTodoAsync(action) {
   todosWithDeleted.splice(todosWithDeleted.indexOf(todoId), 1)
 
   try {
+    // yield removeTodo(action)
     yield callRemoveToDoEndpoint(payload)
     yield put({ type: 'REMOVE_TODO_REDUCER', payload });
     yield put({
@@ -128,6 +136,7 @@ function* editListAsync(action) {
   const list = oldState.lists.filter(elem => elem.id === id)[0];
   try {
     yield put({ type: 'EDIT_LIST_REDUCER', payload });
+    // yield changeList(action)
     yield callEditListEndpoint(payload)
     yield put({
       type: 'ADD_NOTIFICATION',
@@ -163,12 +172,14 @@ function* watchEditListAsync() {
 
 function* removeListAsync(action) {
   const { payload } = action
+  // yield removeList(action)
   yield callRemoveListEndpoint(payload)
 }
 
 function* watchRemoveListAsync() {
   yield takeEvery('REMOVE_LIST', removeListAsync)
 }
+
 
 export default function* rootSaga() {
   yield all([

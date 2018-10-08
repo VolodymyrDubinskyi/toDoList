@@ -5,6 +5,11 @@ import {
   callAddToDoEndpoint,
   callGetAllToDoEndpoint,
 } from '../FetchCalls/todo'
+import {
+  addTodo as addTodoSocket,
+  changeTodo as changeTodoSocket,
+  removeTodo as removeTodoSocket,
+} from '../socket'
 
 type addToDoActionParams = {
   id: string,
@@ -50,6 +55,7 @@ export const addToDo = (dispatch: Function) => (payload: callAddToDoParams) => {
           index: newData.index,
         },
       }
+      addTodoSocket(addToDoAction(newData))
       dispatch(addToDoAction(newData))
     })
 }
@@ -91,6 +97,7 @@ export type callRemoveToDoParams = {
 }
 
 export const removeToDo = (dispatch: Function) => (payload: callRemoveToDoParams) => {
+  removeTodoSocket(removeToDoAction(payload.listId, payload.todoId))
   dispatch(removeToDoAction(payload.listId, payload.todoId))
 }
 
@@ -117,5 +124,6 @@ export const editToDo = (dispatch: Function) => (payload: callEditToDoParams) =>
     changes.title = changes.value
     delete changes.value
   }
+  changeTodoSocket(editToDoAction(payload.listId, payload.todoId, payload.changes))
   dispatch(editToDoAction(payload.listId, payload.todoId, payload.changes))
 }
