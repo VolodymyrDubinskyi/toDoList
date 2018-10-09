@@ -635,7 +635,7 @@ a {
 }
 
 .addNewListContainer:hover {
-  background-color: rgba(0,0,0,.24);
+  background-color: rgba(0, 0, 0, .24);
 }
 
 .addNewListContainer span {
@@ -645,7 +645,204 @@ a {
   font-size: 14px;
   font-weight: 400;
   height: 20px;
-  margin:  0 4px 4px 4px;
+  margin: 0 4px 4px 4px;
   line-height: 20px;
   padding: 6px 8px;
+}
+
+.boardBox {
+  display: inline-block;
+  color: rgb(23, 57, 77);
+  margin-bottom: 8px;
+  height: 96px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 24px;
+  margin-right: 6%;
+  position: relative;
+  padding: 8;
+  width: 94%;
+  background-color: rgb(75, 191, 107);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.createBoardButton {
+  align-items: flex-start;
+  background-color: rgb(245, 246, 247);
+  border-bottom-color: rgb(151, 167, 176);
+  border-radius: 3px;
+  border-style: none;
+  border-bottom-width: 0px;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: rgb(151, 167, 176);
+  cursor: default;
+  display: inline-block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-stretch: 100%;
+  font-weight: 700;
+  height: 32px;
+  letter-spacing: normal;
+  line-height: 20px;
+  margin: 8px 4px 20px 0;
+  padding: 6px 12px;
+  text-align: center;
+  text-shadow: none;
+  text-size-adjust: 100%;
+  transition-duration: 0.085s;
+  position: relative;
+}
+
+.createBoardColorsSelectList {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  justify-content: space-between;
+}
+
+.createBoardColorsSelectList div {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 3px;
+}
+
+.createBoardInput {
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: none;
+  background-origin: padding-box;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-size: auto;
+  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-style: none;
+  border-bottom-width: 0px;
+  border-image-outset: 0px;
+  border-image-repeat: stretch;
+  border-image-slice: 100%;
+  border-image-source: none;
+  border-image-width: 1;
+  border-left-color: rgb(255, 255, 255);
+  border-left-style: none;
+  border-left-width: 0px;
+  border-right-color: rgb(255, 255, 255);
+  border-right-style: none;
+  border-right-width: 0px;
+  border-top-color: rgb(255, 255, 255);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top-style: none;
+  border-top-width: 0px;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  cursor: text;
+  display: block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-stretch: 100%;
+  font-style: normal;
+  font-variant-caps: normal;
+  font-variant-east-asian: normal;
+  font-variant-ligatures: normal;
+  font-variant-numeric: normal;
+  font-weight: 700;
+  height: 28px;
+  top: 10px;
+  left: 10px;
+  letter-spacing: normal;
+  outline-color: rgb(255, 255, 255);
+  outline-style: none;
+  outline-width: 0px;
+  padding-bottom: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 2px;
+  position: relative;
+  text-align: start;
+  text-indent: 0px;
+  text-rendering: auto;
+  text-shadow: none;
+  text-size-adjust: 100%;
+  text-transform: none;
+  transition-duration: 0.085s;
+  transition-property: background-color, border-color, box-shadow;
+  transition-timing-function: ease;
+  width: 236px;
+  word-spacing: 0px;
+  writing-mode: horizontal-tb;
+}
+
+.createBoardInput:focus {
+  background: hsla(0, 0%, 100%, .3);
+  border-radius: 3px;
+  outline: 0;
+}
+
+.createBoardInput:hover {
+  background: hsla(0, 0%, 100%, .15);
+}
+
+.choseBoardPrivacyButton {
+  align-items: center;
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: none;
+  background-origin: padding-box;
+  border-color: rgb(255, 255, 255);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-style: none;
+  border-bottom-width: 0px;
+  border-image-outset: 0px;
+  border-image-repeat: stretch;
+  border-image-slice: 100%;
+  border-image-source: none;
+  border-image-width: 1;
+  border-left-style: none;
+  border-left-width: 0px;
+  border-right-style: none;
+  border-right-width: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top-style: none;
+  border-top-width: 0px;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: flex;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-stretch: 100%;
+  font-style: normal;
+  font-variant-caps: normal;
+  font-variant-east-asian: normal;
+  font-variant-ligatures: normal;
+  font-variant-numeric: normal;
+  font-weight: 400;
+  height: 24px;
+  left: 10px;
+  letter-spacing: normal;
+  line-height: 20px;
+  padding: 2px 8px;
+  position: relative;
+  text-align: left;
+  text-indent: 0px;
+  text-rendering: auto;
+  text-shadow: none;
+  text-size-adjust: 100%;
+  text-transform: none;
+  transition-duration: 0.085s;
 }

@@ -11,6 +11,7 @@ const server = require('http').createServer(app.callback());
 const io = require('socket.io')(server);
 
 const todos = require('./controlers/todos');
+const boards = require('./controlers/boards');
 const users = require('./controlers/users');
 const lists = require('./controlers/lists');
 const secret = require('./controlers/secret')
@@ -44,7 +45,11 @@ router
   .post('/todos/', todos.create)
   .patch('/todos/:id/:list', todos.update)
   .delete('/todos/:id/:list', todos.remove)
-  .get('/lists', lists.list)
+  .get('/boards/:id', boards.list)
+  .post('/boards/:id', boards.create)
+  .patch('/boards/:id', boards.update)
+  .delete('/boards/:id', boards.remove)
+  .get('/lists/:id', lists.list)
   .post('/lists', lists.create)
   .delete('/lists', lists.remove)
   .patch('/lists', lists.update)

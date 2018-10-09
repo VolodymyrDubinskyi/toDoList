@@ -19,14 +19,14 @@ const user = (state :Object = {}, action :actionParams) => {
       const newState = Object.assign({}, state, action.payload)
       return newState
     }
-    case 'ADD_LIST': {
+    case 'ADD_BOARD': {
       const newState = Object.assign({}, state)
-      newState.lists.push(action.payload.id)
+      newState.boards.push(action.payload.id)
       return newState
     }
-    case 'REMOVE_LIST': {
+    case 'REMOVE_BOARD': {
       const newState = Object.assign({}, state)
-      newState.lists = newState.lists.filter(elem => elem !== action.payload);
+      newState.boards = newState.boards.filter(elem => elem !== action.payload);
       return newState
     }
     default:

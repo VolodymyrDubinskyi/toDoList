@@ -1,34 +1,34 @@
 const DB = require('../services/db');
-const List = require('../sequelize/list')
 const Board = require('../sequelize/board')
+const User = require('../sequelize/user')
 
 
 module.exports = {
   list: async (ctx) => {
     const { user } = ctx.state
-    const boardId = ctx.url.split('/')[2]
     if (!user[0].name) {
       ctx.body = JSON.stringify({})
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
       const userData = await DB.get({
-        id: boardId,
-      }, Board)
-      const listsId = JSON.parse(userData[0].lists)
-      let lists = listsId.map(async (id) => {
-        const list = await DB.get({
+        name: ctx.state.user[0].name,
+      }, User)
+      const boardsId = JSON.parse(userData[0].boards)
+      let boards = boardsId.map(async (id) => {
+        const board = await DB.get({
           id,
-        }, List)
-        return list
+        }, Board)
+        return board
       })
 
-      lists = await Promise.all(lists)
-      const listTitleAndData = {
-        lists,
+      boards = await Promise.all(boards)
+      boards = boards.map(board => board[0]);
+      const boardTitleAndData = {
+        boards,
         userData: userData[0],
       }
-      ctx.body = JSON.stringify(listTitleAndData)
+      ctx.body = JSON.stringify(boardTitleAndData)
     }
   },
 
@@ -40,24 +40,27 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id, changes } = ctx.request.body
-      await DB.update(id, changes, List)
+      await DB.update(id, changes, Board)
       const updated = JSON.stringify({ id, changes })
       ctx.body = updated
     }
   },
 
   create: async (ctx) => {
-    const { id } = ctx.request.body
     const { body } = ctx.request
+    const userId = ctx.request.url.split('/')[2]
     const { user } = ctx.state
+    const userDb = await DB.get({ id: userId }, User)
 
-    const userDb = await DB.get({ id }, Board)
-
-    const userLists = JSON.parse(userDb[0].lists)
-    const newListBody = {
-      title: 'no title',
-      index: userLists.length,
-      todos: [],
+    const userboards = JSON.parse(userDb[0].boards)
+    const newboardBody = {
+      title: body.title,
+      color: body.color,
+      index: userboards.length,
+      usersWithaccess: `${[userDb[0].id]}`,
+      private: body.private,
+      admin: userDb[0].id,
+      lists: [],
     }
 
     ctx.body = body;
@@ -66,13 +69,11 @@ module.exports = {
       ctx.status = 401;
       ctx.throw(401, 'Unauthorized');
     } else {
-      const created = await DB.insert(newListBody, List)
-
-      const getUser = await DB.get({ id }, Board)
-      const lists = JSON.parse(getUser[0].lists)
-      lists.push(created.id)
-
-      await DB.update(getUser[0].id, { lists }, Board)
+      const created = await DB.insert(newboardBody, Board)
+      const getUser = await DB.get({ id: userId }, User)
+      const boards = JSON.parse(getUser[0].boards)
+      boards.push(created.id)
+      await DB.update(userId, { boards }, User)
       ctx.body = created;
     }
   },
@@ -85,11 +86,11 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const id = ctx.request.body.payload
-      const deleted = await DB.remove({ id }, List)
+      const deleted = await DB.remove({ id }, Board)
 
-      Board.findById(user[0].id, (err, newUser) => {
-        const index = newUser.lists.indexOf(deleted.id)
-        newUser.lists.splice(index, 1)
+      User.findById(user[0].id, (err, newUser) => {
+        const index = newUser.boards.indexOf(deleted.id)
+        newUser.boards.splice(index, 1)
         newUser.save();
       });
       ctx.body = deleted;

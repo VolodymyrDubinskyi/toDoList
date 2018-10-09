@@ -14,7 +14,10 @@ import {
   editUser,
 } from '../actions/user'
 import {
-  addList, removeList, editList,
+  addList,
+  removeList,
+  editList,
+  getAllLists,
 } from '../actions/lists'
 import {
   removeToDo, editToDo,
@@ -31,6 +34,7 @@ type Props = {
   editToDo: Function,
   editList: Function,
   todos: Array<Object>,
+  getAllLists: Function,
 };
 
 type State = {
@@ -129,6 +133,20 @@ class List extends React.Component<Props, State> {
     })
   }
 
+  componentWillMount() { //eslint-disable-line
+    if (!this.props.user.name) {
+      this.props.history.push('/authorization')
+      return null
+    }
+    const listId = this.props.history.location.pathname.split('/')[4]
+    this.props.getAllLists(listId)
+  }
+
+  addList = () => {
+    const listId = this.props.history.location.pathname.split('/')[4]
+    this.props.addList(listId)
+  }
+
   render() {
     if (!this.props.user.name) {
       this.props.history.push('/authorization')
@@ -225,7 +243,7 @@ class List extends React.Component<Props, State> {
         display: 'flex',
         position: 'relative',
       }}>
-      <div className='todosList' onClick={this.props.addList}>
+      <div className='todosList' onClick={this.addList}>
         <div className='addNewListContainer'>
           <span>+ Add new list</span>
         </div>
@@ -241,6 +259,7 @@ List.propTypes = {
   user: PropTypes.object.isRequired,
   editUser: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  getAllLists: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
@@ -257,6 +276,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
   editToDo: editToDo(dispatch),
   editList: editList(dispatch),
   removeToDo: removeToDo(dispatch),
+  getAllLists: getAllLists(dispatch),
 })
 
 const ListWithContext = DragDropContext(HTML5Backend)(List)

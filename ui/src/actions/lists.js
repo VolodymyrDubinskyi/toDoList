@@ -19,15 +19,17 @@ export type addListActionParams = {
   visibility: boolean,
   index: number,
   todos: Array<Object>,
+  listId: number,
 }
 
 const addListAction = (data: addListActionParams): Object => ({
   type: 'ADD_LIST',
   payload: {
-    id: data.id, // eslint-disable-line
+    id: data.id,
     title: data.title,
     todos: JSON.parse(data.todos),
     index: data.index,
+    listId: data.listId,
   },
 })
 
@@ -37,17 +39,19 @@ const removeListAction = (id: string): Object => ({
 })
 
 export const addList = (dispatch: Function) => () => {
-  callAddListEndpoint()
+  const listId = window.location.pathname.split('/')[4]
+  callAddListEndpoint(listId)
     .then((data) => {
       const gettedData = data[0] ? data[0] : data
       if (gettedData) {
         addNotification(dispatch)({
           type: 'success',
           head: 'U create List',
-          info: `${gettedData.id} - get created`, //eslint-disable-line
+          info: `${gettedData.id} - get created`,
           id: Math.ceil(Math.random() * 9999999999),
         })
       }
+      gettedData.listId = listId
       dispatch(addListAction(gettedData))
       addListSocket(addListAction(gettedData))
     })
@@ -68,12 +72,12 @@ export const removeList = (dispatch: Function) => (payload: string) => {
 }
 
 
-export const getAllLists = (dispatch: Function) => () => {
-  callGetAllListsEndpoint()
+export const getAllLists = (dispatch: Function) => (payload) => {
+  callGetAllListsEndpoint(payload)
     .then((data: { lists: Array<Object> }) => {
       data.lists.map((obj) => {
         dispatch(addListAction(obj[0]))
-        getAllToDos(dispatch)(obj[0].id) //eslint-disable-line
+        getAllToDos(dispatch)(obj[0].id)
         return null
       })
     })

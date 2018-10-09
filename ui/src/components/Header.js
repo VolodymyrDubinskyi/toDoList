@@ -92,11 +92,6 @@ export class Header extends Component<Props, State> {
       this.props.removeNotification(obj.id)
       return null
     })
-    if ((!this.props.user.currentList)
-      && (this.props.history.location.pathname)
-      && (this.props.history.location.pathname.split('/').length > 4)) {
-      this.props.history.push(`/user/${this.props.user.name}`)
-    }
     const editTitle = <Switch>
       <Route exact path='/user/:name/list/:listId' component={() => (
         <span style={this.state.titleEdit ? { display: 'none' } : {

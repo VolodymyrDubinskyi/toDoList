@@ -8,7 +8,7 @@ type actionParams = {
 const lists = (state: any = [], action: actionParams) => {
   switch (action.type) {
     case 'ADD_LIST': {
-      const newState = state;
+      const [...newState] = state;
       const newList = action.payload;
       newState.push(newList)
       newState.sort((a, b) => a.index > b.index)
@@ -50,6 +50,10 @@ const lists = (state: any = [], action: actionParams) => {
       return newState
     }
     case 'CLEAR_STORE': {
+      const newState = []
+      return newState
+    }
+    case 'CLEAR_LIST_AND_TODO': {
       const newState = []
       return newState
     }

@@ -26,6 +26,18 @@ const removeTodo = (change) => {
   socket.emit('remove todo', change);
 }
 
+const changeBoard = (change) => {
+  socket.emit('change board', change);
+}
+
+const addBoard = (change) => {
+  socket.emit('add board', change);
+}
+
+const removeBoard = (change) => {
+  socket.emit('remove board', change);
+}
+
 export {
   changeTodo,
   changeList,
@@ -33,5 +45,8 @@ export {
   addTodo,
   removeList,
   removeTodo,
+  changeBoard,
+  addBoard,
+  removeBoard,
   socket,
 }

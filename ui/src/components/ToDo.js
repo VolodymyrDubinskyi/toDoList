@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications';
 
+import Bords from './Boards'
 import List from './List'
 import Registration from './Registration'
 import AuthorizationWithConnect from './Authorization'
@@ -24,7 +25,13 @@ const ToDo = () => <Router>
       <Route exact path="/registration" component={() => <Registration />} />
       <Route exact path="/authorization" component={() => <AuthorizationWithConnect />} />
       <Route exact path="/" component={() => <AuthorizationWithConnect />} />
-      <Route exact path="*" component={() => <List />} />
+      <Route exact path="/user/:user/board/:board" component={() => <List />} />
+      <Route exact path="/user/:user" component={() => <Bords />} />
+      <Route exact path="*" component={() => <div
+        style={{
+          fontSize: '3em',
+        }}
+      >Page not exist</div>} />
     </Switch>
     <HeaderWithConnect />
     <NotificationContainer />

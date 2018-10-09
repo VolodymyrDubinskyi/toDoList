@@ -2,11 +2,11 @@ import config from '../../config'
 
 const { webServer } = config
 
-export const callAddListEndpoint = payload => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
+export const callAddBoardEndpoint = (user, payload) => fetch(
+  `http://${webServer.host}:${webServer.port}/boards/${user.id}`,
   {
     method: 'POST',
-    body: JSON.stringify({ id: payload }),
+    body: JSON.stringify({ ...payload }),
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -17,8 +17,9 @@ export const callAddListEndpoint = payload => fetch(
   },
 ).then(response => response.json())
 
-export const callRemoveListEndpoint = payload => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
+
+export const callRemoveBoardEndpoint = (user, payload) => fetch(
+  `http://${webServer.host}:${webServer.port}/boards/${user.id}`,
   {
     method: 'DELETE',
     body: JSON.stringify({ payload }),
@@ -32,7 +33,7 @@ export const callRemoveListEndpoint = payload => fetch(
   },
 ).then(response => response.json())
 
-export const callGetAllListsEndpoint = payload => fetch(`http://${webServer.host}:${webServer.port}/lists/${payload}`, {
+export const callGetAllBoardsEndpoint = userId => fetch(`http://${webServer.host}:${webServer.port}/boards/${userId}`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -43,9 +44,8 @@ export const callGetAllListsEndpoint = payload => fetch(`http://${webServer.host
   },
 }).then(response => response.json())
 
-
-export const callEditListEndpoint = payload => fetch(
-  `http://${webServer.host}:${webServer.port}/lists`,
+export const callEditBoardEndpoint = (user, payload) => fetch(
+  `http://${webServer.host}:${webServer.port}/board/${user.id}`,
   {
     method: 'PATCH',
     body: JSON.stringify({

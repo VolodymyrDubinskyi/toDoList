@@ -34,7 +34,7 @@ module.exports = {
             info: {
               id: user.id, //eslint-disable-line
               user: user.name,
-              lists: JSON.parse(user.lists),
+              boards: JSON.parse(user.boards),
             },
           }
         })
@@ -59,7 +59,7 @@ module.exports = {
             info: {
               id: user.id, //eslint-disable-line
               user: user.name,
-              lists: JSON.parse(user.lists),
+              boards: JSON.parse(user.boards),
             },
           }
         } else {
@@ -90,7 +90,7 @@ module.exports = {
     const newUserBody = {
       name: body.user,
       password: body.password,
-      lists: [],
+      boards: [],
     }
     await DB.insert(newUserBody, User)
     ctx.body = body;

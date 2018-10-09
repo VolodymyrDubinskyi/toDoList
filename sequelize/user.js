@@ -2,20 +2,20 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('./init')
 
-const User = sequelize.define('usersTable', {
+const User = sequelize.define('usersWithBoards', {
   name: {
     type: Sequelize.STRING,
   },
   password: {
     type: Sequelize.STRING,
   },
-  lists: {
+  boards: {
     type: Sequelize.STRING,
     get: function get() {
-      return JSON.parse(this.getDataValue('lists'));
+      return JSON.parse(this.getDataValue('boards'));
     },
     set: function set(val) {
-      return this.setDataValue('lists', JSON.stringify(val));
+      return this.setDataValue('boards', JSON.stringify(val));
     },
   },
 });

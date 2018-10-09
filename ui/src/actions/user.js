@@ -7,8 +7,8 @@ import {
 } from '../FetchCalls/user'
 
 import {
-  getAllLists,
-} from './lists'
+  getAllBoards,
+} from './boards'
 
 const logOut = (): Object => ({
   type: 'LOG_OUT',
@@ -17,7 +17,7 @@ const logOut = (): Object => ({
 type logInActionParams = {
   user: string,
   id: string,
-  lists: Array<string>,
+  boards: Array<string>,
 }
 
 const logInAction = (info: logInActionParams): Object => ({
@@ -25,7 +25,7 @@ const logInAction = (info: logInActionParams): Object => ({
   payload: {
     name: info.user,
     id: info.id,
-    lists: info.lists,
+    boards: info.boards,
   },
 })
 
@@ -39,7 +39,7 @@ export const logIn = (dispatch: Function) => (payload: callLogInParams) => {
     .then((data) => {
       localStorage.setItem('token', data.token)
       dispatch(logInAction(data.info))
-      getAllLists(dispatch)()
+      getAllBoards(dispatch)(data.info.id)
     })
 }
 
@@ -47,7 +47,7 @@ export const tokenLogin = (dispatch: Function) => () => {
   callTokenLogInEndpoint()
     .then((data) => {
       dispatch(logInAction(data.info))
-      getAllLists(dispatch)()
+      getAllBoards(dispatch)(data.info.id)
     })
 }
 
@@ -64,6 +64,11 @@ export type callEditUserParams = {
 
 const clearStoreAction = (): Object => ({
   type: 'CLEAR_STORE',
+  payload: {},
+})
+
+export const clearListsAndTodos = (): Object => ({
+  type: 'CLEAR_LIST_AND_TODO',
   payload: {},
 })
 

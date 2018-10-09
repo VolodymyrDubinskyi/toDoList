@@ -27,6 +27,10 @@ const todos = (state: any = [], action: actionParams) => {
       const newState = []
       return newState
     }
+    case 'CLEAR_LIST_AND_TODO': {
+      const newState = []
+      return newState
+    }
     default:
       return state
   }
