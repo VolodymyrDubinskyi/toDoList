@@ -67,7 +67,6 @@ router
   .get('/registration', async (ctx) => {
     await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
   })
-
 app
   .use(router.routes())
   .use(router.allowedMethods());

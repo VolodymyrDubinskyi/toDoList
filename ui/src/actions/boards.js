@@ -23,6 +23,8 @@ const addBoardAction = (data: addBoardActionParams): Object => ({
     color: data.color,
     lists: JSON.parse(data.lists),
     index: data.index,
+    private: data.private,
+    usersWithAccess: JSON.parse(data.usersWithAccess),
   },
 })
 
@@ -34,7 +36,6 @@ const removeBoardAction = (id: string): Object => ({
 export const addBoard = (dispatch: Function) => (user, payload) => {
   callAddBoardEndpoint(user, payload)
     .then((data) => {
-      console.log(data)
       const gettedData = data[0] ? data[0] : data
       if (gettedData) {
         addNotification(dispatch)({
@@ -43,8 +44,8 @@ export const addBoard = (dispatch: Function) => (user, payload) => {
           info: `${gettedData.id} - get created`,
           id: Math.ceil(Math.random() * 9999999999),
         })
+        dispatch(addBoardAction(gettedData))
       }
-      dispatch(addBoardAction(gettedData))
     })
     .catch(() => {
       addNotification(dispatch)({
@@ -66,7 +67,7 @@ export const getAllBoards = (dispatch: Function) => (userId) => {
   callGetAllBoardsEndpoint(userId)
     .then((data: { Boards: Array<Object> }) => {
       data.boards.map((obj) => {
-        dispatch(addBoardAction(obj))
+        if (obj) dispatch(addBoardAction(obj))
         return null
       })
     })
@@ -87,6 +88,6 @@ export type callEditBoardParams = {
 }
 
 
-export const editBoard = (dispatch: Function) => (payload: callEditBoardParams) => {
-  dispatch(editBoardAction(payload.id, payload.changes))
+export const editBoard = (dispatch: Function) => (id, changes) => {
+  dispatch(editBoardAction(id, changes))
 }

@@ -5,7 +5,7 @@ type actionParams = {
   payload: any,
 }
 
-const lists = (state :any = [], action :actionParams) => {
+const components = (state :any = {}, action :actionParams) => {
   switch (action.type) {
     case 'ADD_TO_COMPONENT_STORAGE': {
       const newState = Object.assign({}, state, action.payload)
@@ -16,4 +16,4 @@ const lists = (state :any = [], action :actionParams) => {
   }
 }
 
-export default lists
+export default components

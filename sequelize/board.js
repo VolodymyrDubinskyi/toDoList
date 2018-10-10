@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('./init')
 
-const Board = sequelize.define('newBoardList', {
+const Board = sequelize.define('listOfBoard', {
   title: {
     type: Sequelize.STRING,
   },
@@ -18,13 +18,13 @@ const Board = sequelize.define('newBoardList', {
   admin: {
     type: Sequelize.INTEGER,
   },
-  usersWithaccess: {
+  usersWithAccess: {
     type: Sequelize.STRING,
     get: function get() {
-      return this.getDataValue('usersWithaccess');
+      return this.getDataValue('usersWithAccess');
     },
     set: function set(val) {
-      return this.setDataValue('usersWithaccess', JSON.stringify(val));
+      return this.setDataValue('usersWithAccess', JSON.stringify(val));
     },
   },
   lists: {

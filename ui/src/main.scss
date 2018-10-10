@@ -14,7 +14,6 @@ html {
 
 body {
   margin: 0;
-  background-color: rgb(75, 191, 107)
 }
 
 .clearfix::after {
@@ -321,7 +320,7 @@ body {
   }
   .list {
     position: relative;
-    margin: 20px auto; // padding: 10px;
+    margin: 56px auto 20px;
     width: 272px;
     border-radius: 3px;
     background-color: #dfe3e6;
@@ -629,7 +628,7 @@ a {
   cursor: pointer;
   display: inline-block;
   height: 32px;
-  margin: 20px auto;
+  margin: 56px auto 20px;
   min-height: 32px;
   width: 272px;
 }
@@ -664,7 +663,7 @@ a {
   position: relative;
   padding: 8;
   width: 94%;
-  background-color: rgb(75, 191, 107);
+  background-color: rgba(9, 45, 66, .08);
   border-radius: 3px;
   cursor: pointer;
 }
@@ -845,4 +844,164 @@ a {
   text-size-adjust: 100%;
   text-transform: none;
   transition-duration: 0.085s;
+}
+
+.newBoardCreator {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b808c;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 16px);
+}
+
+.newBoardCreator:hover {
+  background-color: rgba(9, 45, 66, .13);
+  color: #17394d;
+}
+
+.boardShadowBox:hover {
+  background-color: rgba(0, 0, 0, .25);
+}
+
+.boardTitleAtList {
+  height: 32px;
+  padding: 0 12px 0 10px;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+  color: white;
+  line-height: 32px;
+  cursor: pointer;
+}
+
+.boardPrivacyAtList {
+  border-radius: 3px;
+  padding: 0 12px 0 10px;
+  font-weight: 400;
+  display: inline-block;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  height: 32px;
+  color: white;
+  cursor: pointer;
+}
+
+.boardSetsing>* {
+  line-height: 32px;
+}
+
+.boardPrivacyAtList:hover,
+.boardTitleAtList:hover {
+  background: rgba(0, 0, 0, .3);
+}
+
+.boardAccessedUsers,
+.addAccessToUser {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  margin: 2px;
+  position: relative;
+  line-height: 28px;
+  text-align: center;
+  margin-right: -5px;
+}
+
+.addAccessToUser {
+  color: white;
+  cursor: pointer;
+  background-color: rgba(223, 227, 230, 0.5);
+}
+
+.boardAccessedUsersHolder,
+.addAccessToUserHolder {
+  border-radius: 50%;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+}
+
+.addAccessToUser:hover,
+.boardAccessedUsersHolder:hover {
+  background-color: rgba(0, 0, 0, .25)
+}
+
+.addAccessToUserInput {
+  background-color: rgb(235, 238, 240);
+  border-radius: 3px;
+  border-style: solid;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-color: rgb(223, 227, 230);
+  border-top-width: 1px;
+  box-shadow: none;
+  box-sizing: border-box;
+  display: block;
+  font-stretch: 100%;
+  font-weight: 400;
+  height: 34px;
+  letter-spacing: normal;
+  line-height: 20px;
+  margin: 12px 0 20px;
+  padding: 6px 30px 6px 8px;
+  text-align: start;
+  text-indent: 0px;
+  transition-duration: 0.085s;
+  width: 280px;
+  word-spacing: 0px;
+}
+
+.addTitleButton {
+  align-items: flex-start;
+  background-color: rgb(90, 172, 68);
+  border-color: rgb(255, 255, 255);
+  border-radius: 3px;
+  border-style: none;
+  border-width: 0px;
+  border-image-width: 1;
+  box-shadow: rgb(63, 111, 33) 0px 1px 0px 0px;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  height: 32px;
+  letter-spacing: normal;
+  line-height: 20px;
+  margin-top: 8px 4px 0 0;
+  padding-top: 6px 24px 6px;
+  transition-duration: 0.085s;
+}
+
+.addTitleButton:hover {
+  background-color: #519839;
+  box-shadow: 0 1px 0 0 #3f6f21;
+  border: none;
+  color: #fff;
+}
+
+.addTitleButton:active {
+  background-color: #3f6f21;
+}
+
+.changePrivacy div {
+  padding: 12px;
+  font-weight: 700;
+  color: rgb(23, 57, 77);
+}
+
+.changePrivacy div:hover {
+  background-color: #298fca;
+    color: #fff;
+}
+
+.changePrivacy div:active {
+  background-color: #0079bf;
 }

@@ -40,6 +40,7 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id, changes } = ctx.request.body
+
       await DB.update(id, changes, List)
       const updated = JSON.stringify({ id, changes })
       ctx.body = updated
@@ -51,12 +52,12 @@ module.exports = {
     const { body } = ctx.request
     const { user } = ctx.state
 
-    const userDb = await DB.get({ id }, Board)
+    const boardDb = await DB.get({ id }, Board)
 
-    const userLists = JSON.parse(userDb[0].lists)
+    const boardLists = JSON.parse(boardDb[0].lists)
     const newListBody = {
       title: 'no title',
-      index: userLists.length,
+      index: boardLists.length,
       todos: [],
     }
 
@@ -68,11 +69,11 @@ module.exports = {
     } else {
       const created = await DB.insert(newListBody, List)
 
-      const getUser = await DB.get({ id }, Board)
-      const lists = JSON.parse(getUser[0].lists)
+      const getBoard = await DB.get({ id }, Board)
+      const lists = JSON.parse(getBoard[0].lists)
       lists.push(created.id)
 
-      await DB.update(getUser[0].id, { lists }, Board)
+      await DB.update(getBoard[0].id, { lists }, Board)
       ctx.body = created;
     }
   },

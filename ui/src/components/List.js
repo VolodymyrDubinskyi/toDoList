@@ -7,12 +7,17 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { connect } from 'react-redux'
 
+import BoardSetsing from './List/BoardSetsing'
+import editComponent from '../actions/components'
 import TodosContainer from './List/TodosContainer';
 import type { callEditUserParams } from '../actions/user'
 import type { userProps, listsProps } from '../props'
 import {
   editUser,
 } from '../actions/user'
+import {
+  editBoard,
+} from '../actions/boards'
 import {
   addList,
   removeList,
@@ -35,6 +40,10 @@ type Props = {
   editList: Function,
   todos: Array<Object>,
   getAllLists: Function,
+  editComponent: Function,
+  boards: Array<Object>,
+  components: Object,
+  editBoard: Function,
 };
 
 type State = {
@@ -53,6 +62,29 @@ class List extends React.Component<Props, State> {
       listMoved: false,
       todos: props.todos,
     }
+  }
+
+  changeBoardPrivacy = (isPrivate) => {
+    const boardId = `${this.props.history.location.pathname.split('/')[4]}`
+    const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
+
+    this.props.editBoard(currentBoard.id, { private: isPrivate })
+  }
+
+  changeBoardTitle = (title) => {
+    const boardId = `${this.props.history.location.pathname.split('/')[4]}`
+    const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
+
+    this.props.editBoard(currentBoard.id, { title })
+  }
+
+  addAccessToUser = (user) => {
+    const boardId = `${this.props.history.location.pathname.split('/')[4]}`
+    const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
+
+    const { usersWithAccess } = currentBoard
+    usersWithAccess.push(user)
+    this.props.editBoard(currentBoard.id, { usersWithAccess })
   }
 
   stopMoveList = () => {
@@ -148,10 +180,14 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
+    // console.log(this.props.components)
     if (!this.props.user.name) {
       this.props.history.push('/authorization')
       return null
     }
+
+    const boardId = `${this.props.history.location.pathname.split('/')[4]}`
+    const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
 
     function add(a: number, b: Object) {
       return a + b.todos.length;
@@ -218,34 +254,28 @@ class List extends React.Component<Props, State> {
       todos={this.props.todos}
     />)
 
-    if (this.props.lists[0]) {
-      return <div
+    return <div style={{
+      minWidth: '100%',
+      height: 'calc(100vh - 68px)',
+      paddingTop: 66,
+      backgroundColor: currentBoard.color,
+      overflowX: 'scroll',
+    }}>
+      <BoardSetsing
+        board={currentBoard}
+        changeBoardTitle={this.changeBoardTitle}
+        changeBoardPrivacy={this.changeBoardPrivacy}
+        addAccessToUser={this.addAccessToUser} />
+      <div
         style={{
-          width: '100vw',
-          height: 'calc(100vh - 68px)',
-          paddingTop: 68,
           display: 'flex',
           position: 'relative',
         }}>
-        {allLists.map(obj => obj)}
-        <div className='todosList'>
-          <div className='addNewListContainer' onClick={this.props.addList}>
+        {this.props.lists[0] ? allLists.map(obj => obj) : null}
+        <div className='todosList' onClick={this.addList}>
+          <div className='addNewListContainer'>
             <span>+ Add new list</span>
           </div>
-        </div>
-      </div>
-    }
-    return <div
-      style={{
-        width: '100vw',
-        height: 'calc(100vh - 68px)',
-        paddingTop: 68,
-        display: 'flex',
-        position: 'relative',
-      }}>
-      <div className='todosList' onClick={this.addList}>
-        <div className='addNewListContainer'>
-          <span>+ Add new list</span>
         </div>
       </div>
     </div>
@@ -260,23 +290,27 @@ List.propTypes = {
   editUser: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   getAllLists: PropTypes.func,
+  editComponent: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
-  state,
+  boards: state.boards,
   lists: state.lists,
   todos: state.todos,
   user: state.user,
+  components: state.components,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
   addList: addList(dispatch),
+  editBoard: editBoard(dispatch),
   removeList: removeList(dispatch),
   editUser: editUser(dispatch),
   editToDo: editToDo(dispatch),
   editList: editList(dispatch),
   removeToDo: removeToDo(dispatch),
   getAllLists: getAllLists(dispatch),
+  editComponent: changes => dispatch(editComponent(changes)),
 })
 
 const ListWithContext = DragDropContext(HTML5Backend)(List)

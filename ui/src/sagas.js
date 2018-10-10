@@ -10,6 +10,9 @@ import {
   callRemoveListEndpoint,
   callEditListEndpoint,
 } from './FetchCalls/list'
+import {
+  callEditBoardEndpoint,
+} from './FetchCalls/board'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
@@ -171,11 +174,53 @@ function* watchRemoveListAsync() {
 }
 
 
+function* editBoardAsync(action) {
+  const { payload } = action
+  const oldState = yield select();
+  const { id } = payload
+  const changeKey = Object.keys(payload.changes)[0]
+  const board = oldState.boards.filter(elem => elem.id === id)[0];
+  try {
+    yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+    yield callEditBoardEndpoint(payload)
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'info',
+        head: 'Board edited',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
+  } catch (err) {
+    yield (delay(2000))
+    yield put({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        type: 'error',
+        head: 'Some connection problems, pls try aging',
+        info: '',
+        id: Math.ceil(Math.random() * 9999999999),
+      },
+    })
+    payload.changes[changeKey] = board[changeKey]
+    yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+    yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+  }
+}
+
+
+function* watchEditBoardAsync() {
+  yield takeEvery('EDIT_BOARD', editBoardAsync)
+}
+
+
 export default function* rootSaga() {
   yield all([
     watchEditTodoAsync(),
     watchRemoveTodoAsync(),
     watchEditListAsync(),
     watchRemoveListAsync(),
+    watchEditBoardAsync(),
   ])
 }

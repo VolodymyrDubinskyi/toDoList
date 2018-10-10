@@ -44,8 +44,8 @@ export const callGetAllBoardsEndpoint = userId => fetch(`http://${webServer.host
   },
 }).then(response => response.json())
 
-export const callEditBoardEndpoint = (user, payload) => fetch(
-  `http://${webServer.host}:${webServer.port}/board/${user.id}`,
+export const callEditBoardEndpoint = payload => fetch(
+  `http://${webServer.host}:${webServer.port}/boards/${payload.id}`,
   {
     method: 'PATCH',
     body: JSON.stringify({

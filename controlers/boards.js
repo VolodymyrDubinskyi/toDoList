@@ -57,7 +57,7 @@ module.exports = {
       title: body.title,
       color: body.color,
       index: userboards.length,
-      usersWithaccess: `${[userDb[0].id]}`,
+      usersWithAccess: [userDb[0].name],
       private: body.private,
       admin: userDb[0].id,
       lists: [],
