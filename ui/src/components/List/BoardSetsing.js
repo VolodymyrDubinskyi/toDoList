@@ -17,6 +17,7 @@ class AllBoards extends React.Component {
   }
 
   startEditingPrivacy = () => {
+    if (this.props.notOwnBoard) return
     this.setState({ editingPrivacy: true })
     document.addEventListener('click', this.stopEditingPrivacy)
   }
@@ -39,6 +40,7 @@ class AllBoards extends React.Component {
   }
 
   startEditingTitle = () => {
+    if (this.props.notOwnBoard) return
     this.setState({ editingTittle: true })
     document.addEventListener('click', this.stopEditingTitle)
   }
@@ -63,6 +65,7 @@ class AllBoards extends React.Component {
   }
 
   startAddingUser = () => {
+    if (this.props.notOwnBoard) return
     this.setState({ addingUserToBoard: true })
     document.addEventListener('click', this.stopAddingUser)
   }
@@ -150,7 +153,7 @@ class AllBoards extends React.Component {
         margin: '8px 4px 0 0',
       }} />
       <div className='boardPrivacyAtList' onClick={this.startEditingPrivacy}>
-      {this.props.board.private ? 'Private' : 'Public'}
+        {this.props.board.private ? 'Private' : 'Public'}
         {this.state.editingPrivacy ? <div
           className='dialogBox'
           style={{
@@ -236,6 +239,7 @@ AllBoards.propTypes = {
   addAccessToUser: PropTypes.func,
   changeBoardPrivacy: PropTypes.func,
   changeBoardTitle: PropTypes.func,
+  notOwnBoard: PropTypes.bool,
 }
 
 export default AllBoards

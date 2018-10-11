@@ -20,6 +20,7 @@ type Props = {
   stopMove: Function,
   userId: string,
   editToDo: Function,
+  notOwnBoard: boolean,
 }
 
 type State = {
@@ -34,6 +35,7 @@ class ListTodos extends React.Component<Props, State> {
 
 
   moveTodo = (hoverIndex, todoId) => {
+    if (this.props.notOwnBoard) return
     let newDragIndex = 0
     this.state.listItems.map((obj, index) => {
       if (obj.id === todoId) newDragIndex = index
@@ -118,6 +120,7 @@ class ListTodos extends React.Component<Props, State> {
             listItems={listItems}
             changeTodoIndexes={this.changeTodoIndexes}
             editToDo={this.props.editToDo}
+            notOwnBoard={this.props.notOwnBoard}
           />
         }
         return null

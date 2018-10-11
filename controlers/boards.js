@@ -45,11 +45,15 @@ module.exports = {
       }, Board)
 
       const boards = JSON.parse(user[0].boards)
-      if ((boards.indexOf(board[0].id) !== -1) || !board[0].private) {
+      if ((boards.indexOf(board[0].id) !== -1)) {
         ctx.body = JSON.stringify(board[0])
         return
       }
-      ctx.body = JSON.stringify({ haventAccess: false })
+      if (!board[0].private) {
+        ctx.body = JSON.stringify(Object.assign({}, board[0], { notOwnBoard: true }))
+        return
+      }
+      ctx.body = JSON.stringify(Object.assign({}, board[0], { notOwnBoard: false }))
     }
   },
 

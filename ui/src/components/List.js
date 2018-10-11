@@ -58,6 +58,7 @@ type State = {
   moved: string,
   todos: Array<Object>,
   listMoved: boolean,
+  ownPage: boolean,
 }
 
 class List extends React.Component<Props, State> {
@@ -68,6 +69,7 @@ class List extends React.Component<Props, State> {
       moved: '',
       listMoved: false,
       todos: props.todos,
+      ownPage: true,
     }
   }
 
@@ -101,6 +103,7 @@ class List extends React.Component<Props, State> {
   }
 
   moveList = (dragIndex, hoverIndex) => {
+    if (this.props.components.notOwnBoard) return
     const { lists } = this.state
     const dragCard = lists[dragIndex]
 
@@ -119,6 +122,7 @@ class List extends React.Component<Props, State> {
   }
 
   changeList = (todoId, oldListId, newListId) => {
+    if (this.props.components.notOwnBoard) return
     const oldList = this.state.lists.filter(elem => elem.id === oldListId)[0];
     const newList = this.state.lists.filter(elem => elem.id === newListId)[0];
 
@@ -173,7 +177,6 @@ class List extends React.Component<Props, State> {
   }
 
   componentWillMount() { //eslint-disable-line
-
     if (localStorage.getItem('token') && !this.props.user.name) {
       this.props.tokenLogin()
     }
@@ -184,6 +187,7 @@ class List extends React.Component<Props, State> {
   }
 
   addList = () => {
+    if (this.props.components.notOwnBoard) return
     const listId = this.props.history.location.pathname.split('/')[4]
     this.props.addList(listId)
   }
@@ -194,11 +198,12 @@ class List extends React.Component<Props, State> {
     if (!currentBoard) {
       return <div />
     }
-    console.log(currentBoard)
 
     function add(a: number, b: Object) {
       return a + b.todos.length;
     }
+
+    const { notOwnBoard } = this.props.components
 
     const propsTodosLength = this.props.lists.reduce(add, 0);
     const stateTodosLength = this.state.lists.reduce(add, 0);
@@ -259,6 +264,7 @@ class List extends React.Component<Props, State> {
       editList={this.props.editList}
       stopMoveList={this.stopMoveList}
       todos={this.props.todos}
+      notOwnBoard={notOwnBoard}
     />)
 
     return <div style={{
@@ -269,6 +275,7 @@ class List extends React.Component<Props, State> {
       overflowX: 'scroll',
     }}>
       <BoardSetsing
+        notOwnBoard={notOwnBoard}
         board={currentBoard}
         changeBoardTitle={this.changeBoardTitle}
         changeBoardPrivacy={this.changeBoardPrivacy}

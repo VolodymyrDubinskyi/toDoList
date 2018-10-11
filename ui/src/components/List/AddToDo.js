@@ -19,6 +19,7 @@ type Props = {
   components: Object,
   editComponent: Function,
   list: listsProps,
+  notOwnBoard: boolean,
 };
 
 type State = {
@@ -52,6 +53,7 @@ export class AddToDoHolder extends Component<Props, State> {
   }
 
   goToTodoAdding = () => {
+    if (this.props.notOwnBoard) return
     this.props.editComponent({ [`${this.props.list.id}canAddNewTodo`]: true })
     window.addEventListener('mousedown', this.goToUsual)
   }

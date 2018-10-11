@@ -34,6 +34,7 @@ type Props = {
   setMoveIndex: Function,
   stopMove: Function,
   editToDo: Function,
+  notOwnBoard: boolean,
   todos: Array<Object>,
 }
 
@@ -45,6 +46,7 @@ const listSource = {
     };
   },
   endDrag(props) {
+    if (props.notOwnBoard) return
     props.stopMoveList()
     const { lists } = props
     lists.map((obj) => {
@@ -112,6 +114,7 @@ class TodosContainer extends React.Component<Props> {
             {this.props.connectDragSource(<div>
               <HidingToggle
                 list={this.props.elem}
+                notOwnBoard={this.props.notOwnBoard}
                 lists={this.props.lists}
                 title={(this.props.elem.id) ? this.props.lists.filter(
                   obj => obj.id === this.props.elem.id,
@@ -127,8 +130,9 @@ class TodosContainer extends React.Component<Props> {
               setMoveIndex={this.props.setMoveIndex}
               stopMove={this.props.stopMove}
               editToDo={this.props.editToDo}
+              notOwnBoard={this.props.notOwnBoard}
             />
-            <AddToDo list={this.props.elem} />
+            <AddToDo list={this.props.elem} notOwnBoard={this.props.notOwnBoard} />
           </div>
         </div>
       </div>,

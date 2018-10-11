@@ -1,5 +1,5 @@
 import { addNotification } from './notification';
-
+import editComponent from './components'
 
 import {
   callAddBoardEndpoint,
@@ -80,6 +80,7 @@ export const getAllBoards = (dispatch: Function) => (userId) => {
 export const getBoard = (dispatch: Function) => (userId) => {
   callGetBoardEndpoint(userId)
     .then((data: { Boards: Array<Object> }) => {
+      console.log(data)
       if (data.haventAccess === false) {
         dispatch({
           type: 'ADD_NOTIFICATION',
@@ -90,7 +91,11 @@ export const getBoard = (dispatch: Function) => (userId) => {
             id: Math.ceil(Math.random() * 9999999999),
           },
         })
+      } else if (data.notOwnBoard) {
+        dispatch(editComponent({ notOwnBoard: true }))
+        dispatch(addBoardAction(data))
       } else {
+        dispatch(editComponent({ notOwnBoard: false }))
         dispatch(addBoardAction(data))
       }
     })

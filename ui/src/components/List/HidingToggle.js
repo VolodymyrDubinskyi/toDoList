@@ -13,6 +13,7 @@ type Props = {
   title: string,
   user: userProps,
   list: listsProps,
+  notOwnBoard: boolean,
   editList: (callEditListParams) => void,
 };
 type State = {
@@ -30,6 +31,7 @@ class HidingToggle extends Component<Props, State> {
   }
 
   updateValue = (e: Object) => {
+    if (this.props.notOwnBoard) return
     this.setState({
       editValue: e.target.value,
       edditing: true,
@@ -38,6 +40,7 @@ class HidingToggle extends Component<Props, State> {
 
 
   changeTitle = (e: Object) => {
+    if (this.props.notOwnBoard) return
     if (e.keyCode === 13) {
       const changes = {
         title: this.state.editValue,

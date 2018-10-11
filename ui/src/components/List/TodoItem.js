@@ -71,6 +71,7 @@ const todoSource = {
     };
   },
   endDrag(props) {
+    if (props.notOwnBoard) return
     props.stopMove();
     setTimeout(() => {
       let newList;
@@ -143,6 +144,7 @@ type Props = {
   moved: boolean,
   stopMove: Function,
   connectDragPreview: Function,
+  notOwnBoard: boolean,
 };
 type State = {
   todoNowEditting: boolean,
@@ -185,7 +187,10 @@ export class TodoItem extends Component<Props, State> {
     })
   }
 
-  goToEdit = () => this.setState({ todoNowEditting: true })
+  goToEdit = () => {
+    if (this.props.notOwnBoard) return
+    this.setState({ todoNowEditting: true })
+  }
 
   saveAndStopEdditingUsingEnter = (e: Object) => {
     if (e.keyCode === 13) {
