@@ -40,9 +40,28 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id, changes } = ctx.request.body
-      await DB.update(id, changes, Board)
-      const updated = JSON.stringify({ id, changes })
-      ctx.body = updated
+      if (changes.usersWithAccess) {
+        const board = await DB.get({
+          id,
+        }, Board)
+        const { usersWithAccess } = changes
+        const oldUsersWithAccess = JSON.parse(board[0].usersWithAccess)
+        let result = usersWithAccess.filter(users => (oldUsersWithAccess.indexOf(users) === -1));
+        [result] = result
+        const userData = await DB.get({
+          name: result,
+        }, User)
+        if (userData[0]) {
+          const boards = JSON.parse(userData[0].boards)
+          boards.push(id)
+          await DB.update(id, changes, Board)
+          const updated = JSON.stringify({ id, changes })
+          ctx.body = updated
+          await DB.update(userData[0].id, { boards }, User)
+        } else {
+          ctx.body = JSON.stringify({ exist: false })
+        }
+      }
     }
   },
 

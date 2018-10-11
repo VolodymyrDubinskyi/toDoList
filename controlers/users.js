@@ -32,7 +32,7 @@ module.exports = {
         .then((user) => {
           ctx.body = {
             info: {
-              id: user.id, //eslint-disable-line
+              id: user.id,
               user: user.name,
               boards: JSON.parse(user.boards),
             },
@@ -57,7 +57,7 @@ module.exports = {
           ctx.body = {
             token,
             info: {
-              id: user.id, //eslint-disable-line
+              id: user.id,
               user: user.name,
               boards: JSON.parse(user.boards),
             },

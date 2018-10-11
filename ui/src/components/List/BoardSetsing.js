@@ -150,7 +150,8 @@ class AllBoards extends React.Component {
         height: 16,
         margin: '8px 4px 0 0',
       }} />
-      <div className='boardPrivacyAtList' onClick={this.startEditingPrivacy} >{this.props.board.private ? 'Private' : 'Public'}
+      <div className='boardPrivacyAtList' onClick={this.startEditingPrivacy}>
+      {this.props.board.private ? 'Private' : 'Public'}
         {this.state.editingPrivacy ? <div
           className='dialogBox'
           style={{

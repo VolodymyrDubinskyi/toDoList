@@ -6,6 +6,9 @@ import {
   callGetAllBoardsEndpoint,
 } from '../FetchCalls/board'
 
+import {
+  changeBoard as changeBoardSocket,
+} from '../socket'
 
 export type addBoardActionParams = {
   id: string,
@@ -18,7 +21,7 @@ export type addBoardActionParams = {
 const addBoardAction = (data: addBoardActionParams): Object => ({
   type: 'ADD_BOARD',
   payload: {
-    id: data.id, // eslint-disable-line
+    id: data.id,
     title: data.title,
     color: data.color,
     lists: JSON.parse(data.lists),
@@ -89,5 +92,6 @@ export type callEditBoardParams = {
 
 
 export const editBoard = (dispatch: Function) => (id, changes) => {
+  changeBoardSocket(editBoardAction(id, changes))
   dispatch(editBoardAction(id, changes))
 }

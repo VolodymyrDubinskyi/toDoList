@@ -86,11 +86,6 @@ module.exports = {
       let { todos } = getList[0]
       todos = JSON.parse(todos)
       todos.push(created.id)
-
-      console.log('------------')
-      console.log(list)
-      console.log({ todos })
-      console.log('------------')
       await DB.update(list, { todos }, List)
       ctx.body = created;
     }

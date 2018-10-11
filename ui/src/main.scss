@@ -320,7 +320,7 @@ body {
   }
   .list {
     position: relative;
-    margin: 56px auto 20px;
+    margin: 0 auto;
     width: 272px;
     border-radius: 3px;
     background-color: #dfe3e6;
@@ -628,7 +628,7 @@ a {
   cursor: pointer;
   display: inline-block;
   height: 32px;
-  margin: 56px auto 20px;
+  margin: 0 auto;
   min-height: 32px;
   width: 272px;
 }
@@ -999,9 +999,13 @@ a {
 
 .changePrivacy div:hover {
   background-color: #298fca;
-    color: #fff;
+  color: #fff;
 }
 
 .changePrivacy div:active {
   background-color: #0079bf;
+}
+
+.todosList {
+  padding: 0 0 20px;
 }

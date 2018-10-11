@@ -73,22 +73,30 @@ app
 
 io.on('connection', (socket) => {
   socket.on('change todo', (changes) => {
-    socket.broadcast.emit('change todo', changes);
+    socket.broadcast.in(socket.room).emit('change todo', changes);
   });
   socket.on('change list', (changes) => {
-    socket.broadcast.emit('change list', changes);
+    socket.broadcast.in(socket.room).emit('change list', changes);
   });
   socket.on('remove list', (changes) => {
-    socket.broadcast.emit('remove list', changes);
+    socket.broadcast.in(socket.room).emit('remove list', changes);
   });
   socket.on('remove todo', (changes) => {
-    socket.broadcast.emit('remove todo', changes);
+    socket.broadcast.in(socket.room).emit('remove todo', changes);
   });
   socket.on('add list', (changes) => {
-    socket.broadcast.emit('add list', changes);
+    socket.broadcast.in(socket.room).emit('add list', changes);
   });
   socket.on('add todo', (changes) => {
-    socket.broadcast.emit('add todo', changes);
+    socket.broadcast.in(socket.room).emit('add todo', changes);
+  });
+  socket.in(`${socket.room}`).on('change board', (changes) => {
+    socket.broadcast.in(socket.room).emit('change board', changes);
+  });
+  socket.on('change room', (room) => {
+    if (socket.room) socket.leave(socket.room);
+    socket.room = room;
+    socket.join(room);
   });
 });
 

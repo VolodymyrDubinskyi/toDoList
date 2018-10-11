@@ -27,6 +27,9 @@ import {
 import {
   removeToDo, editToDo,
 } from '../actions/todos'
+import {
+  changeRoom,
+} from '../socket'
 
 type Props = {
   lists: Array<listsProps>,
@@ -172,6 +175,7 @@ class List extends React.Component<Props, State> {
     }
     const listId = this.props.history.location.pathname.split('/')[4]
     this.props.getAllLists(listId)
+    changeRoom(listId)
   }
 
   addList = () => {
@@ -270,10 +274,11 @@ class List extends React.Component<Props, State> {
         style={{
           display: 'flex',
           position: 'relative',
+          paddingTop: 56,
         }}>
         {this.props.lists[0] ? allLists.map(obj => obj) : null}
-        <div className='todosList' onClick={this.addList}>
-          <div className='addNewListContainer'>
+        <div className='todosList'>
+          <div className='addNewListContainer' onClick={this.addList}>
             <span>+ Add new list</span>
           </div>
         </div>
