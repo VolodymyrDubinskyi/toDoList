@@ -4,6 +4,7 @@ import { addNotification } from './notification';
 import {
   callAddBoardEndpoint,
   callGetAllBoardsEndpoint,
+  callGetBoardEndpoint,
 } from '../FetchCalls/board'
 
 import {
@@ -73,6 +74,25 @@ export const getAllBoards = (dispatch: Function) => (userId) => {
         if (obj) dispatch(addBoardAction(obj))
         return null
       })
+    })
+}
+
+export const getBoard = (dispatch: Function) => (userId) => {
+  callGetBoardEndpoint(userId)
+    .then((data: { Boards: Array<Object> }) => {
+      if (data.haventAccess === false) {
+        dispatch({
+          type: 'ADD_NOTIFICATION',
+          payload: {
+            type: 'error',
+            head: 'U have no access to this page',
+            info: '',
+            id: Math.ceil(Math.random() * 9999999999),
+          },
+        })
+      } else {
+        dispatch(addBoardAction(data))
+      }
     })
 }
 

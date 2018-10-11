@@ -13,10 +13,12 @@ import TodosContainer from './List/TodosContainer';
 import type { callEditUserParams } from '../actions/user'
 import type { userProps, listsProps } from '../props'
 import {
+  tokenLogin,
   editUser,
 } from '../actions/user'
 import {
   editBoard,
+  getBoard,
 } from '../actions/boards'
 import {
   addList,
@@ -47,6 +49,8 @@ type Props = {
   boards: Array<Object>,
   components: Object,
   editBoard: Function,
+  tokenLogin: Function,
+  getBoard: Function,
 };
 
 type State = {
@@ -169,11 +173,12 @@ class List extends React.Component<Props, State> {
   }
 
   componentWillMount() { //eslint-disable-line
-    if (!this.props.user.name) {
-      this.props.history.push('/authorization')
-      return null
+
+    if (localStorage.getItem('token') && !this.props.user.name) {
+      this.props.tokenLogin()
     }
     const listId = this.props.history.location.pathname.split('/')[4]
+    this.props.getBoard(listId)
     this.props.getAllLists(listId)
     changeRoom(listId)
   }
@@ -184,14 +189,12 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
-    // console.log(this.props.components)
-    if (!this.props.user.name) {
-      this.props.history.push('/authorization')
-      return null
-    }
-
     const boardId = `${this.props.history.location.pathname.split('/')[4]}`
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
+    if (!currentBoard) {
+      return <div />
+    }
+    console.log(currentBoard)
 
     function add(a: number, b: Object) {
       return a + b.todos.length;
@@ -299,6 +302,7 @@ List.propTypes = {
 }
 
 const mapStateToProps = state => ({
+  state,
   boards: state.boards,
   lists: state.lists,
   todos: state.todos,
@@ -315,6 +319,8 @@ const mapDispatchToProps = (dispatch: Function) => ({
   editList: editList(dispatch),
   removeToDo: removeToDo(dispatch),
   getAllLists: getAllLists(dispatch),
+  tokenLogin: tokenLogin(dispatch),
+  getBoard: getBoard(dispatch),
   editComponent: changes => dispatch(editComponent(changes)),
 })
 

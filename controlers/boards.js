@@ -32,6 +32,27 @@ module.exports = {
     }
   },
 
+  getOne: async (ctx) => {
+    const { user } = ctx.state
+    if (!user[0].name) {
+      ctx.body = JSON.stringify({})
+      ctx.status = 401;
+      ctx.throw(401, 'Unauthorized');
+    } else {
+      const id = ctx.request.url.split('/')[2]
+      const board = await DB.get({
+        id,
+      }, Board)
+
+      const boards = JSON.parse(user[0].boards)
+      if ((boards.indexOf(board[0].id) !== -1) || !board[0].private) {
+        ctx.body = JSON.stringify(board[0])
+        return
+      }
+      ctx.body = JSON.stringify({ haventAccess: false })
+    }
+  },
+
   update: async (ctx) => {
     const { user } = ctx.state
     if (user === undefined) {
@@ -61,6 +82,10 @@ module.exports = {
         } else {
           ctx.body = JSON.stringify({ exist: false })
         }
+      } else {
+        await DB.update(id, changes, Board)
+        const updated = JSON.stringify({ id, changes })
+        ctx.body = updated
       }
     }
   },

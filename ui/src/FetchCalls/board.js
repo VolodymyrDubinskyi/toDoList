@@ -44,6 +44,17 @@ export const callGetAllBoardsEndpoint = userId => fetch(`http://${webServer.host
   },
 }).then(response => response.json())
 
+export const callGetBoardEndpoint = userId => fetch(`http://${webServer.host}:${webServer.port}/board/${userId}`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': '*',
+    'X-Access-Token': localStorage.getItem('token') || '',
+  },
+}).then(response => response.json())
+
 export const callEditBoardEndpoint = payload => fetch(
   `http://${webServer.host}:${webServer.port}/boards/${payload.id}`,
   {

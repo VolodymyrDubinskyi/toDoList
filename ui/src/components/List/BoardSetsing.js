@@ -108,7 +108,6 @@ class AllBoards extends React.Component {
       style={{
         padding: '8px',
         marginBottom: 8,
-        height: 32,
         backgroundColor: 'rgba(0,0,0,.2)',
         minWidth: 'calc(100% - 16px)',
         position: 'fixed',
