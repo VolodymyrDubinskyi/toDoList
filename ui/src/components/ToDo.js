@@ -13,14 +13,7 @@ import AuthorizationWithConnect from './Authorization'
 import HeaderWithConnect from './Header'
 
 const ToDo = () => <Router>
-  <div style={{
-    width: '100vw',
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'relative',
-  }}>
+  <div>
     <Switch>
       <Route exact path="/registration" component={() => <Registration />} />
       <Route exact path="/authorization" component={() => <AuthorizationWithConnect />} />

@@ -181,17 +181,33 @@ function* editBoardAsync(action) {
   const changeKey = Object.keys(payload.changes)[0]
   const board = oldState.boards.filter(elem => elem.id === id)[0];
   try {
-    yield put({ type: 'EDIT_BOARD_REDUCER', payload });
-    yield callEditBoardEndpoint(payload)
-    yield put({
-      type: 'ADD_NOTIFICATION',
-      payload: {
-        type: 'info',
-        head: 'Board edited',
-        info: '',
-        id: Math.ceil(Math.random() * 9999999999),
-      },
-    })
+    const callBack = yield callEditBoardEndpoint(payload)
+    if (callBack.exist === false) {
+      yield (delay(2000))
+      yield put({
+        type: 'ADD_NOTIFICATION',
+        payload: {
+          type: 'error',
+          head: 'This name is not exist',
+          info: '',
+          id: Math.ceil(Math.random() * 9999999999),
+        },
+      })
+      payload.changes[changeKey] = board[changeKey]
+      yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+      yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+    } else {
+      yield put({ type: 'EDIT_BOARD_REDUCER', payload });
+      yield put({
+        type: 'ADD_NOTIFICATION',
+        payload: {
+          type: 'info',
+          head: 'Board edited',
+          info: '',
+          id: Math.ceil(Math.random() * 9999999999),
+        },
+      })
+    }
   } catch (err) {
     yield (delay(2000))
     yield put({

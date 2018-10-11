@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button';
 import { TextField } from '@material-ui/core';
 import {
   withRouter, Link, Route, Switch,
@@ -116,61 +115,70 @@ export class Header extends Component<Props, State> {
     />
 
     return (
-      <div className={'header'}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+      <div className={'header'} style={{
+        height: 40,
+      }}>
+        <div style={{ margin: '0 auto', height: 32 }}>
           <Switch>
             <Route exact path="/registration" component={() => (
               <Link to={'/authorization'}>
-                <Button variant="contained" color="primary"
-                  style={{ float: 'right', fontSize: '15px' }}
-                  className='headerButton'>
+                <div variant="contained" color="primary"
+                  style={{ float: 'left', fontSize: '15px' }}
+                  className='buttonHeaders'>
                   Authorization
-                </Button>
+                </div>
               </Link>)} />
             <Route exact path='/authorization' component={() => (
               < Link to={'/registration'}>
-                <Button variant="contained" color="primary"
-                  style={{ float: 'right', fontSize: '15px' }}
-                  className='headerButton'>
+                <div variant="contained" color="primary"
+                  style={{ float: 'left', fontSize: '15px' }}
+                  className='buttonHeaders'>
                   Registration
-                </Button>
+                </div>
               </Link>)} />
             <Route component={() => (<><Link to={'/authorization'}>
-              <Button variant="contained" color="primary"
-                style={{ float: 'right', fontSize: '15px' }}
+              <div variant="contained" color="primary"
+                style={{ float: 'left', fontSize: '15px' }}
                 onClick={() => {
                   this.props.logOut()
                   this.props.clearStore()
                   localStorage.removeItem('token')
-                }}
-                className='headerButton'>
+                }} className='buttonHeaders'>
                 Log Out
-                </Button>
-            </Link><Route exact path='/user/:name/list/:title' component={({ match }) => (
+                </div>
+            </Link><Route exact path='/user/:name/board/:board' component={({ match }) => (
               <Link to={`/user/${match.params.name}`}>
-                <Button variant="contained" color="primary"
-                  style={{ float: 'right', fontSize: '15px' }}
+                <div variant="contained" color="primary"
+                  style={{ float: 'left', fontSize: '15px' }}
                   onClick={this.stopEditing}
-                  className='headerButton'>
+                  className='buttonHeaders'>
                   {'Back'}
-                </Button>
+                </div>
               </Link>)} /></>)} />
           </Switch>
-          <Route exact path='/user/:name/list/:title' component={({ match }) => (
-            <span className='headerInfo'>
-              <span>{match.params.name}/</span>
-              <span style={(this.state.titleEdit) ? {
-                display: 'none',
-              } : {}}>{
-                  (this.props.user.currentList) ? this.props.lists.filter(
-                    obj => obj.id === match.params.title,
-                  )[0].title : null
-                }</span>
-            </span>
-          )
-          } />
-          <Route exact path='/user/:name' component={({ match }) => (
-            <span className='headerInfo'>{match.params.name}</span>
+          <Route exact path='/user/:name' component={() => (
+            <div key={`User with access ${this.props.user.name}`} style={{
+              display: 'inline-block',
+              cursor: 'pointer',
+              backgroundColor: 'rgb(220, 220, 220)',
+              float: 'right',
+            }} className='headerUsers'>
+              <div className='headerUsersHolder' />
+              <div>
+                {this.props.user.name[0].toUpperCase()}
+              </div></div>
+          )} />
+          <Route exact path='/user/:name/board/:boardId' component={() => (
+            <div key={`User with access ${this.props.user.name}`} style={{
+              display: 'inline-block',
+              cursor: 'pointer',
+              backgroundColor: 'rgb(220, 220, 220)',
+              float: 'right',
+            }} className='headerUsers'>
+              <div className='headerUsersHolder' />
+              <div>
+                {this.props.user.name ? this.props.user.name[0].toUpperCase() : null}
+              </div></div>
           )} />
           {editTitle}{editField}
         </div>

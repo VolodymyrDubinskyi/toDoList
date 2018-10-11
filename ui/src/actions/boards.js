@@ -80,7 +80,6 @@ export const getAllBoards = (dispatch: Function) => (userId) => {
 export const getBoard = (dispatch: Function) => (userId) => {
   callGetBoardEndpoint(userId)
     .then((data: { Boards: Array<Object> }) => {
-      console.log(data)
       if (data.haventAccess === false) {
         dispatch({
           type: 'ADD_NOTIFICATION',

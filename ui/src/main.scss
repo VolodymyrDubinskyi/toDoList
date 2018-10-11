@@ -189,7 +189,7 @@ body {
 .header {
   position: absolute;
   top: 0;
-  width: 80%;
+  width: 100%;
   margin: 0 10%;
   box-sizing: border-box;
   padding: 15px;
@@ -275,13 +275,13 @@ body {
   .header {
     position: absolute;
     top: 0;
-    width: 80%;
+    width: 100%;
     margin: 0 10%;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 4px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    background-color: yellowgreen
+    background-color: rgba(0, 0, 0, .45)
   }
   .header {
     .headerButton {
@@ -1008,4 +1008,65 @@ a {
 
 .todosList {
   padding: 0 0 20px;
+}
+
+.boardAccessedUsersNickname {
+  position: absolute;
+  padding: 5px;
+  background-color: rgb(4, 6, 32);
+  border: 1px solid black;
+  bottom: -30px;
+  right: -65px;
+  color: white;
+  font-weight: 700;
+  line-height: 14px;
+  font-size: 1.25em;
+  display: none;
+}
+
+.boardAccessedUsersHolder:hover .boardAccessedUsersNickname {
+  display: block
+}
+
+.buttonHeaders {
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgba(255, 255, 255, 0.3);
+  background-origin: padding-box;
+  border-radius: 3px;
+  color: rgb(255, 255, 255);
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  height: 32px;
+  padding: 0 10px;
+  line-height: 32px;
+  margin-right: 4px;
+  min-width: 32px;
+  text-decoration-color: rgb(255, 255, 255);
+}
+
+
+.headerUsersHolder{
+  border-radius: 50%;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+}
+
+
+.headerUsersHolder:hover {
+  background-color: rgba(0, 0, 0, .25)
+}
+
+
+
+.headerUsers {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+  position: relative;
+  line-height: 30px;
+  text-align: center;
 }

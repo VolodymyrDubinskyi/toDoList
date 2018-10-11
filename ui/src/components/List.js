@@ -193,7 +193,7 @@ class List extends React.Component<Props, State> {
   }
 
   render() {
-    const boardId = `${this.props.history.location.pathname.split('/')[4]}`
+    const boardId = this.props.history.location.pathname.split('/')[4]
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
     if (!currentBoard) {
       return <div />
@@ -269,8 +269,8 @@ class List extends React.Component<Props, State> {
 
     return <div style={{
       minWidth: '100%',
-      height: 'calc(100vh - 68px)',
-      paddingTop: 66,
+      height: 'calc(100vh - 40px)',
+      paddingTop: 40,
       backgroundColor: currentBoard.color,
       overflowX: 'scroll',
     }}>

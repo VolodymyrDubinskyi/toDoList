@@ -93,15 +93,16 @@ class AllBoards extends React.Component {
 
   render() {
     const { board } = this.props
-
     const usersWithAccess = board.usersWithAccess.map(name => <div key={`User with access ${name}`} style={{
       display: 'inline-block',
       cursor: 'pointer',
-      backgroundColor: `rgb(${Math.ceil(Math.random() * 255)},
-        ${Math.ceil(Math.random() * 255)},
-        ${Math.ceil(Math.random() * 255)})`,
+      backgroundColor: 'rgb(220, 220, 220)',
     }} className='boardAccessedUsers'>
-      <div className='boardAccessedUsersHolder' />
+      <div className='boardAccessedUsersHolder' >
+        <div className='boardAccessedUsersNickname'>
+          {name}
+        </div>
+      </div>
       <div>
         {name[0].toUpperCase()}
       </div></div>)
@@ -109,10 +110,10 @@ class AllBoards extends React.Component {
     return <div
       className='boardSetsing'
       style={{
-        padding: '8px',
+        padding: '2px',
         marginBottom: 8,
         backgroundColor: 'rgba(0,0,0,.2)',
-        minWidth: 'calc(100% - 16px)',
+        minWidth: 'calc(100% - 4px)',
         position: 'fixed',
         zIndex: 15,
       }}>
