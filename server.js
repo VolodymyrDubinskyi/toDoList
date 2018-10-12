@@ -41,6 +41,12 @@ app.use(async (ctx, next) => {
 app.use(koaStatic(`${__dirname}/ui/dist`));
 
 router
+  .get('*.img', async (ctx) => {
+    await send(ctx, ctx.originalUrl, { root: `${__dirname}/ui/img` });
+  })
+  .get('*.png', async (ctx) => {
+    await send(ctx, ctx.originalUrl, { root: `${__dirname}/ui/img` });
+  })
   .get('/todos/:id', todos.list)
   .post('/todos/', todos.create)
   .patch('/todos/:id/:list', todos.update)
@@ -66,6 +72,9 @@ router
     await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
   })
   .get('/registration', async (ctx) => {
+    await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
+  })
+  .get('*', async (ctx) => {
     await send(ctx, 'index.html', { root: `${__dirname}/ui/public` });
   })
 app

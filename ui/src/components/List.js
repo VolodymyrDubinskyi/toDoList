@@ -74,6 +74,7 @@ class List extends React.Component<Props, State> {
   }
 
   changeBoardPrivacy = (isPrivate) => {
+    if (this.props.components.notOwnBoard) return
     const boardId = `${this.props.history.location.pathname.split('/')[4]}`
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
 
@@ -81,6 +82,7 @@ class List extends React.Component<Props, State> {
   }
 
   changeBoardTitle = (title) => {
+    if (this.props.components.notOwnBoard) return
     const boardId = `${this.props.history.location.pathname.split('/')[4]}`
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
 
@@ -88,6 +90,7 @@ class List extends React.Component<Props, State> {
   }
 
   addAccessToUser = (user) => {
+    if (this.props.components.notOwnBoard) return
     const boardId = `${this.props.history.location.pathname.split('/')[4]}`
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
 
@@ -230,6 +233,7 @@ class List extends React.Component<Props, State> {
           }
           return -1
         })
+        if (!newState[i]) return null
         if (this.state.lists[i].title !== newState[i].title) {
           newState = newState.map((list, index) => {
             const newObj = list

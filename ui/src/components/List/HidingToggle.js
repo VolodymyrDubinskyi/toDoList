@@ -57,6 +57,7 @@ class HidingToggle extends Component<Props, State> {
   }
 
   changeTitleOnBlur = () => {
+    if (this.props.notOwnBoard) return
     const changes = {
       title: this.state.editValue,
     }

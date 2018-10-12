@@ -11,10 +11,11 @@ import { NotificationManager } from 'react-notifications';
 
 import type { callEditListParams } from '../actions/lists'
 import type { callEditUserParams } from '../actions/user'
-import { editList, addList } from '../actions/lists'
-import logOut, { editUser, clearStore } from '../actions/user'
+import { editList, addList, getAllLists } from '../actions/lists'
+import logOut, { editUser, clearStore, clearListsAndTodos } from '../actions/user'
 import { removeNotification } from '../actions/notification'
 import type { userProps, listsProps } from '../props'
+
 
 type Props = {
   lists: Array<listsProps>,
@@ -26,10 +27,16 @@ type Props = {
   clearStore: Function,
   removeNotification: Function,
   notifications: Array<Object>,
+  boards: Array<Object>,
+  clearListsAndTodos: Function,
+  getAllLists: Function,
 };
 type State = {
   titleEdit: boolean,
   editValue: string,
+  isUserSettsingsOpen: boolean,
+  boardListOpened: boolean,
+  inputFilterValue: string,
 }
 
 export class Header extends Component<Props, State> {
@@ -38,7 +45,46 @@ export class Header extends Component<Props, State> {
     this.state = {
       titleEdit: false,
       editValue: '',
+      isUserSettsingsOpen: false,
+      boardListOpened: false,
+      inputFilterValue: '',
     };
+  }
+
+  openBoardsList = () => {
+    this.setState({ boardListOpened: true })
+    document.addEventListener('click', this.closeBoardsList)
+  }
+
+  closeBoardsList = (e: Object) => {
+    if (e) {
+      const { target } = e
+      if (target.className.indexOf('dialogBox') === -1) {
+        this.setState({ boardListOpened: false })
+        document.removeEventListener('click', this.closeBoardsList)
+      }
+    } else {
+      this.setState({ boardListOpened: false })
+      document.removeEventListener('click', this.closeBoardsList)
+    }
+  }
+
+  openUserSettsings = () => {
+    this.setState({ isUserSettsingsOpen: true })
+    document.addEventListener('click', this.closeUserSettsings)
+  }
+
+  closeUserSettsings = (e: Object) => {
+    if (e) {
+      const { target } = e
+      if (target.className.indexOf('dialogBox') === -1) {
+        this.setState({ isUserSettsingsOpen: false })
+        document.removeEventListener('click', this.closeUserSettsings)
+      }
+    } else {
+      this.setState({ isUserSettsingsOpen: false })
+      document.removeEventListener('click', this.closeUserSettsings)
+    }
   }
 
   editTitle = () => {
@@ -85,6 +131,21 @@ export class Header extends Component<Props, State> {
     });
   }
 
+
+  updateInputFilterValue = (e: Object) => {
+    this.setState({
+      inputFilterValue: e.target.value,
+    });
+  }
+
+
+  goToBoard = (id: string) => {
+    this.props.history.push(`/user/${this.props.user.name}/board/${id}`)
+    const listId = this.props.history.location.pathname.split('/')[4]
+    this.props.clearListsAndTodos();
+    this.props.getAllLists(listId)
+  }
+
   render() {
     this.props.notifications.map((obj) => {
       NotificationManager[obj.type](obj.head, obj.info)
@@ -114,6 +175,100 @@ export class Header extends Component<Props, State> {
       onKeyDown={e => this.changeTitle(e)}
     />
 
+    const userAvatar = <div key={`User with access ${this.props.user.name}`} style={{
+      display: 'inline-block',
+      cursor: 'pointer',
+      backgroundColor: 'rgb(220, 220, 220)',
+      float: 'right',
+    }} onClick={this.openUserSettsings}
+      className='headerUsers'>
+      <div className='headerUsersHolder' />
+      <div>
+        {(this.props.user.name) ? this.props.user.name[0].toUpperCase() : <img
+          src={'/anon.png'} alt="Not authorized user" className='avatarImage' />}
+      </div>
+      {this.state.isUserSettsingsOpen ? <div
+        className='dialogBox'
+        style={{
+          position: 'absolute',
+          right: -4,
+          top: 40,
+          zIndex: 16,
+          width: 280,
+          padding: 12,
+          backgroundColor: 'white',
+          color: '#6b808c',
+          fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
+          fontSize: 14,
+          lineHeight: '20px',
+          fontWeight: 400,
+        }}>
+        <div style={{
+          borderBottom: '1px solid rgba(9,45,66,.13)',
+          paddingBottom: 8,
+          textAlign: 'center',
+        }} className='dialogBox'>{`${this.props.user.name} (id${this.props.user.id})`}</div>
+        <div style={{
+          position: 'absolute',
+          top: 10,
+          right: 12,
+          cursor: 'pointer',
+        }}>x</div>
+        <div className='userSettsingsButton'>
+          <Link to={'/authorization'}>
+            <div onClick={() => {
+              this.props.logOut()
+              this.props.clearStore()
+              localStorage.removeItem('token')
+            }}>Exit</div>
+          </Link>
+        </div>
+      </div> : null}
+    </div>
+
+    const listOfBoards = this.props.boards.map((board) => {
+      if (board.title.indexOf(this.state.inputFilterValue) !== -1 || this.state.inputFilterValue === '') {
+        return <div key={`boards list ${board.id}`}
+          style={{
+            margin: 2,
+          }}>
+          <div className='clearfix' style={{
+            backgroundColor: board.color,
+          }}>
+            <div style={{
+              backgroundColor: 'rgba(255,255,255,0.7)',
+            }}
+              onClick={() => { this.goToBoard(board.id) }}>
+              <div style={{
+                width: 36,
+                height: 36,
+                float: 'left',
+                backgroundColor: board.color,
+                display: 'inline-block',
+              }} />
+              <div style={{
+                height: 36,
+                position: 'relative',
+              }}>
+                <div className='listsOfBoardHolder' />
+                <div style={{
+                  display: 'inline-block',
+                  fontFamily: '"Helvetica Neue", Arial, Helvetica, sans-serif',
+                  fontSize: 14,
+                  paddingLeft: 10,
+                  lineHeight: '36px',
+                  fontWeight: 700,
+                }}>
+                  {board.title}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      return null
+    })
+
     return (
       <div className={'header'} style={{
         height: 40,
@@ -137,16 +292,7 @@ export class Header extends Component<Props, State> {
                 </div>
               </Link>)} />
             <Route component={() => (<><Link to={'/authorization'}>
-              <div variant="contained" color="primary"
-                style={{ float: 'left', fontSize: '15px' }}
-                onClick={() => {
-                  this.props.logOut()
-                  this.props.clearStore()
-                  localStorage.removeItem('token')
-                }} className='buttonHeaders'>
-                Log Out
-                </div>
-            </Link><Route exact path='/user/:name/board/:board' component={({ match }) => (
+            </Link><Route exact path='/user/:name/board/:board' component={({ match }) => (<div>
               <Link to={`/user/${match.params.name}`}>
                 <div variant="contained" color="primary"
                   style={{ float: 'left', fontSize: '15px' }}
@@ -154,32 +300,54 @@ export class Header extends Component<Props, State> {
                   className='buttonHeaders'>
                   {'Back'}
                 </div>
-              </Link>)} /></>)} />
+              </Link>
+              <div variant="contained" color="primary"
+                style={{ float: 'left', fontSize: '15px', cursor: 'pointer' }}
+                onClick={this.openBoardsList}
+                className='buttonHeaders'>
+                {'Boards'}
+
+                {this.state.boardListOpened ? <div
+                  className='dialogBox'
+                  style={{
+                    position: 'absolute',
+                    left: -4,
+                    top: 40,
+                    zIndex: 16,
+                    width: 280,
+                    padding: 12,
+                    backgroundColor: 'white',
+                    color: '#6b808c',
+                    fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
+                    fontSize: 14,
+                    lineHeight: '20px',
+                    fontWeight: 400,
+                  }}>
+                  <div style={{
+                    borderBottom: '1px solid rgba(9,45,66,.13)',
+                    paddingBottom: 8,
+                    textAlign: 'center',
+                  }} className='dialogBox'>{`${this.props.user.name} (id${this.props.user.id})`}</div>
+                  <div style={{
+                    position: 'absolute',
+                    top: 10,
+                    right: 12,
+                    cursor: 'pointer',
+                  }}>x</div>
+
+                  <input
+                    value={this.state.inputFilterValue}
+                    placeholder='Add filter'
+                    className='boardListFilter dialogBox'
+                    onChange={this.updateInputFilterValue} autoFocus />
+
+                  {listOfBoards}
+                </div> : null}
+
+              </div></div>)} /></>)} />
           </Switch>
-          <Route exact path='/user/:name' component={() => (
-            <div key={`User with access ${this.props.user.name}`} style={{
-              display: 'inline-block',
-              cursor: 'pointer',
-              backgroundColor: 'rgb(220, 220, 220)',
-              float: 'right',
-            }} className='headerUsers'>
-              <div className='headerUsersHolder' />
-              <div>
-                {(this.props.user.name) ? this.props.user.name[0].toUpperCase() : null}
-              </div></div>
-          )} />
-          <Route exact path='/user/:name/board/:boardId' component={() => (
-            <div key={`User with access ${this.props.user.name}`} style={{
-              display: 'inline-block',
-              cursor: 'pointer',
-              backgroundColor: 'rgb(220, 220, 220)',
-              float: 'right',
-            }} className='headerUsers'>
-              <div className='headerUsersHolder' />
-              <div>
-                {this.props.user.name ? this.props.user.name[0].toUpperCase() : null}
-              </div></div>
-          )} />
+          <Route exact path='/user/:name' component={() => (userAvatar)} />
+          <Route exact path='/user/:name/board/:boardId' component={() => (userAvatar)} />
           {editTitle}{editField}
         </div>
       </div>
@@ -194,6 +362,7 @@ Header.propTypes = {
   logOut: PropTypes.func.isRequired,
   lists: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,
+  clearListsAndTodos: PropTypes.func.isRequired,
 }
 
 
@@ -202,6 +371,7 @@ const mapStateToProps = state => ({
   user: state.user,
   todos: state.todos,
   lists: state.lists,
+  boards: state.boards,
   state,
 })
 
@@ -212,6 +382,8 @@ const mapDispatchToProps = (dispatch: Function) => ({
   addList: addList(dispatch),
   clearStore: clearStore(dispatch),
   removeNotification: removeNotification(dispatch),
+  clearListsAndTodos: () => dispatch(clearListsAndTodos()),
+  getAllLists: getAllLists(dispatch),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

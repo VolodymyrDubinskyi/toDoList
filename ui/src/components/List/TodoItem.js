@@ -19,6 +19,7 @@ import {
   editList,
 } from '../../actions/lists'
 import itemTypes from '../../ItemTypes'
+import anonImg from '../../../img/anon.png'
 
 
 const todoTarget = {
@@ -240,7 +241,9 @@ export class TodoItem extends Component<Props, State> {
     >{moved ? <div className='draggingTodoHolder' /> : null}<div
       style={moved ? { opacity: 0 } : {}}>
         {edit}
-        {this.props.connectDragSource(<div>{usual}</div>)}
+        {this.props.connectDragSource(<div>
+        {usual}
+        </div>)}
       </div></div>)
   }
 }
