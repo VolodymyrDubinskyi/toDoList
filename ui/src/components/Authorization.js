@@ -29,7 +29,7 @@ type State = {
 }
 
 export class Authorization extends Component<Props, State> {
-  constructor(props :Object) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       todoNowEditting: false,
@@ -71,7 +71,7 @@ export class Authorization extends Component<Props, State> {
     }
   }
 
-  updateValue(e :Object, inputName :string) {
+  updateValue(e: Object, inputName: string) {
     const newValue = {}
     newValue[inputName] = e.target.value
     this.setState(newValue);
@@ -99,7 +99,7 @@ export class Authorization extends Component<Props, State> {
     return false
   }
 
-  tryAuthorize = (e :Object) => {
+  tryAuthorize = (e: Object) => {
     const goodLogin = this.checkLogin()
     const goodPassword = this.checkPasswords()
 
@@ -121,43 +121,43 @@ export class Authorization extends Component<Props, State> {
 
   render() {
     return (
-      <div className={'ReactAuthorization authorizationHolder'}>
-        <h3 className={'authorizationTitle'}>{'Authorization'}</h3>
-        <div className={'authorizationForm'}>
-          <FormControl>
-            <TextField
-              fullWidth={true}
-              style={{ margin: 0 }}
-              label="Login:"
-              value={this.state.loginValue}
-              onChange={e => this.updateValue(e, 'loginValue')}
-              margin="normal"
-            />
-            <FormHelperText style={{ color: 'red' }}>{this.state.errorLogin}</FormHelperText>
-          </FormControl><br />
-          <FormControl>
-            <TextField
-              fullWidth={true}
-              type='password'
-              style={{ margin: 0 }}
-              label="Password:"
-              value={this.state.passwordValue}
-              onChange={e => this.updateValue(e, 'passwordValue')}
-              margin="normal"
-            />
-            <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
-          </FormControl>
-          <div className={'authorizationSubmitBtnHolder clearfix'}>
-            <Button
-              style={{ fontSize: '12px' }}
-              variant="contained" color="primary"
-              onClick={this.tryAuthorize}
-              className='authorizationFormSubmitBtn'>
-              Go in
+        <div className={'ReactAuthorization authorizationHolder'}>
+          <h3 className={'authorizationTitle'}>{'Authorization'}</h3>
+          <div className={'authorizationForm'}>
+            <FormControl>
+              <TextField
+                fullWidth={true}
+                style={{ margin: 0 }}
+                label="Login:"
+                value={this.state.loginValue}
+                onChange={e => this.updateValue(e, 'loginValue')}
+                margin="normal"
+              />
+              <FormHelperText style={{ color: 'red' }}>{this.state.errorLogin}</FormHelperText>
+            </FormControl><br />
+            <FormControl>
+              <TextField
+                fullWidth={true}
+                type='password'
+                style={{ margin: 0 }}
+                label="Password:"
+                value={this.state.passwordValue}
+                onChange={e => this.updateValue(e, 'passwordValue')}
+                margin="normal"
+              />
+              <FormHelperText style={{ color: 'red' }}>{this.state.errorPassword}</FormHelperText>
+            </FormControl>
+            <div className={'authorizationSubmitBtnHolder clearfix'}>
+              <Button
+                style={{ fontSize: '12px' }}
+                variant="contained" color="primary"
+                onClick={this.tryAuthorize}
+                className='authorizationFormSubmitBtn'>
+                Go in
               </Button>
+            </div>
           </div>
-        </div>
-      </div>)
+        </div>)
   }
 }
 

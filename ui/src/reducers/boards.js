@@ -10,6 +10,13 @@ const boards = (state: any = [], action: actionParams) => {
     case 'ADD_BOARD': {
       const [...newState] = state;
       const newBoard = action.payload;
+      const newBoardId = newBoard.id
+      let allredyHaveThisBoard = false
+      newState.map((board) => {
+        if (board.id === newBoardId) allredyHaveThisBoard = true
+        return null
+      })
+      if (allredyHaveThisBoard) return state
       newState.push(newBoard)
       newState.sort((a, b) => a.index > b.index)
       return newState

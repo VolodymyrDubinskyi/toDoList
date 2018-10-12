@@ -194,6 +194,7 @@ function* editBoardAsync(action) {
         },
       })
       payload.changes[changeKey] = board[changeKey]
+      payload.changes[changeKey].pop()
       yield put({ type: 'EDIT_BOARD_REDUCER', payload });
       yield put({ type: 'EDIT_BOARD_REDUCER', payload });
     } else {

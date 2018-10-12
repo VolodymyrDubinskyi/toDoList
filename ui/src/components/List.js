@@ -183,7 +183,10 @@ class List extends React.Component<Props, State> {
     const listId = this.props.history.location.pathname.split('/')[4]
     this.props.getBoard(listId)
     this.props.getAllLists(listId)
-    changeRoom(listId)
+  }
+
+  componentWillUnmount() { //eslint-disable-line
+    changeRoom('')
   }
 
   addList = () => {
@@ -196,7 +199,9 @@ class List extends React.Component<Props, State> {
     const boardId = this.props.history.location.pathname.split('/')[4]
     const currentBoard = this.props.boards.filter(obj => `${obj.id}` === boardId)[0]
     if (!currentBoard) {
-      return <div />
+      return <div style={{
+        marginTop: 50,
+      }}>U have no access to this page or page not created yet</div>
     }
 
     function add(a: number, b: Object) {
@@ -204,6 +209,14 @@ class List extends React.Component<Props, State> {
     }
 
     const { notOwnBoard } = this.props.components
+
+    if (notOwnBoard && currentBoard.private) {
+      return <div style={{
+        marginTop: 50,
+      }}>U have no access to this page or page not created yet</div>
+    }
+    const listId = this.props.history.location.pathname.split('/')[4]
+    changeRoom(listId)
 
     const propsTodosLength = this.props.lists.reduce(add, 0);
     const stateTodosLength = this.state.lists.reduce(add, 0);

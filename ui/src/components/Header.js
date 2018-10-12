@@ -165,7 +165,7 @@ export class Header extends Component<Props, State> {
             }} className='headerUsers'>
               <div className='headerUsersHolder' />
               <div>
-                {this.props.user.name[0].toUpperCase()}
+                {(this.props.user.name) ? this.props.user.name[0].toUpperCase() : null}
               </div></div>
           )} />
           <Route exact path='/user/:name/board/:boardId' component={() => (
@@ -182,7 +182,7 @@ export class Header extends Component<Props, State> {
           )} />
           {editTitle}{editField}
         </div>
-      </div >
+      </div>
     )
   }
 }

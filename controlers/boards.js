@@ -53,7 +53,11 @@ module.exports = {
         ctx.body = JSON.stringify(Object.assign({}, board[0], { notOwnBoard: true }))
         return
       }
-      ctx.body = JSON.stringify(Object.assign({}, board[0], { notOwnBoard: false }))
+      ctx.body = JSON.stringify(Object.assign({}, {
+        id: board[0].id,
+        private: board[0].private,
+        notOwnBoard: true,
+      }))
     }
   },
 

@@ -20,7 +20,7 @@ const lists = (state: any = [], action: actionParams) => {
       return newState
     }
     case 'EDIT_LIST_REDUCER': {
-      let newState = state
+      let [...newState] = state
       newState = newState.map((elem) => {
         let newElem = elem
         if (newElem.id === action.payload.id) {

@@ -142,7 +142,7 @@ body {
 .registrationHolder,
 .authorizationHolder {
   width: 400px;
-  margin: 0 auto;
+  margin: 20% auto;
   border: $border;
   border-radius: $radius;
   padding: 20px;
@@ -1036,7 +1036,6 @@ a {
   border-radius: 3px;
   color: rgb(255, 255, 255);
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-  font-size: 16px;
   font-weight: 700;
   height: 32px;
   padding: 0 10px;
@@ -1062,10 +1061,10 @@ a {
 
 
 .headerUsers {
+  font-size: 18px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  margin: 2px;
+  width: 32px;
+  height: 32px;
   position: relative;
   line-height: 30px;
   text-align: center;

@@ -19,16 +19,6 @@ const user = (state :Object = {}, action :actionParams) => {
       const newState = Object.assign({}, state, action.payload)
       return newState
     }
-    case 'ADD_BOARD': {
-      const newState = Object.assign({}, state)
-      newState.boards.push(action.payload.id)
-      return newState
-    }
-    case 'REMOVE_BOARD': {
-      const newState = Object.assign({}, state)
-      newState.boards = newState.boards.filter(elem => elem !== action.payload);
-      return newState
-    }
     default:
       return state
   }
