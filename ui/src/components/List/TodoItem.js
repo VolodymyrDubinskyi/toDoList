@@ -19,8 +19,6 @@ import {
   editList,
 } from '../../actions/lists'
 import itemTypes from '../../ItemTypes'
-import anonImg from '../../../img/anon.png'
-
 
 const todoTarget = {
   hover(props, monitor, component) {
@@ -242,9 +240,10 @@ export class TodoItem extends Component<Props, State> {
       style={moved ? { opacity: 0 } : {}}>
         {edit}
         {this.props.connectDragSource(<div>
-        {usual}
+          {usual}
         </div>)}
-      </div></div>)
+      </div>
+      </div>)
   }
 }
 

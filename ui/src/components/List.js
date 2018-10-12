@@ -288,9 +288,10 @@ class List extends React.Component<Props, State> {
       minWidth: '100%',
       height: 'calc(100vh - 40px)',
       paddingTop: 40,
+      backgroundImage: currentBoard.color,
       backgroundColor: currentBoard.color,
       overflowX: 'scroll',
-    }}>
+    }} className='createBoardImg'>
       <BoardSetsing
         notOwnBoard={notOwnBoard}
         board={currentBoard}

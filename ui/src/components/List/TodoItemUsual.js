@@ -11,7 +11,9 @@ type Props = {
   goToEdit: Function,
   deleteTodo: Function,
   title: string,
+  openTodoInfo: Function,
 };
+
 type State = {
 }
 
@@ -43,7 +45,7 @@ export default class ListItemUsual extends Component<Props, State> {
     return <div key={this.props.todo.title}
       style={style}
       className='todoListItem'>
-      <div style={{ cursor: 'pointer', fontSize: '1em' }}>
+      <div style={{ cursor: 'pointer', fontSize: '1em' }} onClick={this.props.openTodoInfo}>
       {this.props.title}
       </div>
       <div className='todoEditIcoHolder'>

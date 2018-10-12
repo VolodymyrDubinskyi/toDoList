@@ -270,9 +270,9 @@ export class Header extends Component<Props, State> {
     })
 
     return (
-      <div className={'header'} style={{
+      <div className={'header'} style={(this.props.history.location.pathname.split('/')[4] !== undefined) ? {
         height: 40,
-      }}>
+      } : { height: 40, backgroundColor: '#026aa7' }}>
         <div style={{ margin: '0 auto', height: 32 }}>
           <Switch>
             <Route exact path="/registration" component={() => (
@@ -344,7 +344,7 @@ export class Header extends Component<Props, State> {
                   {listOfBoards}
                 </div> : null}
 
-              </div></div>)} /></>)} />
+              </div></div>)} /></>)}/>
           </Switch>
           <Route exact path='/user/:name' component={() => (userAvatar)} />
           <Route exact path='/user/:name/board/:boardId' component={() => (userAvatar)} />

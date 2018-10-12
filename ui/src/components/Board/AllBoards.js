@@ -67,10 +67,11 @@ class AllBoards extends React.Component {
         boxSizing: 'border-box',
         position: 'relative',
       }}>
-      <div className='boardBox'
+      <div className='boardBox createBoardImg'
         onClick={() => { this.goToBoard(board.id) }}
         style={{
           backgroundColor: board.color,
+          backgroundImage: board.color,
         }}>
         <div
           className='boardShadowBox'

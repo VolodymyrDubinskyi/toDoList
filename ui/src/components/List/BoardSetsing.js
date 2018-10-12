@@ -110,8 +110,9 @@ class AllBoards extends React.Component {
     return <div
       className='boardSetsing'
       style={{
-        padding: '2px',
         marginBottom: 8,
+        padding: 8,
+        height: 32,
         backgroundColor: 'rgba(0,0,0,.2)',
         minWidth: 'calc(100% - 4px)',
         position: 'fixed',
