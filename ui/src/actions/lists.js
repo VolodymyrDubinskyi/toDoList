@@ -84,21 +84,23 @@ export const getAllLists = (dispatch: Function) => (payload) => {
 }
 
 
-const editListAction = (id: string, changes: Object): Object => ({
+const editListAction = (id: string, changes: Object, boardId: string): Object => ({
   type: 'EDIT_LIST',
   payload: {
     id,
     changes,
+    boardId,
   },
 })
 
 export type callEditListParams = {
   id: string,
   changes: Object,
+  boardId: string,
 }
 
 
 export const editList = (dispatch: Function) => (payload: callEditListParams) => {
-  changeListSocket(editListAction(payload.id, payload.changes))
-  dispatch(editListAction(payload.id, payload.changes))
+  changeListSocket(editListAction(payload.id, payload.changes, payload.boardId))
+  dispatch(editListAction(payload.id, payload.changes, payload.boardId))
 }

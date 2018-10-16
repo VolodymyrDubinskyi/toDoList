@@ -6,12 +6,14 @@ import lists from './lists'
 import notifications from './notifications'
 import boards from './boards'
 import components from './components'
+import events from './events'
 
 const combine = combineReducers({
   todos,
   user,
   lists,
   boards,
+  events,
   notifications,
   components,
 })

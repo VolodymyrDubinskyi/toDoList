@@ -1,6 +1,7 @@
 const DB = require('../services/db');
 const Board = require('../sequelize/board')
 const User = require('../sequelize/user')
+const events = require('../controlers/events');
 
 
 module.exports = {
@@ -95,6 +96,7 @@ module.exports = {
         const updated = JSON.stringify({ id, changes })
         ctx.body = updated
       }
+      events.create('updated board', user[0], id, changes)
     }
   },
 
@@ -126,6 +128,7 @@ module.exports = {
       const boards = JSON.parse(getUser[0].boards)
       boards.push(created.id)
       await DB.update(userId, { boards }, User)
+      events.create('added board', user[0], created.id, body.title)
       ctx.body = created;
     }
   },

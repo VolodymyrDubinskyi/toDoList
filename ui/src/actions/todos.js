@@ -81,11 +81,12 @@ export const getAllToDos = (dispatch: Function) => (payload: string) => {
 }
 
 
-export const removeToDoAction = (listId: string, todoId: string): Object => ({
+export const removeToDoAction = (listId: string, todoId: string, boardId: string): Object => ({
   type: 'REMOVE_TODO',
   payload: {
     listId,
     todoId,
+    boardId,
   },
 })
 
@@ -94,20 +95,27 @@ export type callRemoveToDoParams = {
   listId: string,
   userId: string,
   todoId: string,
+  boardId: string,
 }
 
 export const removeToDo = (dispatch: Function) => (payload: callRemoveToDoParams) => {
-  removeTodoSocket(removeToDoAction(payload.listId, payload.todoId))
-  dispatch(removeToDoAction(payload.listId, payload.todoId))
+  removeTodoSocket(removeToDoAction(payload.listId, payload.todoId, payload.boardId))
+  dispatch(removeToDoAction(payload.listId, payload.todoId, payload.boardId))
 }
 
 
-const editToDoAction = (listId: string, todoId: string, changes: Object): Object => ({
+const editToDoAction = (
+  listId: string,
+  todoId: string,
+  changes: Object,
+  boardId: string,
+): Object => ({
   type: 'EDIT_TODO',
   payload: {
     listId,
     todoId,
     changes,
+    boardId,
   },
 })
 
@@ -116,6 +124,7 @@ export type callEditToDoParams = {
   userId: string,
   todoId: string,
   changes: Object,
+  boardId: string,
 }
 
 export const editToDo = (dispatch: Function) => (payload: callEditToDoParams) => {
@@ -124,6 +133,6 @@ export const editToDo = (dispatch: Function) => (payload: callEditToDoParams) =>
     changes.title = changes.value
     delete changes.value
   }
-  changeTodoSocket(editToDoAction(payload.listId, payload.todoId, payload.changes))
-  dispatch(editToDoAction(payload.listId, payload.todoId, payload.changes))
+  changeTodoSocket(editToDoAction(payload.listId, payload.todoId, payload.changes, payload.boardId))
+  dispatch(editToDoAction(payload.listId, payload.todoId, payload.changes, payload.boardId))
 }

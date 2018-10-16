@@ -153,6 +153,7 @@ class List extends React.Component<Props, State> {
       userId: this.props.user.id,
       listId: newList.id,
       todoId: oldTodo.id,
+      boardId: this.props.history.location.pathname.split('/')[4],
     }
     this.props.removeToDo(removeParams)
     return oldTodo.index
@@ -265,6 +266,7 @@ class List extends React.Component<Props, State> {
     }
 
     const allLists = this.state.lists.map(elem => <TodosContainer
+      boardId={this.props.history.location.pathname.split('/')[4]}
       key={elem.id}
       elem={elem}
       list={elem}
@@ -284,14 +286,15 @@ class List extends React.Component<Props, State> {
       notOwnBoard={notOwnBoard}
     />)
 
-    return <div style={{
-      minWidth: '100%',
-      height: 'calc(100vh - 40px)',
-      paddingTop: 40,
-      backgroundImage: currentBoard.color,
-      backgroundColor: currentBoard.color,
-      overflowX: 'scroll',
-    }} className='createBoardImg'>
+    return <div
+      style={{
+        minWidth: '100%',
+        height: 'calc(100vh - 40px)',
+        paddingTop: 40,
+        backgroundImage: currentBoard.color,
+        backgroundColor: currentBoard.color,
+        overflowX: 'scroll',
+      }} className='createBoardImg'>
       <BoardSetsing
         notOwnBoard={notOwnBoard}
         board={currentBoard}

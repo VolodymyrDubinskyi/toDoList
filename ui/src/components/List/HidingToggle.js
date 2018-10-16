@@ -15,6 +15,7 @@ type Props = {
   list: listsProps,
   notOwnBoard: boolean,
   editList: (callEditListParams) => void,
+  boardId: string,
 };
 type State = {
   editValue: string,
@@ -52,6 +53,7 @@ class HidingToggle extends Component<Props, State> {
       this.props.editList({
         id: this.props.list.id,
         changes,
+        boardId: this.props.boardId,
       })
     }
   }
@@ -68,6 +70,7 @@ class HidingToggle extends Component<Props, State> {
     this.props.editList({
       id: this.props.list.id,
       changes,
+      boardId: this.props.boardId,
     })
   }
 

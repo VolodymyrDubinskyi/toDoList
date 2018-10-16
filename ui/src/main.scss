@@ -1157,3 +1157,92 @@ a {
   min-height: 100px;
   z-index: 35;
 }
+
+.bigAvatar {
+  background-color: rgb(223, 227, 230);
+  border-radius: 50%;
+  color: rgb(23, 57, 77);
+  cursor: pointer;
+  height: 85px;
+  line-height: 20px;
+  position: relative;
+  text-decoration-color: rgb(23, 57, 77);
+  width: 85px;
+  display: inline-block;
+}
+
+.bigAvatarLetter {
+  color: rgb(23, 57, 77);
+  display: block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  height: 85px;
+  left: 0px;
+  line-height: 85px;
+  position: absolute;
+  text-align: center;
+  text-size-adjust: 100%;
+  top: 0px;
+  user-select: none;
+  width: 85px;
+  z-index: 1;
+}
+
+.profileButton {
+  background-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(223, 227, 230);
+  border-color: rgb(223, 227, 230);
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  color: rgb(23, 57, 77);
+  cursor: default;
+  display: inline-block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  height: 20px;
+  line-height: 20px;
+  margin: 2px 2px -1px;
+  padding: 8px 20px 9px;
+  text-align: center;
+  text-decoration-color: rgb(23, 57, 77);
+  text-decoration-style: solid;
+}
+
+.profileButtonHolderChosen .profileButton {
+  background-color: rgb(223, 227, 230);
+  border-bottom-color: rgb(23, 57, 77);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-style: none;
+  border-bottom-width: 0px;
+  border-left-color: rgb(223, 227, 230);
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-right-color: rgb(223, 227, 230);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-top-color: rgb(223, 227, 230);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  color: rgb(23, 57, 77);
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  height: 20px;
+  line-height: 20px;
+  margin: 2px 2px 0;
+  padding: 8px 20px;
+  text-align: center;
+}

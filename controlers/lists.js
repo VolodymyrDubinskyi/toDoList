@@ -1,6 +1,7 @@
 const DB = require('../services/db');
 const List = require('../sequelize/list')
-const Board = require('../sequelize/board')
+const Board = require('../sequelize/board');
+const events = require('../controlers/events');
 
 
 module.exports = {
@@ -40,10 +41,10 @@ module.exports = {
       ctx.throw(401, 'Unauthorized');
     } else {
       const { id, changes } = ctx.request.body
-
       await DB.update(id, changes, List)
       const updated = JSON.stringify({ id, changes })
       ctx.body = updated
+      events.create('update list', user[0], ctx.request.body.boardId, changes)
     }
   },
 
@@ -75,6 +76,7 @@ module.exports = {
 
       await DB.update(getBoard[0].id, { lists }, Board)
       ctx.body = created;
+      events.create('created list', user[0], getBoard[0].id, created.title)
     }
   },
 
@@ -94,6 +96,7 @@ module.exports = {
         newUser.save();
       });
       ctx.body = deleted;
+      events.create('removed list', user[0], deleted.id, deleted.title)
     }
   },
 }

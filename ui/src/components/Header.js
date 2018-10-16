@@ -215,6 +215,9 @@ export class Header extends Component<Props, State> {
           cursor: 'pointer',
         }}>x</div>
         <div className='userSettsingsButton'>
+          <Link to={`/profile/${this.props.user.name}`}>
+            <div>Profile</div>
+          </Link>
           <Link to={'/authorization'}>
             <div onClick={() => {
               this.props.logOut()
@@ -334,22 +337,78 @@ export class Header extends Component<Props, State> {
                     right: 12,
                     cursor: 'pointer',
                   }}>x</div>
-
                   <input
                     value={this.state.inputFilterValue}
                     placeholder='Add filter'
                     className='boardListFilter dialogBox'
                     onChange={this.updateInputFilterValue} autoFocus />
-
                   {listOfBoards}
                 </div> : null}
+              </div></div>)} /><Route exact path='/profile/:name' component={({ match }) => (<div>
+                <Link to={`/user/${match.params.name}`}>
+                  <div variant="contained" color="primary"
+                    style={{ float: 'left', fontSize: '15px' }}
+                    onClick={this.stopEditing}
+                    className='buttonHeaders'>
+                    {'Back'}
+                  </div>
+                </Link>
+                <div variant="contained" color="primary"
+                  style={{ float: 'left', fontSize: '15px', cursor: 'pointer' }}
+                  onClick={this.openBoardsList}
+                  className='buttonHeaders'>
+                  {'Boards'}
 
-              </div></div>)} /></>)}/>
+                  {this.state.boardListOpened ? <div
+                    className='dialogBox'
+                    style={{
+                      position: 'absolute',
+                      left: -4,
+                      top: 40,
+                      zIndex: 16,
+                      width: 280,
+                      padding: 12,
+                      backgroundColor: 'white',
+                      color: '#6b808c',
+                      fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
+                      fontSize: 14,
+                      lineHeight: '20px',
+                      fontWeight: 400,
+                    }}>
+                    <div style={{
+                      borderBottom: '1px solid rgba(9,45,66,.13)',
+                      paddingBottom: 8,
+                      textAlign: 'center',
+                    }} className='dialogBox'>{`${this.props.user.name} (id${this.props.user.id})`}</div>
+                    <div style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 12,
+                      cursor: 'pointer',
+                    }}>x</div>
+
+                    <input
+                      value={this.state.inputFilterValue}
+                      placeholder='Add filter'
+                      className='boardListFilter dialogBox'
+                      onChange={this.updateInputFilterValue} autoFocus />
+
+                    {listOfBoards}
+                  </div> : null}
+
+                </div></div>)} /></>)} />
           </Switch>
           <Route exact path='/user/:name' component={() => (userAvatar)} />
+          <Route exact path='/profile/:name' component={() => (userAvatar)} />
           <Route exact path='/user/:name/board/:boardId' component={() => (userAvatar)} />
           {editTitle}{editField}
         </div>
+        <img src={'/trello.png'} alt={'Trello ico'} style={{
+          position: 'absolute',
+          left: 'calc(50% - 40px)',
+          top: 5,
+          opacity: 0.5,
+        }} />
       </div>
     )
   }

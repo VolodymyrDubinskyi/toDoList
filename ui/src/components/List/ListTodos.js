@@ -20,6 +20,7 @@ type Props = {
   stopMove: Function,
   userId: string,
   editToDo: Function,
+  boardId: string,
   notOwnBoard: boolean,
 }
 
@@ -76,6 +77,7 @@ class ListTodos extends React.Component<Props, State> {
         todoId: obj.id,
         changes: { index },
         userId: this.props.userId,
+        boardId: this.props.boardId,
       })
       return null
     })
@@ -120,6 +122,7 @@ class ListTodos extends React.Component<Props, State> {
             listItems={listItems}
             changeTodoIndexes={this.changeTodoIndexes}
             editToDo={this.props.editToDo}
+            boardId={this.props.boardId}
             notOwnBoard={this.props.notOwnBoard}
           />
         }

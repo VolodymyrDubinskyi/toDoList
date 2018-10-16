@@ -1,6 +1,7 @@
 const DB = require('../services/db');
 const Todo = require('../sequelize/todo')
 const List = require('../sequelize/list')
+const events = require('../controlers/events');
 
 
 module.exports = {
@@ -45,6 +46,8 @@ module.exports = {
       const { id, changes } = ctx.request.body
       await DB.update(id, changes, Todo)
       ctx.body = JSON.stringify({ id, changes })
+
+      events.create('updated todo', user[0], ctx.request.body.boardId, changes)
     }
   },
 
@@ -63,6 +66,8 @@ module.exports = {
 
       todos = await DB.update(listTitle, { todos }, List)
       ctx.body = todos;
+
+      events.create('remove todo', user[0], ctx.request.body.boardId, ctx.request.body.id)
     }
   },
 
@@ -88,6 +93,7 @@ module.exports = {
       todos.push(created.id)
       await DB.update(list, { todos }, List)
       ctx.body = created;
+      events.create('created todo', user[0], body.payload.boardId, created.id)
     }
   },
 }

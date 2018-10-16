@@ -24,6 +24,7 @@ function* editTodoAsync(action) {
   const todo = oldState.todos.filter(elem => elem.id === todoId)[0];
   try {
     yield put({ type: 'EDIT_TODO_REDUCER', payload });
+    console.log(payload)
     yield callEditToDoEndpoint(payload)
     yield put({
       type: 'ADD_NOTIFICATION',

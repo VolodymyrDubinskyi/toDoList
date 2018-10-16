@@ -86,8 +86,9 @@ const todoSource = {
         const oldListTodosId = props.listItems.map(obj => obj.id)
         oldListTodosId.splice(oldListTodosId.indexOf(id), 1)
 
-        props.removeToDo({ listId: props.listId, todoId: id })
+        props.removeToDo({ listId: props.listId, todoId: id, boardId: props.boardId })
         props.editList({
+          boardId: props.boardId,
           id: newList.id,
           changes: { todos: [...newList.todos] },
         })
@@ -112,6 +113,7 @@ const todoSource = {
             todoId: obj.id,
             changes: { index },
             userId: props.userId,
+            boardId: props.boardId,
           })
           return null
         })
@@ -144,6 +146,7 @@ type Props = {
   stopMove: Function,
   connectDragPreview: Function,
   notOwnBoard: boolean,
+  boardId: string,
 };
 type State = {
   todoNowEditting: boolean,
@@ -173,6 +176,7 @@ export class TodoItem extends Component<Props, State> {
       userId: this.props.userId,
       listId: this.props.listId,
       todoId: this.props.todo.id,
+      boardId: this.props.boardId,
     }
     this.props.removeToDo(removeParams)
   }
@@ -181,6 +185,7 @@ export class TodoItem extends Component<Props, State> {
     this.props.editToDo({
       listId: this.props.listId,
       todoId: this.props.todo.id,
+      boardId: this.props.boardId,
       changes: { chosen: !this.props.todo.chosen },
       userId: this.props.userId,
     })
@@ -205,6 +210,7 @@ export class TodoItem extends Component<Props, State> {
       todoId: this.props.todo.id,
       changes: { value: this.state.editValue },
       userId: this.props.userId,
+      boardId: this.props.boardId,
     })
     this.stopEditing()
   }
@@ -243,7 +249,7 @@ export class TodoItem extends Component<Props, State> {
           {usual}
         </div>)}
       </div>
-      </div>)
+    </div>)
   }
 }
 

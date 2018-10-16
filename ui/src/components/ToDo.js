@@ -7,6 +7,7 @@ import {
 import { NotificationContainer } from 'react-notifications';
 
 import Bords from './Boards'
+import Profile from './Profile'
 import List from './List'
 import Registration from './Registration'
 import AuthorizationWithConnect from './Authorization'
@@ -20,6 +21,7 @@ const ToDo = () => <Router>
       <Route exact path="/" component={() => <AuthorizationWithConnect />} />
       <Route exact path="/user/:user/board/:board" component={() => <List />} />
       <Route exact path="/user/:user" component={() => <Bords />} />
+      <Route exact path="/profile/:user" component={() => <Profile />} />
       <Route exact path="*" component={() => <div
         style={{
           fontSize: '3em',

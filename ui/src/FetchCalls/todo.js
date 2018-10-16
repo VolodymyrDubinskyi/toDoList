@@ -45,6 +45,7 @@ export const callRemoveToDoEndpoint = (payload: Object) => fetch(
     body: JSON.stringify({
       id: payload.todoId,
       listTitle: payload.listId,
+      boardId: payload.boardId,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -64,6 +65,7 @@ export const callEditToDoEndpoint = (payload: Object) => fetch(
       id: payload.todoId,
       listTitle: payload.listId,
       changes: payload.changes,
+      boardId: payload.boardId,
     }),
     headers: {
       'Content-Type': 'application/json',

@@ -51,6 +51,7 @@ export const callEditListEndpoint = payload => fetch(
     body: JSON.stringify({
       id: payload.id,
       changes: payload.changes,
+      boardId: payload.boardId,
     }),
     headers: {
       'Content-Type': 'application/json',

@@ -20,6 +20,7 @@ type Props = {
   editComponent: Function,
   list: listsProps,
   notOwnBoard: boolean,
+  boardId: string,
 };
 
 type State = {
@@ -43,7 +44,11 @@ export class AddToDoHolder extends Component<Props, State> {
   addTodo = () => {
     if (this.state.inputValue === '') return
     this.setState({ inputValue: '' })
-    this.props.addToDo({ listId: this.props.list.id, value: this.state.inputValue })
+    this.props.addToDo({
+      listId: this.props.list.id,
+      value: this.state.inputValue,
+      boardId: this.props.boardId,
+    })
   }
 
   addToDoUsingEnter = (e: Object) => {

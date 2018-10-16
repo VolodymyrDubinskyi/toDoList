@@ -14,7 +14,7 @@ const todos = (state: any = [], action: actionParams) => {
       return newState
     }
     case 'EDIT_TODO_REDUCER': {
-      let newState = state;
+      let [...newState] = state;
       const newTodos = newState.filter(todo => todo.id !== action.payload.todoId)
       let changingTodo = newState.filter(todo => todo.id === action.payload.todoId)[0]
       changingTodo = Object.assign({}, changingTodo, action.payload.changes)

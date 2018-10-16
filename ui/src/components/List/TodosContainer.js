@@ -36,6 +36,7 @@ type Props = {
   editToDo: Function,
   notOwnBoard: boolean,
   todos: Array<Object>,
+  boardId: string,
 }
 
 const listSource = {
@@ -113,6 +114,7 @@ class TodosContainer extends React.Component<Props> {
           <div style={this.props.isDragging ? { opacity: 0 } : {}}>
             {this.props.connectDragSource(<div>
               <HidingToggle
+                boardId={this.props.boardId}
                 list={this.props.elem}
                 notOwnBoard={this.props.notOwnBoard}
                 lists={this.props.lists}
@@ -131,8 +133,11 @@ class TodosContainer extends React.Component<Props> {
               stopMove={this.props.stopMove}
               editToDo={this.props.editToDo}
               notOwnBoard={this.props.notOwnBoard}
+              boardId={this.props.boardId}
             />
-            <AddToDo list={this.props.elem} notOwnBoard={this.props.notOwnBoard} />
+            <AddToDo list={this.props.elem}
+              notOwnBoard={this.props.notOwnBoard}
+              boardId={this.props.boardId} />
           </div>
         </div>
       </div>,

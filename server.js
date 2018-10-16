@@ -4,26 +4,23 @@ const cors = require('@koa/cors');
 const Router = require('koa-router');
 const send = require('koa-send');
 const koaStatic = require('koa-static');
-const mongoose = require('mongoose')
 
 const app = new Koa();
 const server = require('http').createServer(app.callback());
 const io = require('socket.io')(server);
 
 const todos = require('./controlers/todos');
+const events = require('./controlers/events');
 const boards = require('./controlers/boards');
 const users = require('./controlers/users');
 const lists = require('./controlers/lists');
 const secret = require('./controlers/secret')
-const config = require('./config/index')
 
-const url = `mongodb://${config.db.host}:${config.db.port}/${config.db.dbName}`;
 
 const router = new Router();
 
 app.use(bodyParser());
 app.use(cors());
-mongoose.connect(url)
 
 app.use(async (ctx, next) => {
   let user = null
@@ -50,6 +47,7 @@ router
   .get('*.jpg', async (ctx) => {
     await send(ctx, ctx.originalUrl, { root: `${__dirname}/ui/img` });
   })
+  .post('/events/:id', events.list)
   .get('/todos/:id', todos.list)
   .post('/todos/', todos.create)
   .patch('/todos/:id/:list', todos.update)
