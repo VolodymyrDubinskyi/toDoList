@@ -138,7 +138,6 @@ class Profile extends React.Component<Props, State> {
   }
 }
 
-
 const mapStateToProps = state => ({
   state,
   events: state.events,
@@ -151,6 +150,5 @@ const mapDispatchToProps = (dispatch: Function) => ({
   getBoard: getBoard(dispatch),
   getAllLists: getAllLists(dispatch),
 })
-
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile))

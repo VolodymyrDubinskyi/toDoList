@@ -29,7 +29,7 @@ const addListAction = (data: addListActionParams): Object => ({
     title: data.title,
     todos: JSON.parse(data.todos),
     index: data.index,
-    listId: data.listId,
+    listId: data.id,
   },
 })
 

@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types'
+import BoardAdditionalSettsing from './BoardAdditionalSettsing'
 
-class AllBoards extends React.Component {
+class boardSetsing extends React.Component {
   constructor(props: Object) {
     super(props)
     this.state = {
       addingUserToBoard: false,
       editingTittle: false,
       editingPrivacy: false,
+      isAdditionalSettingOpened: false,
       inputValue: '',
     }
   }
@@ -90,6 +92,15 @@ class AllBoards extends React.Component {
     }
   }
 
+  openMoreSettings = () => {
+    this.setState({ isAdditionalSettingOpened: true })
+    this.props.openMoreSettings()
+  }
+
+  closeMoreSettings = () => {
+    this.setState({ isAdditionalSettingOpened: false })
+    this.props.closeMoreSettings()
+  }
 
   render() {
     const { board } = this.props
@@ -205,6 +216,7 @@ class AllBoards extends React.Component {
         <div>
           +
       </div>
+
         {this.state.addingUserToBoard ? <div
           className='dialogBox'
           style={{
@@ -232,16 +244,56 @@ class AllBoards extends React.Component {
             onChange={this.updateInputValue} onKeyDown={this.addAccessToUser} />
         </div> : null}
       </div>
+
+      {this.state.isAdditionalSettingOpened ? <BoardAdditionalSettsing
+        boardId = {this.props.boardId}
+        closeMoreSettings={this.closeMoreSettings}
+      /> : null}
+
+      <div style={{
+        float: 'right',
+        paddingLeft: 32,
+        paddingRight: 8,
+        marginRight: 12,
+        position: 'relative',
+        color: 'white',
+      }}
+        onClick={this.openMoreSettings}
+        className='boardPrivacyAtList'>
+        <div style={{
+          position: 'absolute',
+          margin: 6,
+          top: 0,
+          left: 0,
+          width: 20,
+          height: 20,
+          textAlign: 'center',
+        }}>
+          <div style={{
+            fontWeight: 1000,
+            lineHeight: '12px',
+          }}>...</div>
+        </div>
+        <span style={{
+          textDecoration: 'underline',
+          fontSize: 14,
+          fontFamily: 'Helvetica Neue,Arial,Helvetica,sans-serif',
+          fontWeight: 400,
+        }}>Show menu</span>
+      </div>
     </div>
   }
 }
 
-AllBoards.propTypes = {
+boardSetsing.propTypes = {
   board: PropTypes.object,
   addAccessToUser: PropTypes.func,
   changeBoardPrivacy: PropTypes.func,
   changeBoardTitle: PropTypes.func,
   notOwnBoard: PropTypes.bool,
+  openMoreSettings: PropTypes.func,
+  closeMoreSettings: PropTypes.func,
+  boardId: PropTypes.string,
 }
 
-export default AllBoards
+export default boardSetsing

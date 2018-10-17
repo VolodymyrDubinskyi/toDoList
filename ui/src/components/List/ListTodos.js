@@ -55,7 +55,7 @@ class ListTodos extends React.Component<Props, State> {
     })
 
     this.setState({
-      listItems: newTodos,
+      listItems: [...newTodos],
     })
     this.props.setMoveIndex(todoId);
   }
@@ -105,6 +105,7 @@ class ListTodos extends React.Component<Props, State> {
       }
       return -1
     })
+    // console.log(this.props.list)
 
     return <div>
       {listItems.map((todo) => {

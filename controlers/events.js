@@ -22,6 +22,7 @@ module.exports = {
       userId: user.id,
       boardId,
       payload: JSON.stringify(payload),
+      time: `${(new Date()).getTime()}`,
     }, EventSeq)
   },
 }

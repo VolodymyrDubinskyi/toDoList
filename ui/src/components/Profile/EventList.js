@@ -1,4 +1,3 @@
-// @flow
 import {
   withRouter, Link,
 } from 'react-router-dom'
@@ -12,15 +11,25 @@ type State = {}
 
 class EventList extends React.Component<Props, State> {
   getFormatedDate = (time) => {
-    const eventTime = new Date(time)
+    const eventTime = new Date(+time)
     const monthNames = ['Jan', 'Febr', 'Mar', 'Apr', 'May', 'June',
       'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec',
     ];
     return `${eventTime.getDate()} ${monthNames[eventTime.getMonth()]} at ${eventTime.getHours()}:${eventTime.getMinutes()}`
   }
 
+  compareEvents = (a, b) => {
+    if (+a.time > +b.time) {
+      return -1;
+    }
+    return 1;
+  }
+
   render() {
-    const eventComponents = this.props.events.map((event, i) => <div
+    const [...events] = this.props.events
+    events.sort(this.compareEvents)
+
+    const eventComponents = events.map((event, i) => <div
       key={`event item ${i}`}
       style={{
         marginLeft: 40,
@@ -67,7 +76,7 @@ class EventList extends React.Component<Props, State> {
         lineHeight: '20px',
         fontWeight: 400,
       }}>
-        {this.getFormatedDate(this.props.events[0].createdAt)}{' - on board '}
+        {this.getFormatedDate(event.time)}{' - on board '}
         <Link to={`/user/${event.userName}/board/${event.boardId}`}
           style={{
             cursor: 'pointer',

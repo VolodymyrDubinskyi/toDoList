@@ -6,7 +6,6 @@ import {
   callGetAllBoardsEndpoint,
   callGetBoardEndpoint,
 } from '../FetchCalls/board'
-
 import {
   changeBoard as changeBoardSocket,
 } from '../socket'

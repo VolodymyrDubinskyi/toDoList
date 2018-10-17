@@ -59,6 +59,7 @@ type State = {
   todos: Array<Object>,
   listMoved: boolean,
   ownPage: boolean,
+  isAdditionalSettingOpened: boolean,
 }
 
 class List extends React.Component<Props, State> {
@@ -70,6 +71,7 @@ class List extends React.Component<Props, State> {
       listMoved: false,
       todos: props.todos,
       ownPage: true,
+      isAdditionalSettingOpened: false,
     }
   }
 
@@ -145,6 +147,10 @@ class List extends React.Component<Props, State> {
     })
   }
 
+  openMoreSettings = () => {
+    this.setState({ isAdditionalSettingOpened: true })
+  }
+
   removeToDoInState = (newListId, oldListId, oldId, title) => {
     const newList = this.props.lists.filter(list => list.id === newListId)[0];
     const listTodos = newList.todos.filter(todo => todo.title === title);
@@ -191,6 +197,10 @@ class List extends React.Component<Props, State> {
 
   componentWillUnmount() { //eslint-disable-line
     changeRoom('')
+  }
+
+  closeMoreSettings = () => {
+    this.setState({ isAdditionalSettingOpened: false })
   }
 
   addList = () => {
@@ -296,7 +306,10 @@ class List extends React.Component<Props, State> {
         overflowX: 'scroll',
       }} className='createBoardImg'>
       <BoardSetsing
+        closeMoreSettings={this.closeMoreSettings}
+        openMoreSettings={this.openMoreSettings}
         notOwnBoard={notOwnBoard}
+        boardId={this.props.history.location.pathname.split('/')[4]}
         board={currentBoard}
         changeBoardTitle={this.changeBoardTitle}
         changeBoardPrivacy={this.changeBoardPrivacy}
@@ -313,6 +326,12 @@ class List extends React.Component<Props, State> {
             <span>+ Add new list</span>
           </div>
         </div>
+
+        {this.state.isAdditionalSettingOpened ? <div className='todosList'
+          style={{
+            height: 1,
+            padding: '0 339px 0 0',
+          }} /> : null}
       </div>
     </div>
   }

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('./init')
 
-const Event = sequelize.define('events', {
+const Event = sequelize.define('ListOfTheEvents', {
   userId: {
     type: Sequelize.STRING,
   },
@@ -16,6 +16,9 @@ const Event = sequelize.define('events', {
     type: Sequelize.STRING,
   },
   userName: {
+    type: Sequelize.STRING,
+  },
+  time: {
     type: Sequelize.STRING,
   },
 });
